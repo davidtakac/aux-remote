@@ -1,0 +1,10 @@
+ext{
+    // Koin
+    koinVersion = "2.0.1"
+    koin = "org.koin:koin-android:$koinVersion"
+    koinViewModel = "org.koin:koin-android-viewmodel:$koinVersion"
+
+    // Material
+    materialVersion = "1.1.0-alpha09"
+    material = "com.google.android.material:material:$materialVersion"
+}

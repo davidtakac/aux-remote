@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Aux</string>
+    <string name="hint_ipaddr">Server IP address</string>
+    <string name="hint_portnum">Server port number</string>
+    <string name="label_connect_button">Connect</string>
+    <string name="error_ipaddr_invalid">Invalid IP address</string>
+    <string name="error_portnum_invalid">Invalid port number</string>
+    <string name="error_cantconnect">Could not connect to given IP address and port number.</string>
+    <string name="hint_search_songs">Search songs…</string>
+    <string name="label_menu_search">Search</string>
+    <string name="error_internet_needwifi">Wi-Fi connection required.</string>
+
+    <string name="notif_server_error">An error occurred, try reconnecting.</string>
+
+    <string name="snackbar_queued_template">Queued successfully.</string>
+    <string name="snackbar_usersong_nowplaying">Your song is now playing.</string>
+    <string name="snackbar_action_view">View</string>
+    <string name="snackbar_action_wifi_settings">Turn on</string>
+
+    <string name="label_queuedsong_position">%d.</string>
+
+    <string-array name="labels_fragments">
+        <item>Songs</item>
+        <item>Queue</item>
+    </string-array>
+</resources>
