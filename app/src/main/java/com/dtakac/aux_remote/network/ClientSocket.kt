@@ -1,16 +1,23 @@
 package com.dtakac.aux_remote.network
 
 import android.util.Log
+import java.io.InputStream
+import java.io.OutputStream
 import java.lang.Exception
 import java.net.InetAddress
 import java.net.Socket
 
 private const val TAG = "server_socket"
-class ServerSocket{
+class ClientSocket{
     private var socket: Socket? = null
 
-    val outputStream = socket?.getOutputStream()
-    val inputStream = socket?.getInputStream()
+    var outputStream: OutputStream? = null
+        private set
+        get() = socket?.getOutputStream()
+
+    var inputStream: InputStream? = null
+        private set
+        get() = socket?.getInputStream()
 
     fun initialize(ipAddress: String, port: Int): Boolean{
         close()

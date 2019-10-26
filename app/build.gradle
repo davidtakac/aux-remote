@@ -43,4 +43,6 @@ dependencies {
     implementation rxJava
     implementation rxBinding
     implementation rxAndroid
+    implementation coroutinesCore
+    implementation coroutinesAndroid
 }

@@ -3,6 +3,7 @@ package com.dtakac.aux_remote.connect
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
@@ -16,10 +17,12 @@ import org.koin.core.parameter.parametersOf
 class ConnectFragment : BaseFragment(), ConnectContract.View{
     override val layoutRes: Int = R.layout.fragment_connect
     private val presenter by inject<ConnectContract.Presenter>{ parametersOf(this) }
+    private val TAG = "connecttag"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        presenter.onViewCreated()
     }
 
     private fun initViews(){
@@ -58,5 +61,23 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
                 startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
             }
             .show()
+    }
+
+    override fun onSocketInitialized() {
+        //todo: start pager fragment
+        Log.d(TAG, "socket initialized")
+    }
+
+    override fun showLongSnackbar(stringId: Int) {
+        Snackbar.make(activity!!.findViewById(android.R.id.content), getString(stringId), Snackbar.LENGTH_LONG)
+            .show()
+    }
+
+    override fun showLoading(isLoading: Boolean) {
+        progressBar.visibility = if(isLoading) View.VISIBLE else View.GONE
+    }
+
+    override fun connectEnabled(isEnabled: Boolean) {
+        btnConnect.isEnabled = isEnabled
     }
 }

@@ -16,13 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        router.showFragment(supportFragmentManager, Bundle.EMPTY, FRAGMENT_CONNECT, R.id.frame)
         ResponseHandlerService.start(this)
-
-        router.showFragment(
-            supportFragmentManager,
-            Bundle.EMPTY,
-            FRAGMENT_CONNECT,
-            R.id.frame
-        )
     }
 }

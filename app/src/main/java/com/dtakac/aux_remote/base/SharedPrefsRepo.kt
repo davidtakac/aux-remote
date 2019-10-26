@@ -13,13 +13,8 @@ object SharedPrefsUtil {
         editor.apply()
     }
 
-    operator fun get(prefs: SharedPreferences, key: String, defaultValue: String): String? =
-        try {
-            prefs.getString(key, defaultValue)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            defaultValue
-        }
+    operator fun get(prefs: SharedPreferences, key: String, defaultValue: String): String =
+        prefs.getString(key, defaultValue) ?: defaultValue
 
     fun save(prefs: SharedPreferences, key: String, value: Boolean) {
         val editor = prefs.edit()
@@ -28,10 +23,5 @@ object SharedPrefsUtil {
     }
 
     operator fun get(prefs: SharedPreferences, key: String, defaultValue: Boolean): Boolean =
-        try {
-            prefs.getBoolean(key, defaultValue)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            defaultValue
-        }
+        prefs.getBoolean(key, defaultValue)
 }
