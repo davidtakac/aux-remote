@@ -43,7 +43,7 @@
             android:textCursorDrawable="@drawable/color_cursor" />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textinputlayout_port"
+        android:id="@+id/tilPort"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tilIpAddress"
@@ -52,7 +52,7 @@
         android:hint="@string/hint_portnum"
         app:errorEnabled="true">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_connect_port"
+            android:id="@+id/etPort"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -60,17 +60,17 @@
             android:textCursorDrawable="@drawable/color_cursor" />
     </com.google.android.material.textfield.TextInputLayout>
     <ProgressBar
-        android:id="@+id/pb_connect_connecting"
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
         app:layout_constraintRight_toLeftOf="@id/guidelineRight"
-        app:layout_constraintBottom_toTopOf="@id/btn_connect_connect"
+        app:layout_constraintBottom_toTopOf="@id/btnConnect"
         style="?android:progressBarStyleLarge"
         android:visibility="gone" />
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_connect_connect"
+        android:id="@+id/btnConnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="112dp"

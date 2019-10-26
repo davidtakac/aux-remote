@@ -38,4 +38,9 @@ dependencies {
     implementation koin
     implementation koinViewModel
     implementation material
+    implementation apacheIo
+    implementation apacheCommons
+    implementation rxJava
+    implementation rxBinding
+    implementation rxAndroid
 }

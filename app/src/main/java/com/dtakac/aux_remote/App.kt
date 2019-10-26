@@ -1,6 +1,7 @@
 package com.dtakac.aux_remote
 
 import android.app.Application
+import com.dtakac.aux_remote.connect.di.connectModule
 import com.dtakac.aux_remote.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -13,8 +14,10 @@ class App: Application(){
         startKoin {
             androidContext(this@App)
 
-            modules(
-                appModule
+            modules(listOf(
+                appModule,
+                connectModule
+                )
             )
         }
     }
