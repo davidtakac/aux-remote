@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
+import com.dtakac.aux_remote.common.FRAGMENT_PAGER
 import com.dtakac.aux_remote.common.defaultSchedulers
 import com.dtakac.aux_remote.service.ResponseHandlerService
 import com.google.android.material.snackbar.Snackbar
@@ -26,7 +27,8 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
         presenter.onViewCreated()
     }
 
-    private fun initViews(){
+    override fun initViews(){
+        super.initViews()
         btnConnect.setOnClickListener { presenter.onConnectClicked() }
         addDisposable(etIpAddress.textChanges().defaultSchedulers().subscribe{
             setIpAddressError(false)
@@ -65,9 +67,8 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
     }
 
     override fun onSocketInitialized() {
-        //todo: start pager fragment
-        Log.d(TAG, "socket initialized")
         ResponseHandlerService.start(activity!!)
+        router.showFragment(fragmentManager, Bundle.EMPTY, FRAGMENT_PAGER)
     }
 
     override fun showLongSnackbar(stringId: Int) {

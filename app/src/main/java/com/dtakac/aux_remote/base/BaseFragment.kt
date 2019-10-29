@@ -26,5 +26,14 @@ abstract class BaseFragment : Fragment(){
         compositeDisposable.clear()
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViews()
+    }
+
     protected fun addDisposable(disposable: Disposable) = compositeDisposable.add(disposable)
+
+    protected open fun initViews(){
+
+    }
 }
