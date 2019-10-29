@@ -18,10 +18,10 @@ import kotlinx.android.synthetic.main.fragment_connect.*
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
+private const val TAG = "connect_tag"
 class ConnectFragment : BaseFragment(), ConnectContract.View{
     override val layoutRes: Int = R.layout.fragment_connect
     private val presenter by inject<ConnectContract.Presenter>{ parametersOf(this) }
-    private val TAG = "connecttag"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
