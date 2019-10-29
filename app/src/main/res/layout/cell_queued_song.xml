@@ -32,9 +32,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/tvPosition"
-        app:layout_constraintRight_toLeftOf="@id/ivUser" />
+        app:layout_constraintRight_toLeftOf="@id/ivUserIcon" />
     <ImageView
-        android:id="@+id/ivUser"
+        android:id="@+id/ivUserIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginLeft="16dp"

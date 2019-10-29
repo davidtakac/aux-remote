@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="56dp">
     <ImageView
-        android:id="@+id/iv_queue_playicon"
+        android:id="@+id/ivPlayingIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_music_note_black_24dp"
@@ -17,7 +17,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:tint="?attr/colorPrimary" />
     <TextView
-        android:id="@+id/tv_queue_playingsongname"
+        android:id="@+id/tvNowPlayingSong"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="8dp"
@@ -27,8 +27,8 @@
         android:maxLines="1"
         android:ellipsize="end"
         tools:text="Welcome to Bangkok i legenda o izuzetno dugackoj pjesmi.mp3"
-        app:layout_constraintTop_toTopOf="@id/iv_queue_playicon"
-        app:layout_constraintBottom_toBottomOf="@id/iv_queue_playicon"
-        app:layout_constraintLeft_toRightOf="@id/iv_queue_playicon"
+        app:layout_constraintTop_toTopOf="@id/ivPlayingIcon"
+        app:layout_constraintBottom_toBottomOf="@id/ivPlayingIcon"
+        app:layout_constraintLeft_toRightOf="@id/ivPlayingIcon"
         app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
