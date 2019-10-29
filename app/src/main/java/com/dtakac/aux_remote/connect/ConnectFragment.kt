@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
 import com.dtakac.aux_remote.base.newFragmentInstance
@@ -38,6 +39,8 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
         addDisposable(etPort.textChanges().defaultSchedulers().subscribe{
             setPortError(false)
         })
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        toolbar.title = getString(R.string.label_connect_fragment)
     }
 
     override fun setIpAddress(ipAddress: String) {

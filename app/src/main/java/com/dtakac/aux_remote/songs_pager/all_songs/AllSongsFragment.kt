@@ -2,6 +2,10 @@ package com.dtakac.aux_remote.songs_pager.all_songs
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.appcompat.widget.SearchView
 import com.airbnb.epoxy.TypedEpoxyController
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
@@ -29,6 +33,38 @@ class AllSongsFragment : BaseFragment(), AllSongsInterface{
         super.initViews()
         rvSongs.setController(controller)
         testRecycler()
+    }
+
+    //todo: make this work with one activity multiple fragment architecture
+    private fun initSearchView(item: MenuItem){
+        item.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                //todo: viewModel.onSearchExpanded()
+
+                // return true so the item expands
+                return true
+            }
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                //todo: viewModel.onSearchCollapsed
+
+                // return true so it collapses
+                return true
+            }
+        })
+        val search = item.actionView as SearchView
+        search.queryHint = getString(R.string.hint_search_songs)
+        search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                //returning true means we're handling the submit. otherwise a new search activity
+                //would get started(default behavior)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                //todo: viewModel.onQueryTextChanged(newText)
+                return true
+            }
+        })
     }
 
     private fun testRecycler(){
