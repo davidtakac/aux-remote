@@ -27,10 +27,10 @@ class ResponseHandlerService: JobIntentService(){
     }
 
     override fun onHandleWork(intent: Intent) {
-        while(true){
-            val stream = socket.inputStream ?: continue
+        val stream = socket.inputStream ?: throw IllegalStateException("Service started, but socket input stream is null.")
+        val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
 
-            val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
+        while(true){
             Log.d(TAG, reader.readLine())
         }
     }

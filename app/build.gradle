@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply from: '../dependencies.gradle'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -23,6 +25,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
@@ -45,4 +51,9 @@ dependencies {
     implementation rxAndroid
     implementation coroutinesCore
     implementation coroutinesAndroid
+    implementation viewPager2
+    implementation epoxy
+    kapt epoxyApt
+    implementation room
+    kapt roomApt
 }

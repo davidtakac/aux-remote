@@ -28,4 +28,18 @@ ext{
     apacheValidatorVersion = "1.6"
     apacheIo = "commons-validator:commons-validator:$apacheValidatorVersion"
     apacheCommons = "commons-io:commons-io:$apacheIoVersion"
+
+    // ViewPager2
+    vp2Version = "1.0.0-rc01"
+    viewPager2 = "androidx.viewpager2:viewpager2:$vp2Version"
+
+    // Epoxy
+    epoxyVersion =  "3.8.0"
+    epoxy = "com.airbnb.android:epoxy:$epoxyVersion"
+    epoxyApt = "com.airbnb.android:epoxy-processor:$epoxyVersion"
+
+    // Room
+    roomVersion = "2.2.1"
+    room = "androidx.room:room-runtime:$roomVersion"
+    roomApt = "androidx.room:room-compiler:$roomVersion"
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    xmlns:tools="http://schemas.android.com/tools">
+    <TextView
+        android:id="@+id/tvSong"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        tools:text="Elvis Duspara - Moja ploca zemaljska i izuzetno.mp3"
+        android:gravity="center_vertical"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:background="?android:attr/selectableItemBackground"/>
+</FrameLayout>

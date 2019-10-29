@@ -8,6 +8,7 @@ import android.view.View
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
 import com.dtakac.aux_remote.common.defaultSchedulers
+import com.dtakac.aux_remote.service.ResponseHandlerService
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.widget.textChanges
 import kotlinx.android.synthetic.main.fragment_connect.*
@@ -66,6 +67,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
     override fun onSocketInitialized() {
         //todo: start pager fragment
         Log.d(TAG, "socket initialized")
+        ResponseHandlerService.start(activity!!)
     }
 
     override fun showLongSnackbar(stringId: Int) {
