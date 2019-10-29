@@ -21,15 +21,15 @@ class PagerFragment: BaseFragment(){
     }
 
     private fun initPager(){
+        // attach adapter to pager
+        pager.adapter = PagerAdapter(this)
         // setup tablayout with pager
         TabLayoutMediator(tabLayout, pager, true,
             TabLayoutMediator.OnConfigureTabCallback { tab, position ->
-                pager.setCurrentItem(position, true)
+                pager.setCurrentItem(tab.position, true)
                 tab.text = resources.getStringArray(R.array.labels_fragments)[position]
             }
         ).attach()
-        // attach adapter to pager
-        pager.adapter = PagerAdapter(this)
     }
 }
 

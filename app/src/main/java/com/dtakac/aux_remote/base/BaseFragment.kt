@@ -10,8 +10,6 @@ import io.reactivex.disposables.Disposable
 import org.koin.android.ext.android.inject
 
 abstract class BaseFragment : Fragment(){
-
-    protected val router by inject<Router>()
     private val compositeDisposable = CompositeDisposable()
     abstract val layoutRes: Int
 
@@ -33,7 +31,10 @@ abstract class BaseFragment : Fragment(){
 
     protected fun addDisposable(disposable: Disposable) = compositeDisposable.add(disposable)
 
-    protected open fun initViews(){
-
-    }
+    protected open fun initViews(){}
 }
+
+inline fun <reified T : Fragment> newFragmentInstance(bundle: Bundle) =
+    T::class.java.newInstance().apply {
+        arguments = bundle
+    }

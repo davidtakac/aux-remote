@@ -8,6 +8,7 @@ import com.dtakac.aux_remote.network.ClientSocket
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.net.SocketException
 import java.nio.charset.Charset
 
 private const val TAG = "servicetag"
@@ -30,8 +31,13 @@ class ResponseHandlerService: JobIntentService(){
         val stream = socket.inputStream ?: throw IllegalStateException("Service started, but socket input stream is null.")
         val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
 
-        while(true){
-            Log.d(TAG, reader.readLine())
+        try {
+            while (true) {
+                Log.d(TAG, reader.readLine())
+            }
+        } catch (s: SocketException){
+            Log.e(TAG, "Socket exception occurred, stopping service.")
+            s.printStackTrace()
         }
     }
 }

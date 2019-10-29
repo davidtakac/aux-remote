@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.View
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
+import com.dtakac.aux_remote.base.newFragmentInstance
 import com.dtakac.aux_remote.common.FRAGMENT_PAGER
 import com.dtakac.aux_remote.common.defaultSchedulers
 import com.dtakac.aux_remote.service.ResponseHandlerService
+import com.dtakac.aux_remote.songs_pager.PagerFragment
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.widget.textChanges
 import kotlinx.android.synthetic.main.fragment_connect.*
@@ -68,7 +70,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
 
     override fun onSocketInitialized() {
         ResponseHandlerService.start(activity!!)
-        router.showFragment(fragmentManager, Bundle.EMPTY, FRAGMENT_PAGER)
+        displayPagerFragment()
     }
 
     override fun showLongSnackbar(stringId: Int) {
@@ -82,5 +84,12 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
 
     override fun connectEnabled(isEnabled: Boolean) {
         btnConnect.isEnabled = isEnabled
+    }
+
+    private fun displayPagerFragment(){
+        fragmentManager!!.beginTransaction()
+            .replace(R.id.frame, newFragmentInstance<PagerFragment>(Bundle.EMPTY))
+            .addToBackStack(FRAGMENT_PAGER)
+            .commit()
     }
 }

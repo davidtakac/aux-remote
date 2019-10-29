@@ -27,6 +27,8 @@ class ConnectPresenter(
 ) : ConnectContract.Presenter{
 
     override fun onViewCreated() {
+        // in case the client socket was opened previously
+        client.close()
         if(prefsRepo.get(PREFS_USER_ID, "").isBlank()){
             prefsRepo.save(PREFS_USER_ID, UUID.randomUUID().toString())
         }
