@@ -39,8 +39,6 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
         addDisposable(etPort.textChanges().defaultSchedulers().subscribe{
             setPortError(false)
         })
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        toolbar.title = getString(R.string.label_connect_fragment)
     }
 
     override fun setIpAddress(ipAddress: String) {

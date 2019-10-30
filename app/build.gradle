@@ -51,7 +51,6 @@ dependencies {
     implementation rxAndroid
     implementation coroutinesCore
     implementation coroutinesAndroid
-    implementation viewPager2
     implementation epoxy
     kapt epoxyApt
     implementation room

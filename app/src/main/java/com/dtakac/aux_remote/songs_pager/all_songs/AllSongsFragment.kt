@@ -35,38 +35,6 @@ class AllSongsFragment : BaseFragment(), AllSongsInterface{
         testRecycler()
     }
 
-    //todo: make this work with one activity multiple fragment architecture
-    private fun initSearchView(item: MenuItem){
-        item.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                //todo: viewModel.onSearchExpanded()
-
-                // return true so the item expands
-                return true
-            }
-            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                //todo: viewModel.onSearchCollapsed
-
-                // return true so it collapses
-                return true
-            }
-        })
-        val search = item.actionView as SearchView
-        search.queryHint = getString(R.string.hint_search_songs)
-        search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                //returning true means we're handling the submit. otherwise a new search activity
-                //would get started(default behavior)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                //todo: viewModel.onQueryTextChanged(newText)
-                return true
-            }
-        })
-    }
-
     private fun testRecycler(){
         val songs = listOf("Vuco - Crna zeno",
             "OOF - Svaki dan ja oofujem",
@@ -86,6 +54,7 @@ class AllSongsController(private val allSongsInterface: AllSongsInterface): Type
     override fun buildModels(data: AllSongsUi) {
         data.songNames.forEachIndexed { idx, songName ->
             song {
+                //todo: update id to database id
                 id("$idx-$songName")
                 name(songName)
                 clickListener { _, _, _, position ->

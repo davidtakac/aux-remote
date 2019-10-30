@@ -1,50 +1,91 @@
 package com.dtakac.aux_remote.songs_pager
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
 import com.dtakac.aux_remote.base.newFragmentInstance
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsFragment
 import com.dtakac.aux_remote.songs_pager.queue.QueueFragment
-import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.fragment_connect.*
 import kotlinx.android.synthetic.main.fragment_pager.*
-import kotlinx.android.synthetic.main.fragment_pager.toolbar
 import java.lang.IllegalStateException
 
+private const val TAG = "pager_tag"
 class PagerFragment: BaseFragment(){
     override val layoutRes: Int = R.layout.fragment_pager
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu, menu)
+        initSearchView(menu.findItem(R.id.menu_search))
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     override fun initViews() {
         super.initViews()
+        setHasOptionsMenu(true)
         initPager()
+    }
+
+    private fun initSearchView(item: MenuItem){
+        item.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                //todo: viewModel.onSearchExpanded()
+
+                Log.d(TAG, "search expanded")
+                pager.setCurrentItem(0, true)
+                // return true so the item expands
+                return true
+            }
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                //todo: viewModel.onSearchCollapsed
+
+                Log.d(TAG, "search collapsed")
+                // return true so it collapses
+                return true
+            }
+        })
+        val search = item.actionView as SearchView
+        search.queryHint = getString(R.string.hint_search_songs)
+        search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                //returning true means we're handling the submit. otherwise a new search activity
+                //would get started(default behavior)
+
+                Log.d(TAG, "search submit: $query")
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                //todo: viewModel.onQueryTextChanged(newText)
+
+                Log.d(TAG, "search changed: $newText")
+                return true
+            }
+        })
     }
 
     private fun initPager(){
         // attach adapter to pager
-        pager.adapter = PagerAdapter(this)
+        pager.adapter = PagerAdapter(resources.getStringArray(R.array.labels_fragments), this)
         // setup tablayout with pager
-        TabLayoutMediator(tabLayout, pager, false,
-            TabLayoutMediator.OnConfigureTabCallback { tab, position ->
-                pager.setCurrentItem(tab.position, true)
-                tab.text = resources.getStringArray(R.array.labels_fragments)[position]
-            }
-        ).attach()
-        // setup toolbar
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        toolbar.title = getString(R.string.label_pager_fragment)
+        tabLayout.setupWithViewPager(pager)
     }
 }
 
-class PagerAdapter(f: Fragment): FragmentStateAdapter(f){
-    override fun getItemCount(): Int = 2
-    override fun createFragment(position: Int): Fragment =
+class PagerAdapter(private val titles: Array<String>, f: Fragment): FragmentStatePagerAdapter(f.childFragmentManager){
+    override fun getCount(): Int = 2
+    override fun getItem(position: Int): Fragment =
         when(position){
             0 -> newFragmentInstance<AllSongsFragment>(Bundle.EMPTY)
             1 -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
             else -> throw IllegalStateException("No fragment defined for position: $position")
         }
+
+    override fun getPageTitle(position: Int): CharSequence? = titles[position]
 }

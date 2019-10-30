@@ -45,6 +45,7 @@ class QueueController: TypedEpoxyController<QueueUi>(){
         }
         data.queuedSongs.forEachIndexed { idx, queuedSong ->
             queuedSong {
+                //todo: update id to db id
                 id("$idx-${queuedSong.songName}")
                 position("${idx+1}")
                 name(queuedSong.songName)
