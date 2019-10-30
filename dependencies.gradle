@@ -42,4 +42,9 @@ ext{
     roomVersion = "2.2.1"
     room = "androidx.room:room-runtime:$roomVersion"
     roomApt = "androidx.room:room-compiler:$roomVersion"
+
+    // ViewModel and LiveData
+    lifecycle_version = "2.1.0"
+    lifecycle = "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    lifecycleApt = "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 }

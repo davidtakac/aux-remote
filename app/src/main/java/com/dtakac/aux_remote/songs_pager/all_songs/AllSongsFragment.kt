@@ -6,9 +6,12 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
 import com.airbnb.epoxy.TypedEpoxyController
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
+import com.dtakac.aux_remote.data.AppDatabase
+import com.dtakac.aux_remote.data.Song
 import com.dtakac.aux_remote.songs_pager.all_songs.view_holders.song
 import kotlinx.android.synthetic.main.fragment_songs.*
 import org.koin.android.ext.android.inject
@@ -18,6 +21,7 @@ private const val TAG = "all_songs_tag"
 class AllSongsFragment : BaseFragment(), AllSongsInterface{
     override val layoutRes = R.layout.fragment_songs
     private val controller by inject<AllSongsController>{ parametersOf(this)}
+    private val db by inject<AppDatabase>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -42,7 +46,10 @@ class AllSongsFragment : BaseFragment(), AllSongsInterface{
             "IJAAAAAAH",
             "Oci boje kestena"
         )
-        controller.setData(AllSongsUi(songs))
+
+        db.songDao().getAll().observe(this, Observer<List<Song>> {
+            controller.setData(AllSongsUi(it.map { it.name }.toList()))
+        })
     }
 }
 

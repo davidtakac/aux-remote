@@ -55,4 +55,6 @@ dependencies {
     kapt epoxyApt
     implementation room
     kapt roomApt
+    implementation lifecycle
+    kapt lifecycleApt
 }
