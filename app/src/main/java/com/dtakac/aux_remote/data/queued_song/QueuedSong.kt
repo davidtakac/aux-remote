@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "queued_song_table")
 data class QueuedSong(
-    @PrimaryKey var ownerId: Int,
+    @PrimaryKey var ownerId: String,
     var name: String,
     var userIconVisibility: Int,
     val timestamp: Long = System.currentTimeMillis()
