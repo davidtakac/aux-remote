@@ -6,7 +6,11 @@ import android.util.Log
 import androidx.core.app.JobIntentService
 import com.dtakac.aux_remote.data.AppDatabase
 import com.dtakac.aux_remote.data.song.Song
+import com.dtakac.aux_remote.data.song.SongDao
 import com.dtakac.aux_remote.network.ClientSocket
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -18,7 +22,7 @@ private const val JOB_ID = 71169
 private const val SERVICE_ACTION = "RESPONSE_HANDLER"
 class ResponseHandlerService: JobIntentService(){
     private val socket by inject<ClientSocket>()
-    private val db by inject<AppDatabase>()
+    private val songDao by inject<SongDao>()
 
     companion object{
         fun start(context: Context){
@@ -40,17 +44,20 @@ class ResponseHandlerService: JobIntentService(){
         val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
         while (true) {
             try {
+                readServerResponse(reader)
                 val line = reader.readLine()
 
                 Log.d(TAG, line)
-                db.songDao().insert(Song(name = line))
+                songDao.insert(Song(name = line))
             } catch (se: SocketException){
                 Log.e(TAG, "Socket threw exception, stopping service..")
                 se.printStackTrace()
                 break
             }
         }
+    }
 
-        db.songDao().deleteAll()
+    private fun readServerResponse(reader: BufferedReader){
+        //todo: do this
     }
 }

@@ -43,16 +43,7 @@ class AllSongsFragment : BaseFragment(), AllSongsInterface{
         super.initViews()
         rvSongs.setController(controller)
         // todo: handle errors, display loader..
-        addDisposable(viewModel.getAllSongs().defaultSchedulers().subscribeBy())
-    }
-
-    private fun testRecycler(){
-        val songs = listOf("Vuco - Crna zeno",
-            "OOF - Svaki dan ja oofujem",
-            "Old town road",
-            "IJAAAAAAH",
-            "Oci boje kestena"
-        )
+        addDisposable(viewModel.getAllSongs().subscribeBy())
     }
 }
 

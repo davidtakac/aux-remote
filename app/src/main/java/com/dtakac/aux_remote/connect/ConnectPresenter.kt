@@ -6,6 +6,7 @@ import com.dtakac.aux_remote.common.CLIENT_MAC
 import com.dtakac.aux_remote.common.PREFS_IP_INPUT
 import com.dtakac.aux_remote.common.PREFS_PORT_INPUT
 import com.dtakac.aux_remote.common.PREFS_USER_ID
+import com.dtakac.aux_remote.data.AppDatabase
 import com.dtakac.aux_remote.network.NetworkUtil
 import com.dtakac.aux_remote.network.ClientSocket
 import kotlinx.coroutines.CoroutineScope
@@ -23,12 +24,13 @@ class ConnectPresenter(
     private val view: ConnectContract.View,
     private val prefsRepo: SharedPrefsRepo,
     private val netUtil: NetworkUtil,
-    private val client: ClientSocket
+    private val client: ClientSocket,
+    private val db: AppDatabase
 ) : ConnectContract.Presenter{
 
     override fun onViewCreated() {
-        // in case the client socket was opened previously
-        client.close()
+        closeClientSocket()
+        clearDatabase()
         if(prefsRepo.get(PREFS_USER_ID, "").isBlank()){
             prefsRepo.save(PREFS_USER_ID, UUID.randomUUID().toString())
         }
@@ -102,5 +104,17 @@ class ConnectPresenter(
     private fun saveInputToPrefs(ipAddress: String, port: String){
         prefsRepo.save(PREFS_IP_INPUT, ipAddress)
         prefsRepo.save(PREFS_PORT_INPUT, port)
+    }
+
+    private fun clearDatabase(){
+        CoroutineScope(IO).launch {
+            db.clearAllTables()
+        }
+    }
+
+    private fun closeClientSocket(){
+        CoroutineScope(IO).launch {
+            client.close()
+        }
     }
 }

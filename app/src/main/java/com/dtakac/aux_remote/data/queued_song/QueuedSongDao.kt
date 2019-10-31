@@ -16,7 +16,7 @@ interface QueuedSongDao {
     @Insert
     fun insertAll(vararg queuedSong: QueuedSong)
 
-    @Query("DELETE FROM queued_song_table WHERE timestamp = (SELECT * FROM queued_song_table WHERE timestamp = MAX(timestamp) LIMIT 1)")
+    @Query("DELETE FROM queued_song_table WHERE timestamp = (SELECT MAX(timestamp) FROM queued_song_table)")
     fun deleteOldest()
 
     @Query("DELETE FROM queued_song_table")

@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dtakac.aux_remote.base.SharedPrefsRepo
-import com.dtakac.aux_remote.common.CLIENT_MAC
-import com.dtakac.aux_remote.common.CLIENT_QUEUE
-import com.dtakac.aux_remote.common.update
+import com.dtakac.aux_remote.common.*
 import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
 import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSongDao
 import com.dtakac.aux_remote.data.queued_song.QueuedSongDao
@@ -17,6 +15,7 @@ import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsUi
 import com.dtakac.aux_remote.songs_pager.all_songs.provideAllSongsUi
 import com.dtakac.aux_remote.songs_pager.queue.QueueUi
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -41,7 +40,7 @@ class SongsPagerViewModel(
 
     //region songs fragment
     fun getAllSongs(): Observable<List<Song>> =
-        songDao.getAll()
+        songDao.getAll().defaultSchedulers()
             .doOnNext {
                 _songsLiveData.value = provideAllSongsUi(
                     it,
@@ -79,7 +78,7 @@ class SongsPagerViewModel(
         val writer = BufferedWriter(OutputStreamWriter(outputStream, StandardCharsets.UTF_8))
         writer.write(CLIENT_QUEUE)
         writer.newLine()
-        writer.write(prefsRepo.get(CLIENT_MAC, ""))
+        writer.write(prefsRepo.get(PREFS_USER_ID, ""))
         writer.newLine()
         writer.write(song.name)
         writer.newLine()
@@ -88,13 +87,13 @@ class SongsPagerViewModel(
     //endregion
 
     //region queue fragment
-    fun getQueuedSongs() = queuedSongDao.getQueuedSongsOldestFirst()
+    fun getQueuedSongs() = queuedSongDao.getQueuedSongsOldestFirst().defaultSchedulers()
         .doOnNext{
             _queueLiveData.value?.queuedSongs = it
             _queueLiveData.update()
         }
 
-    fun getNowPlayingSong() = nowPlayingSongDao.getNowPlayingSong()
+    fun getNowPlayingSong() = nowPlayingSongDao.getNowPlayingSong().defaultSchedulers()
         .doOnNext {
             _queueLiveData.value?.nowPlayingSong = it
             _queueLiveData.update()
