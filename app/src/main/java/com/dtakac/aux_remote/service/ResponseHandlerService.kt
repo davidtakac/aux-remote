@@ -31,18 +31,24 @@ class ResponseHandlerService: JobIntentService(){
     }
 
     override fun onHandleWork(intent: Intent) {
-        val stream = socket.inputStream ?: throw IllegalStateException("Service started, but socket input stream is null.")
-        val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
+        val stream = socket.inputStream
+        if(stream == null){
+            Log.e(TAG, "Service started, but socket input stream is null. Stopping service.")
+            return
+        }
 
-        try {
-            while (true) {
+        val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
+        while (true) {
+            try {
                 val line = reader.readLine()
+
                 Log.d(TAG, line)
-                db.songDao().insert(Song(name=line))
+                db.songDao().insert(Song(name = line))
+            } catch (se: SocketException){
+                Log.e(TAG, "Socket threw exception, stopping service..")
+                se.printStackTrace()
+                break
             }
-        } catch (s: SocketException){
-            Log.e(TAG, "Socket exception occurred, stopping service.")
-            s.printStackTrace()
         }
 
         db.songDao().deleteAll()

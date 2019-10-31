@@ -14,11 +14,13 @@ import com.dtakac.aux_remote.base.newFragmentInstance
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsFragment
 import com.dtakac.aux_remote.songs_pager.queue.QueueFragment
 import kotlinx.android.synthetic.main.fragment_pager.*
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.lang.IllegalStateException
 
 private const val TAG = "pager_tag"
 class PagerFragment: BaseFragment(){
     override val layoutRes: Int = R.layout.fragment_pager
+    private val viewModel by viewModel<SongsPagerViewModel>()
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
@@ -35,37 +37,28 @@ class PagerFragment: BaseFragment(){
     private fun initSearchView(item: MenuItem){
         item.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                //todo: viewModel.onSearchExpanded()
-
                 Log.d(TAG, "search expanded")
                 pager.setCurrentItem(0, true)
-                // return true so the item expands
-                return true
+                viewModel.onSearchViewExpanded()
+                return true // needed so the view expands
             }
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                //todo: viewModel.onSearchCollapsed
-
                 Log.d(TAG, "search collapsed")
-                // return true so it collapses
-                return true
+                viewModel.onSearchViewCollapsed()
+                return true // needed so the view collapses
             }
         })
         val search = item.actionView as SearchView
         search.queryHint = getString(R.string.hint_search_songs)
         search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-                //returning true means we're handling the submit. otherwise a new search activity
-                //would get started(default behavior)
-
                 Log.d(TAG, "search submit: $query")
-                return true
+                return true // because we're handling the submit (otherwise activity is started)
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
-                //todo: viewModel.onQueryTextChanged(newText)
-
                 Log.d(TAG, "search changed: $newText")
-                return true
+                viewModel.onQueryTextChanged(newText ?: return true)
+                return true // because we're handling the text changes
             }
         })
     }

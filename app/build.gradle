@@ -54,6 +54,7 @@ dependencies {
     implementation epoxy
     kapt epoxyApt
     implementation room
+    implementation roomRxJava
     kapt roomApt
     implementation lifecycle
     kapt lifecycleApt
