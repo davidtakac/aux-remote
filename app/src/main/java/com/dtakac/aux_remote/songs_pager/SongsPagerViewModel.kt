@@ -7,11 +7,15 @@ import com.dtakac.aux_remote.base.SharedPrefsRepo
 import com.dtakac.aux_remote.common.CLIENT_MAC
 import com.dtakac.aux_remote.common.CLIENT_QUEUE
 import com.dtakac.aux_remote.common.update
-import com.dtakac.aux_remote.data.Song
-import com.dtakac.aux_remote.data.SongDao
+import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
+import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSongDao
+import com.dtakac.aux_remote.data.queued_song.QueuedSongDao
+import com.dtakac.aux_remote.data.song.Song
+import com.dtakac.aux_remote.data.song.SongDao
 import com.dtakac.aux_remote.network.ClientSocket
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsUi
 import com.dtakac.aux_remote.songs_pager.all_songs.provideAllSongsUi
+import com.dtakac.aux_remote.songs_pager.queue.QueueUi
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -23,6 +27,8 @@ import java.nio.charset.StandardCharsets
 
 class SongsPagerViewModel(
     private val songDao: SongDao,
+    private val queuedSongDao: QueuedSongDao,
+    private val nowPlayingSongDao: NowPlayingSongDao,
     private val prefsRepo: SharedPrefsRepo,
     private val client: ClientSocket
 ) : ViewModel(){
@@ -30,6 +36,10 @@ class SongsPagerViewModel(
     private val _songsLiveData = MutableLiveData<AllSongsUi>()
     val songsLiveData: LiveData<AllSongsUi> = _songsLiveData
 
+    private val _queueLiveData = MutableLiveData<QueueUi>().apply { value = QueueUi(listOf(), NowPlayingSong()) }
+    val queueLiveData: LiveData<QueueUi> = _queueLiveData
+
+    //region songs fragment
     fun getAllSongs(): Observable<List<Song>> =
         songDao.getAll()
             .doOnNext {
@@ -75,4 +85,19 @@ class SongsPagerViewModel(
         writer.newLine()
         writer.flush()
     }
+    //endregion
+
+    //region queue fragment
+    fun getQueuedSongs() = queuedSongDao.getQueuedSongsOldestFirst()
+        .doOnNext{
+            _queueLiveData.value?.queuedSongs = it
+            _queueLiveData.update()
+        }
+
+    fun getNowPlayingSong() = nowPlayingSongDao.getNowPlayingSong()
+        .doOnNext {
+            _queueLiveData.value?.nowPlayingSong = it
+            _queueLiveData.update()
+        }
+    //endregion
 }

@@ -7,8 +7,6 @@ import com.dtakac.aux_remote.common.AuxSharedPrefsRepo
 import com.dtakac.aux_remote.data.AppDatabase
 import com.dtakac.aux_remote.network.NetworkUtil
 import com.dtakac.aux_remote.network.ClientSocket
-import com.dtakac.aux_remote.songs_pager.SongsPagerViewModel
-import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -27,8 +25,4 @@ val appModule = module {
             "aux-database"
         ).fallbackToDestructiveMigration().build()
     }
-
-    single{get<AppDatabase>().songDao()}
-
-    viewModel { SongsPagerViewModel(get(), get(), get()) }
 }

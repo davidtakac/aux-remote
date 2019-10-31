@@ -49,6 +49,7 @@ dependencies {
     implementation rxJava
     implementation rxBinding
     implementation rxAndroid
+    implementation rxKotlin
     implementation coroutinesCore
     implementation coroutinesAndroid
     implementation epoxy

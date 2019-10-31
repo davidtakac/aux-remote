@@ -1,13 +1,9 @@
 package com.dtakac.aux_remote.songs_pager.queue
 
-import android.view.View
+import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
+import com.dtakac.aux_remote.data.queued_song.QueuedSong
 
 data class QueueUi(
-    val nowPlayingSongName: String,
-    val queuedSongs: List<QueuedSong>
-)
-
-data class QueuedSong(
-    val songName: String,
-    val userIconVisibility: Int = View.GONE
+    var queuedSongs: List<QueuedSong>,
+    var nowPlayingSong: NowPlayingSong
 )

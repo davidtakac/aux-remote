@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.app.JobIntentService
 import com.dtakac.aux_remote.data.AppDatabase
-import com.dtakac.aux_remote.data.Song
+import com.dtakac.aux_remote.data.song.Song
 import com.dtakac.aux_remote.network.ClientSocket
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader
