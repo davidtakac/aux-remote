@@ -12,7 +12,7 @@ interface SongDao {
     fun insert(song: Song)
 
     @Insert
-    fun insertAll(vararg songs: Song)
+    fun insertAll(songs: List<Song>)
 
     @Query("SELECT * FROM song_table")
     fun getAll(): Observable<List<Song>>

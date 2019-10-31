@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.JobIntentService
+import com.dtakac.aux_remote.common.SERVER_BROADCAST_END
+import com.dtakac.aux_remote.common.SERVER_SONG_LIST
 import com.dtakac.aux_remote.data.AppDatabase
 import com.dtakac.aux_remote.data.song.Song
 import com.dtakac.aux_remote.data.song.SongDao
@@ -45,10 +47,6 @@ class ResponseHandlerService: JobIntentService(){
         while (true) {
             try {
                 readServerResponse(reader)
-                val line = reader.readLine()
-
-                Log.d(TAG, line)
-                songDao.insert(Song(name = line))
             } catch (se: SocketException){
                 Log.e(TAG, "Socket threw exception, stopping service..")
                 se.printStackTrace()
@@ -58,6 +56,21 @@ class ResponseHandlerService: JobIntentService(){
     }
 
     private fun readServerResponse(reader: BufferedReader){
-        //todo: do this
+        val lines = mutableListOf<String>()
+        while(true){
+            val line = reader.readLine()
+            if(line != SERVER_BROADCAST_END) lines.add(line) else break
+        }
+        handleServerResponse(lines)
+    }
+
+    private fun handleServerResponse(lines: List<String>){
+        when(lines[0]){
+            SERVER_SONG_LIST -> onSongList(lines.subList(1, lines.size))
+        }
+    }
+
+    private fun onSongList(songNames: List<String>){
+        songDao.insertAll(songNames.map { Song(name = it) }.toList())
     }
 }
