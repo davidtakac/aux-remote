@@ -5,8 +5,8 @@ import io.reactivex.Observable
 
 @Dao
 interface QueuedSongDao {
-    @Query("SELECT * FROM queued_song_table ORDER BY timestamp ASC")
-    fun getQueuedSongsOldestFirst(): Observable<List<QueuedSong>>
+    @Query("SELECT * FROM queued_song_table ORDER BY position ASC")
+    fun getQueuedSongs(): Observable<List<QueuedSong>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdate(queuedSong: QueuedSong)
@@ -14,8 +14,8 @@ interface QueuedSongDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllOrUpdate(queuedSongs: List<QueuedSong>)
 
-    @Query("DELETE FROM queued_song_table WHERE timestamp = (SELECT MAX(timestamp) FROM queued_song_table)")
-    fun deleteOldest()
+    @Query("DELETE FROM queued_song_table WHERE position = (SELECT MIN(position) FROM queued_song_table)")
+    fun deleteFirst()
 
     @Query("DELETE FROM queued_song_table")
     fun deleteAll()

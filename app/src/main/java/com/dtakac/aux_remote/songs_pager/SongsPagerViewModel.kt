@@ -15,7 +15,6 @@ import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsUi
 import com.dtakac.aux_remote.songs_pager.all_songs.provideAllSongsUi
 import com.dtakac.aux_remote.songs_pager.queue.QueueUi
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -87,7 +86,7 @@ class SongsPagerViewModel(
     //endregion
 
     //region queue fragment
-    fun getQueuedSongs() = queuedSongDao.getQueuedSongsOldestFirst().defaultSchedulers()
+    fun getQueuedSongs() = queuedSongDao.getQueuedSongs().defaultSchedulers()
         .doOnNext{
             _queueLiveData.value?.queuedSongs = it
             _queueLiveData.update()

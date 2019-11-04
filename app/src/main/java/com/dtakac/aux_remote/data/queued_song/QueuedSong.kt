@@ -8,5 +8,5 @@ data class QueuedSong(
     @PrimaryKey var ownerId: String,
     var name: String,
     var userIconVisibility: Int,
-    val timestamp: Long = System.currentTimeMillis()
+    val position: Int
 )
