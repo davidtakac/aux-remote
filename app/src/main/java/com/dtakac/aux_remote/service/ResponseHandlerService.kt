@@ -7,6 +7,8 @@ import android.view.View
 import androidx.core.app.JobIntentService
 import com.dtakac.aux_remote.base.SharedPrefsRepo
 import com.dtakac.aux_remote.common.*
+import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
+import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSongDao
 import com.dtakac.aux_remote.data.queued_song.QueuedSong
 import com.dtakac.aux_remote.data.queued_song.QueuedSongDao
 import com.dtakac.aux_remote.data.song.Song
@@ -26,6 +28,7 @@ class ResponseHandlerService: JobIntentService(){
     private val socket by inject<ClientSocket>()
     private val songDao by inject<SongDao>()
     private val queuedSongDao by inject<QueuedSongDao>()
+    private val nowPlayingDao by inject<NowPlayingSongDao>()
     private val prefsRepo by inject<SharedPrefsRepo>()
 
     companion object{
@@ -72,6 +75,8 @@ class ResponseHandlerService: JobIntentService(){
             SERVER_SONG_LIST -> onSongList(body)
             SERVER_QUEUE_LIST -> onQueueList(body)
             SERVER_ENQUEUED -> onEnqueued(body)
+            SERVER_MOVE_UP -> onMoveUp(body)
+            SERVER_NOW_PLAYING -> onNowPlaying(body)
         }
     }
 
@@ -102,5 +107,21 @@ class ResponseHandlerService: JobIntentService(){
 
         val queuedSong = QueuedSong(ownerId, songName, userIconVisibility, position)
         queuedSongDao.insertOrUpdate(queuedSong)
+    }
+
+    private fun onMoveUp(response: List<String>){
+        queuedSongDao.deleteFirst()
+    }
+
+    // song name first, then owner id
+    private fun onNowPlaying(response: List<String>){
+        val songName = response[0]
+        val ownerId = response[1]
+
+        val nowPlayingSong = NowPlayingSong(
+            name = songName,
+            isUserSong = ownerId == prefsRepo.get(PREFS_USER_ID, "")
+        )
+        nowPlayingDao.setNowPlayingSong(nowPlayingSong)
     }
 }
