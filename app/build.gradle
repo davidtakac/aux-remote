@@ -48,6 +48,7 @@ dependencies {
     implementation apacheCommons
     implementation rxJava
     implementation rxBinding
+    implementation rxAppCompat
     implementation rxAndroid
     implementation rxKotlin
     implementation coroutinesCore

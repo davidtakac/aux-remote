@@ -17,7 +17,10 @@ import com.dtakac.aux_remote.songs_pager.queue.QueueUi
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedWriter
 import java.io.OutputStream
 import java.io.OutputStreamWriter
@@ -67,10 +70,15 @@ class SongsPagerViewModel(
 
     fun onQueryTextChanged(query: String){
         // filter song names which contain query string
-        _songsLiveData.value?.let {
-            it.filteredSongs = it.songs.filter { song -> song.name.contains(query, ignoreCase = true) }.toList()
+        CoroutineScope(Default).launch {
+            val songsUi = _songsLiveData.value ?: return@launch
+            val filtered = songsUi.songs.filter { song -> song.name.contains(query, ignoreCase = true) }.toList()
+            songsUi.filteredSongs = filtered
+
+            withContext(Main){
+                _songsLiveData.update()
+            }
         }
-        _songsLiveData.update()
     }
 
     private fun writeSongToServer(song: Song, outputStream: OutputStream){

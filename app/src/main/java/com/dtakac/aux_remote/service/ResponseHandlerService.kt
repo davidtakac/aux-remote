@@ -64,12 +64,14 @@ class ResponseHandlerService: JobIntentService(){
         val lines = mutableListOf<String>()
         while(true){
             val line = reader.readLine()
-            if(line != SERVER_BROADCAST_END) lines.add(line) else break
+            if(line == null || line == SERVER_BROADCAST_END) break else lines.add(line)
         }
         return lines
     }
 
     private fun handleServerResponse(lines: List<String>){
+        if(lines.isEmpty()) return
+
         val body = lines.subList(1, lines.size)
         when(lines[0]){
             SERVER_SONG_LIST -> onSongList(body)

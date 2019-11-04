@@ -20,6 +20,7 @@ ext{
     // RxBinding
     rxBindingVersion = "3.0.0"
     rxBinding = "com.jakewharton.rxbinding3:rxbinding:$rxBindingVersion"
+    rxAppCompat = "com.jakewharton.rxbinding3:rxbinding-appcompat:$rxBindingVersion"
 
     // Material
     materialVersion = "1.1.0-alpha09"

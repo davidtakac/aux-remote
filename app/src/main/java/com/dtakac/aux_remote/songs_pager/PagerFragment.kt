@@ -13,9 +13,12 @@ import com.dtakac.aux_remote.base.BaseFragment
 import com.dtakac.aux_remote.base.newFragmentInstance
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsFragment
 import com.dtakac.aux_remote.songs_pager.queue.QueueFragment
+import com.jakewharton.rxbinding3.appcompat.queryTextChanges
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_pager.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.lang.IllegalStateException
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "pager_tag"
 class PagerFragment: BaseFragment(){
@@ -35,6 +38,9 @@ class PagerFragment: BaseFragment(){
     }
 
     private fun initSearchView(item: MenuItem){
+        val search = item.actionView as SearchView
+        search.queryHint = getString(R.string.hint_search_songs)
+
         item.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 Log.d(TAG, "search expanded")
@@ -48,18 +54,12 @@ class PagerFragment: BaseFragment(){
                 return true // needed so the view collapses
             }
         })
-        val search = item.actionView as SearchView
-        search.queryHint = getString(R.string.hint_search_songs)
-        search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d(TAG, "search submit: $query")
-                return true // because we're handling the submit (otherwise activity is started)
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                Log.d(TAG, "search changed: $newText")
-                viewModel.onQueryTextChanged(newText ?: return true)
-                return true // because we're handling the text changes
-            }
+
+        addDisposable(search.queryTextChanges()
+            .debounce(300, TimeUnit.MILLISECONDS)
+            .subscribeBy {
+                Log.d(TAG, "search changed: $it")
+                viewModel.onQueryTextChanged(it.toString())
         })
     }
 
