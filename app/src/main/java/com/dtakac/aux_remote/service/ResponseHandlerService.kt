@@ -112,7 +112,7 @@ class ResponseHandlerService: JobIntentService(){
     }
 
     private fun onMoveUp(response: List<String>){
-        queuedSongDao.deleteFirst()
+        queuedSongDao.moveUp()
     }
 
     // song name first, then owner id

@@ -19,4 +19,7 @@ interface QueuedSongDao {
 
     @Query("DELETE FROM queued_song_table")
     fun deleteAll()
+
+    @Query("UPDATE queued_song_table SET position = position - 1")
+    fun decrementPosition()
 }
