@@ -29,8 +29,10 @@ ext{
     // Apache
     apacheIoVersion = "2.6"
     apacheValidatorVersion = "1.6"
+    apacheLangVersion = "3.9"
     apacheIo = "commons-validator:commons-validator:$apacheValidatorVersion"
     apacheCommons = "commons-io:commons-io:$apacheIoVersion"
+    apacheLang = "org.apache.commons:commons-lang3:$apacheLangVersion"
 
     // ViewPager2
     vp2Version = "1.0.0-rc01"

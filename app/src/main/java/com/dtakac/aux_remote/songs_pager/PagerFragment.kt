@@ -5,17 +5,23 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.Observer
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
 import com.dtakac.aux_remote.base.newFragmentInstance
+import com.dtakac.aux_remote.common.defaultSchedulers
+import com.dtakac.aux_remote.data.queued_song.QueuedSong
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsFragment
 import com.dtakac.aux_remote.songs_pager.queue.QueueFragment
+import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_pager.*
+import org.apache.commons.lang3.StringUtils
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
@@ -35,6 +41,28 @@ class PagerFragment: BaseFragment(){
         super.initViews()
         setHasOptionsMenu(true)
         initPager()
+
+        addDisposable(viewModel.getAllSongs().subscribeBy())
+        addDisposable(viewModel.getQueuedSongs().subscribeBy())
+        addDisposable(viewModel.getNowPlayingSong().subscribeBy(
+            onNext = {
+                if(it.isUserSong)
+                    showSnackbar(getString(R.string.nowplaying_snackbar).format(StringUtils.left(it.name, 8)))
+            }
+        ))
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.userQueuedSongLiveData.observe(this, Observer<QueuedSong>{
+            showSnackbar(getString(R.string.snackbar_queued_template).format(StringUtils.left(it.name, 12)))
+        })
+    }
+
+    private fun showSnackbar(message: String){
+        Snackbar.make(activity!!.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+            .setAction(R.string.snackbar_action_view) { pager.currentItem = 1 }
+            .show()
     }
 
     private fun initSearchView(item: MenuItem){

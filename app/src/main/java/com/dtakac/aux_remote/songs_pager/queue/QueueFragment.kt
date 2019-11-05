@@ -30,16 +30,6 @@ class QueueFragment : BaseFragment(){
     override fun initViews() {
         super.initViews()
         rvQueue.setController(controller)
-
-        addDisposable(viewModel.getQueuedSongs().defaultSchedulers().subscribeBy())
-
-        addDisposable(viewModel.getNowPlayingSong().defaultSchedulers().subscribeBy(
-            onNext = {
-                if(it.isUserSong){
-                    //todo: show snackbar that user song is playing
-                }
-            }
-        ))
     }
 }
 

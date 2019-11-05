@@ -7,6 +7,7 @@ import com.dtakac.aux_remote.base.SharedPrefsRepo
 import com.dtakac.aux_remote.common.*
 import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
 import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSongDao
+import com.dtakac.aux_remote.data.queued_song.QueuedSong
 import com.dtakac.aux_remote.data.queued_song.QueuedSongDao
 import com.dtakac.aux_remote.data.song.Song
 import com.dtakac.aux_remote.data.song.SongDao
@@ -39,6 +40,9 @@ class SongsPagerViewModel(
 
     private val _queueLiveData = MutableLiveData<QueueUi>().apply { value = QueueUi(listOf(), NowPlayingSong()) }
     val queueLiveData: LiveData<QueueUi> = _queueLiveData
+
+    private val _userQueuedSongLiveData = MutableLiveData<QueuedSong>()
+    val userQueuedSongLiveData: LiveData<QueuedSong> = _userQueuedSongLiveData
 
     //region songs fragment
     fun getAllSongs(): Observable<List<Song>> =
@@ -98,6 +102,11 @@ class SongsPagerViewModel(
         .doOnNext{
             _queueLiveData.value?.queuedSongs = it
             _queueLiveData.update()
+
+            val userSong = it.filter { it.ownerId == prefsRepo.get(PREFS_USER_ID, "") }.firstOrNull() ?: return@doOnNext
+            if(userSong.name != _userQueuedSongLiveData.value?.name){
+                _userQueuedSongLiveData.value = userSong
+            }
         }
 
     fun getNowPlayingSong() = nowPlayingSongDao.getNowPlayingSong().defaultSchedulers()

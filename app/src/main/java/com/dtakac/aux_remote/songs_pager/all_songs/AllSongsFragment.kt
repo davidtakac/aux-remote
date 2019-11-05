@@ -35,15 +35,12 @@ class AllSongsFragment : BaseFragment(), AllSongsInterface{
     }
 
     override fun onSongClicked(id: Int) {
-        Log.d(TAG, "Clicked song id: $id")
         viewModel.onSongClicked(id)
     }
 
     override fun initViews() {
         super.initViews()
         rvSongs.setController(controller)
-        // todo: handle errors, display loader..
-        addDisposable(viewModel.getAllSongs().subscribeBy())
     }
 }
 

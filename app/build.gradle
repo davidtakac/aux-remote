@@ -25,6 +25,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 kapt {
@@ -46,6 +50,7 @@ dependencies {
     implementation material
     implementation apacheIo
     implementation apacheCommons
+    implementation apacheLang
     implementation rxJava
     implementation rxBinding
     implementation rxAppCompat

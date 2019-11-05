@@ -101,6 +101,7 @@ class ResponseHandlerService: JobIntentService(){
     }
 
     // name of song first, then owner id, then position in queue
+    //todo: redundant, remove this..
     private fun onEnqueued(response: List<String>){
         val songName = response[0]
         val ownerId = response[1]
