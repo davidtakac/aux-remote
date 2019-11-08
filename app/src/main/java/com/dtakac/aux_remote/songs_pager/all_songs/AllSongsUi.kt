@@ -7,6 +7,3 @@ data class AllSongsUi(
     var filteredSongs: List<Song>,
     var isSearching: Boolean
 )
-
-fun provideAllSongsUi(songs: List<Song>, filteredSongs: List<Song>, isSearching: Boolean) =
-    AllSongsUi(songs, filteredSongs, isSearching)

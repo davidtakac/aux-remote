@@ -1,6 +1,7 @@
 package com.dtakac.aux_remote.songs_pager.all_songs
 
 import android.os.Bundle
+import android.text.SpannableString
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.airbnb.epoxy.TypedEpoxyController
@@ -53,7 +54,7 @@ class AllSongsController(private val allSongsInterface: AllSongsInterface): Type
         data.forEach{ song ->
             song {
                 id("${song.id}")
-                name(song.name)
+                name(SpannableString(song.name))
                 clickListener { _, _, _, _ ->
                     allSongsInterface.onSongClicked(song.id!!)
                 }

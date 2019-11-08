@@ -13,7 +13,6 @@ import com.dtakac.aux_remote.data.song.Song
 import com.dtakac.aux_remote.data.song.SongDao
 import com.dtakac.aux_remote.network.ClientSocket
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsUi
-import com.dtakac.aux_remote.songs_pager.all_songs.provideAllSongsUi
 import com.dtakac.aux_remote.songs_pager.queue.QueueUi
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
@@ -35,10 +34,14 @@ class SongsPagerViewModel(
     private val client: ClientSocket
 ) : ViewModel(){
 
-    private val _songsLiveData = MutableLiveData<AllSongsUi>()
+    private val _songsLiveData = MutableLiveData<AllSongsUi>().apply {
+        value = AllSongsUi(listOf(),listOf(),false)
+    }
     val songsLiveData: LiveData<AllSongsUi> = _songsLiveData
 
-    private val _queueLiveData = MutableLiveData<QueueUi>().apply { value = QueueUi(listOf(), NowPlayingSong()) }
+    private val _queueLiveData = MutableLiveData<QueueUi>().apply {
+        value = QueueUi(listOf(), NowPlayingSong())
+    }
     val queueLiveData: LiveData<QueueUi> = _queueLiveData
 
     private val _userQueuedSongLiveData = MutableLiveData<QueuedSong>()
@@ -48,11 +51,8 @@ class SongsPagerViewModel(
     fun getAllSongs(): Observable<List<Song>> =
         songDao.getAll().defaultSchedulers()
             .doOnNext {
-                _songsLiveData.value = provideAllSongsUi(
-                    it,
-                    _songsLiveData.value?.filteredSongs ?: listOf(),
-                    _songsLiveData.value?.isSearching ?: false
-                )
+                _songsLiveData.value!!.songs = it
+                _songsLiveData.update()
             }
 
     fun onSongClicked(songId: Int){

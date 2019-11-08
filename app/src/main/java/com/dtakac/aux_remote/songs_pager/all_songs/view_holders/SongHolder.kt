@@ -1,5 +1,6 @@
 package com.dtakac.aux_remote.songs_pager.all_songs.view_holders
 
+import android.text.SpannableString
 import android.view.View
 import android.widget.TextView
 import com.airbnb.epoxy.EpoxyAttribute
@@ -10,7 +11,7 @@ import com.dtakac.aux_remote.base.KotlinHolder
 
 @EpoxyModelClass
 abstract class SongModel: EpoxyModelWithHolder<SongHolder>(){
-    @EpoxyAttribute lateinit var name: String
+    @EpoxyAttribute lateinit var name: SpannableString
     @EpoxyAttribute(hash = false) lateinit var clickListener: View.OnClickListener
 
     override fun getDefaultLayout(): Int = R.layout.cell_song
