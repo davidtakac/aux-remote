@@ -76,7 +76,7 @@ class SongsPagerViewModel(
         // filter song names which contain query string
         CoroutineScope(Default).launch {
             val songsUi = _songsLiveData.value ?: return@launch
-            val filtered = songsUi.songs.filter { song -> song.name.contains(query, ignoreCase = true) }.toList()
+            val filtered = songsUi.songs.filter { it.name.contains(query, ignoreCase = true) }.toList()
             songsUi.filteredSongs = filtered
 
             withContext(Main){
@@ -103,7 +103,7 @@ class SongsPagerViewModel(
             _queueLiveData.value?.queuedSongs = it
             _queueLiveData.update()
 
-            val userSong = it.filter { it.ownerId == prefsRepo.get(PREFS_USER_ID, "") }.firstOrNull() ?: return@doOnNext
+            val userSong = it.firstOrNull { it.ownerId == prefsRepo.get(PREFS_USER_ID, "") } ?: return@doOnNext
             if(userSong.name != _userQueuedSongLiveData.value?.name){
                 _userQueuedSongLiveData.value = userSong
             }
