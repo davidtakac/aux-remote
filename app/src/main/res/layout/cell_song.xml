@@ -3,13 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/ripple_card_radius_4dp">
+    android:background="@drawable/ripple_song_card"
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:elevation="1dp">
     <TextView
         android:id="@+id/tvSong"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         tools:text="Elvis Duspara - Moja ploca zemaljska i izuzetno.mp3"
         android:gravity="center_vertical"
         android:textAllCaps="false"

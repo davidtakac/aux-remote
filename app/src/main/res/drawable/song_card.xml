@@ -3,7 +3,7 @@
     android:shape="rectangle">
     <stroke
         android:color="@color/grey_elevation_1dp"
-        android:width="1dp"/>
+        android:width="2dp"/>
     <solid android:color="@color/grey_elevation_1dp"/>
-    <corners android:radius="4dp" />
+    <corners android:radius="@dimen/song_card_radius" />
 </shape>

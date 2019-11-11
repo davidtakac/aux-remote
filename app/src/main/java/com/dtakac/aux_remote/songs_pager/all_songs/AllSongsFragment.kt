@@ -37,6 +37,10 @@ class AllSongsFragment : BaseFragment(), AllSongsInterface{
 
     override fun initViews() {
         super.initViews()
+        initRecycler()
+    }
+
+    private fun initRecycler() {
         rvSongs.setController(controller)
     }
 }
