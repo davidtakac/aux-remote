@@ -2,8 +2,6 @@ package com.dtakac.aux_remote.songs_pager
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -26,18 +24,13 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "pager_tag"
 private const val ABBR_MARKER = "…"
 class PagerFragment: BaseFragment(){
+
     override val layoutRes: Int = R.layout.fragment_pager
     private val viewModel by viewModel<SongsPagerViewModel>()
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu, menu)
-        initSearchView(menu.findItem(R.id.menu_search))
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
     override fun initViews() {
         super.initViews()
-        setHasOptionsMenu(true)
+        initToolbar()
         initPager()
 
         viewModel.getAllSongs().subscribeByAndDispose()
@@ -50,6 +43,11 @@ class PagerFragment: BaseFragment(){
                     )
             }
         )
+    }
+
+    private fun initToolbar(){
+        toolbar.inflateMenu(R.menu.menu)
+        initSearchView(toolbar.menu.findItem(R.id.menu_search))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
