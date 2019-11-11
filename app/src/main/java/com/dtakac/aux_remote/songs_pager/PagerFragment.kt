@@ -48,6 +48,9 @@ class PagerFragment: BaseFragment(){
     private fun initToolbar(){
         toolbar.inflateMenu(R.menu.menu)
         initSearchView(toolbar.menu.findItem(R.id.menu_search))
+        toolbar.setNavigationOnClickListener {
+            fragmentManager?.popBackStack()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
