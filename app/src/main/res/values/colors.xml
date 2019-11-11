@@ -5,4 +5,7 @@
     <color name="white">#ffffff</color>
     <color name="grey">#565656</color>
     <color name="black">#000000</color>
+
+    //manual elevation surface colors because fuck android theming
+    <color name="grey_elevation_4dp">#272727</color>
 </resources>

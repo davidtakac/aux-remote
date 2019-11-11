@@ -8,6 +8,8 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/grey_elevation_4dp"
+        android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent"/>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
