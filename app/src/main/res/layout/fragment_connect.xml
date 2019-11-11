@@ -3,15 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/grey_elevation_4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/app_name" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineLeft"
         android:layout_width="wrap_content"
@@ -28,12 +19,13 @@
         android:id="@+id/tilIpAddress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:layout_marginTop="48dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
         app:layout_constraintRight_toLeftOf="@id/guidelineRight"
         android:hint="@string/hint_ipaddr"
-        app:errorEnabled="true">
+        app:errorEnabled="true"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etIpAddress"
             android:layout_width="match_parent"
@@ -49,8 +41,10 @@
         app:layout_constraintTop_toBottomOf="@id/tilIpAddress"
         app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
         app:layout_constraintRight_toLeftOf="@id/guidelineRight"
+        android:layout_marginTop="6dp"
         android:hint="@string/hint_portnum"
-        app:errorEnabled="true">
+        app:errorEnabled="true"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPort"
             android:layout_width="match_parent"
