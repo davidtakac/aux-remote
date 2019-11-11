@@ -4,6 +4,7 @@ import com.dtakac.aux_remote.data.song.Song
 
 data class AllSongsUi(
     var songs: List<Song>,
-    var filteredSongs: List<Song>,
-    var isSearching: Boolean
+    var filteredSongs: List<SongWrapper>,
+    var isSearching: Boolean,
+    val highlightColor: Int
 )

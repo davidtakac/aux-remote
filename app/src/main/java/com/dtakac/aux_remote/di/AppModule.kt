@@ -2,6 +2,8 @@ package com.dtakac.aux_remote.di
 
 import android.content.Context
 import androidx.room.Room
+import com.dtakac.aux_remote.base.ResourceRepo
+import com.dtakac.aux_remote.base.ResourceRepoImpl
 import com.dtakac.aux_remote.base.SharedPrefsRepo
 import com.dtakac.aux_remote.common.AuxSharedPrefsRepo
 import com.dtakac.aux_remote.common.TestSharedPrefsRepo
@@ -27,4 +29,8 @@ val appModule = module {
             "aux-database"
         ).fallbackToDestructiveMigration().build()
     }
+
+    single{get<Context>().resources}
+
+    single<ResourceRepo>{ResourceRepoImpl(get())}
 }

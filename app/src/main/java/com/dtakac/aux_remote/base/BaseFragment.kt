@@ -5,10 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import org.koin.android.ext.android.inject
+import io.reactivex.rxkotlin.subscribeBy
+
+/*from io.reactivex.rxkotlin.subscribers.kt*/
+private val onNextStub: (Any) -> Unit = {}
+private val onErrorStub: (Throwable) -> Unit = {}
+private val onCompleteStub: () -> Unit = {}
 
 abstract class BaseFragment : Fragment(){
     private val compositeDisposable = CompositeDisposable()
@@ -33,6 +38,15 @@ abstract class BaseFragment : Fragment(){
     protected fun addDisposable(disposable: Disposable) = compositeDisposable.add(disposable)
 
     protected open fun initViews(){}
+
+    /**
+     Subscribes and adds disposable to composite disposable.
+     */
+    protected fun <T: Any> Observable<T>.subscribeByAndDispose(
+        onError: (Throwable) -> Unit = onErrorStub,
+        onComplete: () -> Unit = onCompleteStub,
+        onNext: (T) -> Unit = onNextStub
+    ) = addDisposable(subscribeBy(onError = onError, onNext = onNext, onComplete = onComplete))
 }
 
 inline fun <reified T : Fragment> newFragmentInstance(bundle: Bundle) =

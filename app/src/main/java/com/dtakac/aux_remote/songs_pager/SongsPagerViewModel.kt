@@ -3,6 +3,8 @@ package com.dtakac.aux_remote.songs_pager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.dtakac.aux_remote.R
+import com.dtakac.aux_remote.base.ResourceRepo
 import com.dtakac.aux_remote.base.SharedPrefsRepo
 import com.dtakac.aux_remote.common.*
 import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
@@ -13,6 +15,8 @@ import com.dtakac.aux_remote.data.song.Song
 import com.dtakac.aux_remote.data.song.SongDao
 import com.dtakac.aux_remote.network.ClientSocket
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsUi
+import com.dtakac.aux_remote.songs_pager.all_songs.NO_COLOR
+import com.dtakac.aux_remote.songs_pager.all_songs.SongWrapper
 import com.dtakac.aux_remote.songs_pager.queue.QueueUi
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
@@ -31,11 +35,12 @@ class SongsPagerViewModel(
     private val queuedSongDao: QueuedSongDao,
     private val nowPlayingSongDao: NowPlayingSongDao,
     private val prefsRepo: SharedPrefsRepo,
-    private val client: ClientSocket
+    private val client: ClientSocket,
+    private val resourceRepo: ResourceRepo
 ) : ViewModel(){
 
     private val _songsLiveData = MutableLiveData<AllSongsUi>().apply {
-        value = AllSongsUi(listOf(),listOf(),false)
+        value = AllSongsUi(listOf(), listOf(),false, resourceRepo.getColor(R.color.green400_analogous))
     }
     val songsLiveData: LiveData<AllSongsUi> = _songsLiveData
 
@@ -76,7 +81,10 @@ class SongsPagerViewModel(
         // filter song names which contain query string
         CoroutineScope(Default).launch {
             val songsUi = _songsLiveData.value ?: return@launch
-            val filtered = songsUi.songs.filter { it.name.contains(query, ignoreCase = true) }.toList()
+            val filtered = songsUi.songs
+                .filter { it.name.contains(query, ignoreCase = true) }
+                .map { SongWrapper(it, query, songsUi.highlightColor) }
+                .toList()
             songsUi.filteredSongs = filtered
 
             withContext(Main){
@@ -103,8 +111,8 @@ class SongsPagerViewModel(
             _queueLiveData.value?.queuedSongs = it
             _queueLiveData.update()
 
-            val userSong = it.firstOrNull { it.ownerId == prefsRepo.get(PREFS_USER_ID, "") } ?: return@doOnNext
-            if(userSong.name != _userQueuedSongLiveData.value?.name){
+            val userSong = it.firstOrNull { song -> song.ownerId == prefsRepo.get(PREFS_USER_ID, "") }
+            if(userSong != null && userSong.name != _userQueuedSongLiveData.value?.name){
                 _userQueuedSongLiveData.value = userSong
             }
         }

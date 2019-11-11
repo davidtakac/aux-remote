@@ -33,12 +33,13 @@ class ConnectFragment : BaseFragment(), ConnectContract.View{
     override fun initViews(){
         super.initViews()
         btnConnect.setOnClickListener { presenter.onConnectClicked() }
-        addDisposable(etIpAddress.textChanges().defaultSchedulers().subscribe{
-            setIpAddressError(false)
-        })
-        addDisposable(etPort.textChanges().defaultSchedulers().subscribe{
-            setPortError(false)
-        })
+        etIpAddress.textChanges().defaultSchedulers().subscribeByAndDispose(
+            onNext = {setIpAddressError(false)}
+        )
+
+        etPort.textChanges().defaultSchedulers().subscribeByAndDispose(
+            onNext = {setPortError(false)}
+        )
     }
 
     override fun setIpAddress(ipAddress: String) {

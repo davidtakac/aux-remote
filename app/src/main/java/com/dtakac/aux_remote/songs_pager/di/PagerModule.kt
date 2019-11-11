@@ -21,5 +21,5 @@ val pagerModule = module {
 
     single{get<AppDatabase>().nowPlayingSongDao()}
 
-    viewModel { SongsPagerViewModel(get(), get(), get(), get(), get()) }
+    viewModel { SongsPagerViewModel(get(), get(), get(), get(), get(), get()) }
 }

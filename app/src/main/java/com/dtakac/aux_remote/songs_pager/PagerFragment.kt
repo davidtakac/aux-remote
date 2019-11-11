@@ -42,14 +42,14 @@ class PagerFragment: BaseFragment(){
         setHasOptionsMenu(true)
         initPager()
 
-        addDisposable(viewModel.getAllSongs().subscribeBy())
-        addDisposable(viewModel.getQueuedSongs().subscribeBy())
-        addDisposable(viewModel.getNowPlayingSong().subscribeBy(
+        viewModel.getAllSongs().subscribeByAndDispose()
+        viewModel.getQueuedSongs().subscribeByAndDispose()
+        viewModel.getNowPlayingSong().subscribeByAndDispose(
             onNext = {
                 if(it.isUserSong)
                     showSnackbar(getString(R.string.nowplaying_snackbar).format(StringUtils.left(it.name, 8)))
             }
-        ))
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -83,12 +83,13 @@ class PagerFragment: BaseFragment(){
             }
         })
 
-        addDisposable(search.queryTextChanges()
+        search.queryTextChanges()
             .debounce(300, TimeUnit.MILLISECONDS)
-            .subscribeBy {
+            .filter { !it.isBlank() }
+            .subscribeByAndDispose {
                 Log.d(TAG, "search changed: $it")
                 viewModel.onQueryTextChanged(it.toString())
-        })
+        }
     }
 
     private fun initPager(){

@@ -27,11 +27,7 @@ class AllSongsFragment : BaseFragment(), AllSongsInterface{
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.songsLiveData.observe(this, Observer<AllSongsUi>{
-            if(it.isSearching){
-                controller.setData(it.filteredSongs)
-            } else {
-                controller.setData(it.songs)
-            }
+            controller.setData(it)
         })
     }
 
@@ -49,14 +45,28 @@ interface AllSongsInterface{
     fun onSongClicked(id: Int)
 }
 
-class AllSongsController(private val allSongsInterface: AllSongsInterface): TypedEpoxyController<List<Song>>(){
-    override fun buildModels(data: List<Song>) {
-        data.forEach{ song ->
-            song {
-                id("${song.id}")
-                name(SpannableString(song.name))
-                clickListener { _, _, _, _ ->
-                    allSongsInterface.onSongClicked(song.id!!)
+class AllSongsController(private val allSongsInterface: AllSongsInterface): TypedEpoxyController<AllSongsUi>(){
+    override fun buildModels(data: AllSongsUi) {
+        data.apply {
+            if(isSearching){
+                filteredSongs.forEach { filtered ->
+                    song{
+                        id("${filtered.song.id}")
+                        name(filtered.highlightedName)
+                        clickListener { _, _, _, _ ->
+                            allSongsInterface.onSongClicked(filtered.song.id!!)
+                        }
+                    }
+                }
+            } else {
+                songs.forEach{ song ->
+                    song {
+                        id("${song.id}")
+                        name(SpannableString(song.name))
+                        clickListener { _, _, _, _ ->
+                            allSongsInterface.onSongClicked(song.id!!)
+                        }
+                    }
                 }
             }
         }
