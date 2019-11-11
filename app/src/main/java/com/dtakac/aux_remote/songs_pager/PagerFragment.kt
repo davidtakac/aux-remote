@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -13,13 +12,11 @@ import androidx.lifecycle.Observer
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
 import com.dtakac.aux_remote.base.newFragmentInstance
-import com.dtakac.aux_remote.common.defaultSchedulers
 import com.dtakac.aux_remote.data.queued_song.QueuedSong
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsFragment
 import com.dtakac.aux_remote.songs_pager.queue.QueueFragment
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_pager.*
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -27,6 +24,7 @@ import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "pager_tag"
+private const val ABBR_MARKER = "…"
 class PagerFragment: BaseFragment(){
     override val layoutRes: Int = R.layout.fragment_pager
     private val viewModel by viewModel<SongsPagerViewModel>()
@@ -47,7 +45,9 @@ class PagerFragment: BaseFragment(){
         viewModel.getNowPlayingSong().subscribeByAndDispose(
             onNext = {
                 if(it.isUserSong)
-                    showSnackbar(getString(R.string.nowplaying_snackbar).format(StringUtils.left(it.name, 8)))
+                    showQueueViewSnackbar(getString(R.string.nowplaying_snackbar)
+                        .format(StringUtils.abbreviate(it.name, ABBR_MARKER, resources.getInteger(R.integer.playing_abbr_len)))
+                    )
             }
         )
     }
@@ -55,11 +55,16 @@ class PagerFragment: BaseFragment(){
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.userQueuedSongLiveData.observe(this, Observer<QueuedSong>{
-            showSnackbar(getString(R.string.snackbar_queued_template).format(StringUtils.left(it.name, 12)))
+            showQueueViewSnackbar(getString(R.string.snackbar_queued_template)
+                .format(
+                    StringUtils.abbreviate(it.name, ABBR_MARKER, resources.getInteger(R.integer.queued_abbr_len)),
+                    it.position + 1
+                )
+            )
         })
     }
 
-    private fun showSnackbar(message: String){
+    private fun showQueueViewSnackbar(message: String){
         Snackbar.make(activity!!.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
             .setAction(R.string.snackbar_action_view) { pager.currentItem = 1 }
             .show()
@@ -85,7 +90,7 @@ class PagerFragment: BaseFragment(){
 
         search.queryTextChanges()
             .debounce(300, TimeUnit.MILLISECONDS)
-            .filter { !it.isBlank() }
+            .filter { it.isEmpty() || !it.isBlank() } // accepts empty input, but not whitespaces
             .subscribeByAndDispose {
                 Log.d(TAG, "search changed: $it")
                 viewModel.onQueryTextChanged(it.toString())
