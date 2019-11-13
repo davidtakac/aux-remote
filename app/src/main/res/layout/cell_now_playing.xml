@@ -26,6 +26,7 @@
         android:textSize="18sp"
         android:maxLines="1"
         android:ellipsize="end"
+        android:textColor="@color/text_med_emphasis"
         tools:text="Welcome to Bangkok i legenda o izuzetno dugackoj pjesmi.mp3"
         app:layout_constraintTop_toTopOf="@id/ivPlayingIcon"
         app:layout_constraintBottom_toBottomOf="@id/ivPlayingIcon"

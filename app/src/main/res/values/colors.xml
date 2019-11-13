@@ -9,4 +9,7 @@
     //manual elevation surface colors because fuck android theming
     <color name="grey_elevation_4dp">#272727</color>
     <color name="grey_elevation_1dp">#1E1E1E</color>
+
+    <color name="text_high_emphasis">#DEDEDE</color>
+    <color name="text_med_emphasis">#999999</color>
 </resources>

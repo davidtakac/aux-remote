@@ -13,7 +13,7 @@
         android:layout_height="48dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:textColor="@color/white"
+        android:textColor="@color/text_high_emphasis"
         tools:text="Elvis Duspara - Moja ploca zemaljska i izuzetno.mp3"
         android:gravity="center_vertical"
         android:textAllCaps="false"

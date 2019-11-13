@@ -27,6 +27,7 @@
         android:textSize="16sp"
         android:maxLines="1"
         android:ellipsize="end"
+        android:textColor="@color/text_med_emphasis"
         tools:text="Vuco - Crna zeno i legenda o jako dugackom imenu pjesme"
         android:layout_marginLeft="8dp"
         app:layout_constraintTop_toTopOf="parent"
