@@ -5,7 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/conlayout_queue_nowplaying"
     android:layout_width="match_parent"
-    android:layout_height="56dp">
+    android:layout_height="56dp"
+    android:background="@drawable/song_card"
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp">
     <ImageView
         android:id="@+id/ivPlayingIcon"
         android:layout_width="24dp"
