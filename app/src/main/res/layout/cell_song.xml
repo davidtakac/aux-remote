@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="56dp"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/ripple_song_card"
-    android:layout_marginTop="8dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?android:selectableItemBackground"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
     <TextView
         android:id="@+id/tvSong"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:textColor="@color/text_high_emphasis"
         tools:text="Elvis Duspara - Moja ploca zemaljska i izuzetno.mp3"
         android:gravity="center_vertical"
         android:textAllCaps="false"
         android:textSize="16sp"
         android:maxLines="1"
-        android:ellipsize="end"/>
-</FrameLayout>
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/divider_color"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

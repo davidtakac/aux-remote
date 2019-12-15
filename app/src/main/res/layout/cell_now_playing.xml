@@ -6,7 +6,7 @@
     android:id="@+id/conlayout_queue_nowplaying"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:background="@drawable/song_card"
+    android:background="@drawable/card_elevation1_radius8"
     android:layout_marginTop="8dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp">

@@ -7,5 +7,5 @@
             <corners android:radius="@dimen/song_card_radius" />
         </shape>
     </item>
-    <item android:drawable="@drawable/song_card" />
+    <item android:drawable="@drawable/card_elevation1_radius8" />
 </ripple>
