@@ -24,7 +24,6 @@ private const val TAG = "service_tag"
 private const val JOB_ID = 71169
 private const val SERVICE_ACTION = "RESPONSE_HANDLER"
 class ResponseHandlerService: JobIntentService(){
-
     private val socket by inject<ClientSocket>()
     private val songDao by inject<SongDao>()
     private val queuedSongDao by inject<QueuedSongDao>()
@@ -32,13 +31,8 @@ class ResponseHandlerService: JobIntentService(){
     private val prefsRepo by inject<SharedPrefsRepo>()
 
     companion object{
-        fun start(context: Context){
-            JobIntentService.enqueueWork(
-                context,
-                ResponseHandlerService::class.java,
-                JOB_ID, Intent(SERVICE_ACTION)
-            )
-        }
+        fun start(context: Context) =
+            enqueueWork(context, ResponseHandlerService::class.java, JOB_ID, Intent(SERVICE_ACTION))
     }
 
     override fun onHandleWork(intent: Intent) {
@@ -77,7 +71,7 @@ class ResponseHandlerService: JobIntentService(){
             SERVER_SONG_LIST -> onSongList(body)
             SERVER_QUEUE_LIST -> onQueueList(body)
             SERVER_ENQUEUED -> onEnqueued(body)
-            SERVER_MOVE_UP -> onMoveUp(body)
+            SERVER_MOVE_UP -> onMoveUp()
             SERVER_NOW_PLAYING -> onNowPlaying(body)
         }
     }
@@ -101,7 +95,6 @@ class ResponseHandlerService: JobIntentService(){
     }
 
     // name of song first, then owner id, then position in queue
-    //todo: redundant, remove this..
     private fun onEnqueued(response: List<String>){
         val songName = response[0]
         val ownerId = response[1]
@@ -112,7 +105,7 @@ class ResponseHandlerService: JobIntentService(){
         queuedSongDao.insertOrUpdate(queuedSong)
     }
 
-    private fun onMoveUp(response: List<String>){
+    private fun onMoveUp(){
         queuedSongDao.moveUp()
     }
 

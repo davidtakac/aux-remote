@@ -10,7 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 
-/*from io.reactivex.rxkotlin.subscribers.kt*/
+// from io.reactivex.rxkotlin.subscribers.kt
 private val onNextStub: (Any) -> Unit = {}
 private val onErrorStub: (Throwable) -> Unit = {}
 private val onCompleteStub: () -> Unit = {}

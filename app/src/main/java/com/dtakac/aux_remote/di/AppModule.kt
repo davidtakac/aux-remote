@@ -14,14 +14,9 @@ import org.koin.dsl.module
 
 val appModule = module {
     single{ ClientSocket() }
-
-    // todo: replace with AuxSharedPrefsRepo for production
-    single<SharedPrefsRepo>{
-        TestSharedPrefsRepo(get<Context>().getSharedPreferences("auxprefs", Context.MODE_PRIVATE))
-    }
-
     single{ NetworkUtil(get()) }
-
+    single{get<Context>().resources}
+    single<ResourceRepo>{ResourceRepoImpl(get())}
     single{
         Room.databaseBuilder(
             get(),
@@ -29,8 +24,7 @@ val appModule = module {
             "aux-database"
         ).fallbackToDestructiveMigration().build()
     }
-
-    single{get<Context>().resources}
-
-    single<ResourceRepo>{ResourceRepoImpl(get())}
+    single<SharedPrefsRepo>{// todo: replace with AuxSharedPrefsRepo for production
+        TestSharedPrefsRepo(get<Context>().getSharedPreferences("auxprefs", Context.MODE_PRIVATE))
+    }
 }

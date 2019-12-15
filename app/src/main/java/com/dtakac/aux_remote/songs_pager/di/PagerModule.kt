@@ -9,17 +9,12 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val pagerModule = module {
-    factory {
-        (i: AllSongsInterface) -> AllSongsController(i)
-    }
-
     factory {QueueController()}
-
     single{get<AppDatabase>().songDao()}
-
     single{get<AppDatabase>().queuedSongDao()}
-
     single{get<AppDatabase>().nowPlayingSongDao()}
-
     viewModel { SongsPagerViewModel(get(), get(), get(), get(), get(), get()) }
+    factory {
+            (i: AllSongsInterface) -> AllSongsController(i)
+    }
 }
