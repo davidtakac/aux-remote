@@ -1,9 +1,8 @@
-package com.dtakac.aux_remote.songs_pager.all_songs
+package com.dtakac.aux_remote.songs_pager.all_songs.wrapper
 
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import com.dtakac.aux_remote.data.song.Song
 
 class SongWrapper(
     val id: Int,

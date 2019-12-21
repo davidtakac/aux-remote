@@ -17,6 +17,7 @@
     <string name="label_queuedsong_position">%d.</string>
     <string name="label_connect_fragment">Connect</string>
     <string name="label_pager_fragment">Aux</string>
+    <string name="abbreviation_marker">…</string>
 
     <string-array name="labels_fragments">
         <item>Songs</item>

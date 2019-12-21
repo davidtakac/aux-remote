@@ -5,8 +5,9 @@ import androidx.lifecycle.Observer
 import com.airbnb.epoxy.TypedEpoxyController
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
-import com.dtakac.aux_remote.songs_pager.SongsPagerViewModel
+import com.dtakac.aux_remote.songs_pager.view_model.SongsPagerViewModel
 import com.dtakac.aux_remote.songs_pager.all_songs.view_holders.song
+import com.dtakac.aux_remote.songs_pager.all_songs.wrapper.SongWrapper
 import kotlinx.android.synthetic.main.fragment_songs.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.sharedViewModel

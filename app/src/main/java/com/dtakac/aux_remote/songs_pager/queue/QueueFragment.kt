@@ -1,16 +1,14 @@
 package com.dtakac.aux_remote.songs_pager.queue
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import com.airbnb.epoxy.TypedEpoxyController
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
-import com.dtakac.aux_remote.common.defaultSchedulers
-import com.dtakac.aux_remote.songs_pager.SongsPagerViewModel
+import com.dtakac.aux_remote.songs_pager.view_model.SongsPagerViewModel
 import com.dtakac.aux_remote.songs_pager.queue.view_holders.nowPlayingSong
 import com.dtakac.aux_remote.songs_pager.queue.view_holders.queuedSong
-import io.reactivex.rxkotlin.subscribeBy
+import com.dtakac.aux_remote.songs_pager.queue.wrapper.QueueUi
 import kotlinx.android.synthetic.main.fragment_queue.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.sharedViewModel
@@ -39,12 +37,12 @@ class QueueController: TypedEpoxyController<QueueUi>(){
             id("now-playing")
             name(data.nowPlayingSong.name)
         }
-        data.queuedSongs.forEachIndexed { idx, queuedSong ->
+        data.queuedSongs.forEach { queuedSong ->
             queuedSong {
                 id(queuedSong.ownerId)
-                position("${idx+1}")
+                position(queuedSong.position.toString())
                 name(queuedSong.name)
-                //userIconVisibility(queuedSong.userIconVisibility)
+                userIconVisibility(queuedSong.userIconVisibility)
             }
         }
     }

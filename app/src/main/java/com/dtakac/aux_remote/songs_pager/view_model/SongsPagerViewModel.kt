@@ -1,20 +1,20 @@
-package com.dtakac.aux_remote.songs_pager
+package com.dtakac.aux_remote.songs_pager.view_model
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.ResourceRepo
 import com.dtakac.aux_remote.base.SharedPrefsRepo
 import com.dtakac.aux_remote.common.*
-import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
 import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSongDao
-import com.dtakac.aux_remote.data.queued_song.QueuedSong
 import com.dtakac.aux_remote.data.queued_song.QueuedSongDao
 import com.dtakac.aux_remote.network.ClientSocket
 import com.dtakac.aux_remote.repository.Repository
-import com.dtakac.aux_remote.songs_pager.all_songs.SongWrapper
-import com.dtakac.aux_remote.songs_pager.queue.QueueUi
+import com.dtakac.aux_remote.songs_pager.all_songs.wrapper.SongWrapper
+import com.dtakac.aux_remote.songs_pager.queue.wrapper.NowPlayingSongWrapper
+import com.dtakac.aux_remote.songs_pager.queue.wrapper.QueueUi
+import com.dtakac.aux_remote.songs_pager.queue.wrapper.QueuedSongWrapper
+import com.dtakac.aux_remote.songs_pager.queue.wrapper.provideQueueUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Default
@@ -28,8 +28,6 @@ import java.nio.charset.StandardCharsets
 
 class SongsPagerViewModel(
     private val repo: Repository,
-    private val queuedSongDao: QueuedSongDao,
-    private val nowPlayingSongDao: NowPlayingSongDao,
     private val prefsRepo: SharedPrefsRepo,
     private val client: ClientSocket,
     private val resourceRepo: ResourceRepo
@@ -38,13 +36,8 @@ class SongsPagerViewModel(
     val songsLiveData = MutableLiveData<List<SongWrapper>>()
     val filteredSongsLiveData = MutableLiveData<List<SongWrapper>>()
 
-    private val _queueLiveData = MutableLiveData<QueueUi>().apply {
-        value = QueueUi(listOf(), NowPlayingSong())
-    }
-    val queueLiveData: LiveData<QueueUi> = _queueLiveData
-
-    private val _userQueuedSongLiveData = MutableLiveData<QueuedSong>()
-    val userQueuedSongLiveData: LiveData<QueuedSong> = _userQueuedSongLiveData
+    val queueLiveData = MutableLiveData<QueueUi>()
+    val userQueuedSongLiveData = MutableLiveData<QueuedSongWrapper>()
 
     //region songs fragment
     fun getAllSongs() = repo.getSongs().doOnNext { songsLiveData.value = it }
@@ -61,7 +54,14 @@ class SongsPagerViewModel(
         CoroutineScope(Default).launch {
             val filtered = songsLiveData.value
                 ?.filter { it.name.contains(query, ignoreCase = true) }
-                ?.map { SongWrapper(it.id, it.name, query, resourceRepo.getColor(R.color.green400_analogous)) }
+                ?.map {
+                    SongWrapper(
+                        it.id,
+                        it.name,
+                        query,
+                        resourceRepo.getColor(R.color.green400_analogous)
+                    )
+                }
                 ?.toList()
 
             withContext(Main){
@@ -85,21 +85,19 @@ class SongsPagerViewModel(
     //endregion
 
     //region queue fragment
-    fun getQueuedSongs() = queuedSongDao.getQueuedSongs().defaultSchedulers()
-        .doOnNext{
-            _queueLiveData.value?.queuedSongs = it
-            _queueLiveData.forceRefresh()
+    fun getQueuedSongs() = repo.getQueuedSongs()
+        .doOnNext {
+            queueLiveData.value = provideQueueUi(it, queueLiveData.value?.nowPlayingSong)
 
             val userSong = it.firstOrNull { song -> song.ownerId == prefsRepo.get(PREFS_USER_ID, "") }
-            if(userSong != null && userSong.name != _userQueuedSongLiveData.value?.name){
-                _userQueuedSongLiveData.value = userSong
+            if(userSong != null && userSong.name != userQueuedSongLiveData.value?.name){
+                userQueuedSongLiveData.value = userSong
             }
         }
 
-    fun getNowPlayingSong() = nowPlayingSongDao.getNowPlayingSong().defaultSchedulers()
+    fun getNowPlayingSong() = repo.getNowPlayingSong()
         .doOnNext {
-            _queueLiveData.value?.nowPlayingSong = it
-            _queueLiveData.forceRefresh()
+            queueLiveData.value = provideQueueUi(queueLiveData.value?.queuedSongs, it)
         }
     //endregion
 }

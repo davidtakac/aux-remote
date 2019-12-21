@@ -10,9 +10,10 @@ import androidx.lifecycle.Observer
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.BaseFragment
 import com.dtakac.aux_remote.base.newFragmentInstance
-import com.dtakac.aux_remote.data.queued_song.QueuedSong
 import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsFragment
 import com.dtakac.aux_remote.songs_pager.queue.QueueFragment
+import com.dtakac.aux_remote.songs_pager.queue.wrapper.QueuedSongWrapper
+import com.dtakac.aux_remote.songs_pager.view_model.SongsPagerViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges
 import kotlinx.android.synthetic.main.fragment_pager.*
@@ -22,7 +23,6 @@ import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "pager_tag"
-private const val ABBR_MARKER = "…"
 class PagerFragment: BaseFragment(){
 
     override val layoutRes: Int = R.layout.fragment_pager
@@ -34,15 +34,13 @@ class PagerFragment: BaseFragment(){
         initPager()
 
         viewModel.getAllSongs().subscribeByAndDispose()
-        /*viewModel.getQueuedSongs().subscribeByAndDispose()
+        viewModel.getQueuedSongs().subscribeByAndDispose()
         viewModel.getNowPlayingSong().subscribeByAndDispose(
             onNext = {
-                if(it.isUserSong)
-                    showQueueViewSnackbar(getString(R.string.nowplaying_snackbar)
-                        .format(StringUtils.abbreviate(it.name, ABBR_MARKER, resources.getInteger(R.integer.playing_abbr_len)))
-                    )
+                if(it.isUserSong) showViewQueueSnackbar(getString(R.string.nowplaying_snackbar)
+                        .format(StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker), resources.getInteger(R.integer.playing_abbr_len))))
             }
-        )*/
+        )
     }
 
     private fun initToolbar(){
@@ -55,17 +53,17 @@ class PagerFragment: BaseFragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.userQueuedSongLiveData.observe(this, Observer<QueuedSong>{
-            showQueueViewSnackbar(getString(R.string.snackbar_queued_template)
+        viewModel.userQueuedSongLiveData.observe(this, Observer<QueuedSongWrapper>{
+            showViewQueueSnackbar(getString(R.string.snackbar_queued_template)
                 .format(
-                    StringUtils.abbreviate(it.name, ABBR_MARKER, resources.getInteger(R.integer.queued_abbr_len)),
+                    StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker), resources.getInteger(R.integer.queued_abbr_len)),
                     it.position + 1
                 )
             )
         })
     }
 
-    private fun showQueueViewSnackbar(message: String){
+    private fun showViewQueueSnackbar(message: String){
         Snackbar.make(activity!!.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
             .setAction(R.string.snackbar_action_view) { pager.currentItem = 1 }
             .show()
@@ -106,11 +104,11 @@ class PagerFragment: BaseFragment(){
 }
 
 class PagerAdapter(private val titles: Array<String>, f: Fragment): FragmentStatePagerAdapter(f.childFragmentManager){
-    override fun getCount(): Int = 1
+    override fun getCount(): Int = 2
     override fun getItem(position: Int): Fragment =
         when(position){
             0 -> newFragmentInstance<AllSongsFragment>(Bundle.EMPTY)
-            //1 -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
+            1 -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
             else -> throw IllegalStateException("No fragment defined for position: $position")
         }
 

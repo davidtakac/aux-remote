@@ -19,7 +19,7 @@ val appModule = module {
     single{ NetworkUtil(get()) }
     single{get<Context>().resources}
     single<ResourceRepo>{ResourceRepoImpl(get())}
-    single<Repository>{AuxRepository(get(), get(), get())}
+    single<Repository>{AuxRepository(get(), get(), get(), get())}
     single{
         Room.databaseBuilder(
             get(),
