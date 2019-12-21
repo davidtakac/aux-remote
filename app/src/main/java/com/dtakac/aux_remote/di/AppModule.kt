@@ -10,6 +10,8 @@ import com.dtakac.aux_remote.common.TestSharedPrefsRepo
 import com.dtakac.aux_remote.data.AppDatabase
 import com.dtakac.aux_remote.network.NetworkUtil
 import com.dtakac.aux_remote.network.ClientSocket
+import com.dtakac.aux_remote.repository.AuxRepository
+import com.dtakac.aux_remote.repository.Repository
 import org.koin.dsl.module
 
 val appModule = module {
@@ -17,6 +19,7 @@ val appModule = module {
     single{ NetworkUtil(get()) }
     single{get<Context>().resources}
     single<ResourceRepo>{ResourceRepoImpl(get())}
+    single<Repository>{AuxRepository(get(), get(), get())}
     single{
         Room.databaseBuilder(
             get(),

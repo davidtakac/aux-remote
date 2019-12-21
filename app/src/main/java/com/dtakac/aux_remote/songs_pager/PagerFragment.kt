@@ -34,7 +34,7 @@ class PagerFragment: BaseFragment(){
         initPager()
 
         viewModel.getAllSongs().subscribeByAndDispose()
-        viewModel.getQueuedSongs().subscribeByAndDispose()
+        /*viewModel.getQueuedSongs().subscribeByAndDispose()
         viewModel.getNowPlayingSong().subscribeByAndDispose(
             onNext = {
                 if(it.isUserSong)
@@ -42,7 +42,7 @@ class PagerFragment: BaseFragment(){
                         .format(StringUtils.abbreviate(it.name, ABBR_MARKER, resources.getInteger(R.integer.playing_abbr_len)))
                     )
             }
-        )
+        )*/
     }
 
     private fun initToolbar(){
@@ -79,12 +79,11 @@ class PagerFragment: BaseFragment(){
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 Log.d(TAG, "search expanded")
                 pager.setCurrentItem(0, true)
-                viewModel.onSearchViewExpanded()
                 return true // needed so the view expands
             }
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 Log.d(TAG, "search collapsed")
-                viewModel.onSearchViewCollapsed()
+                viewModel.onSearchCollapsed()
                 return true // needed so the view collapses
             }
         })
@@ -107,11 +106,11 @@ class PagerFragment: BaseFragment(){
 }
 
 class PagerAdapter(private val titles: Array<String>, f: Fragment): FragmentStatePagerAdapter(f.childFragmentManager){
-    override fun getCount(): Int = 2
+    override fun getCount(): Int = 1
     override fun getItem(position: Int): Fragment =
         when(position){
             0 -> newFragmentInstance<AllSongsFragment>(Bundle.EMPTY)
-            1 -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
+            //1 -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
             else -> throw IllegalStateException("No fragment defined for position: $position")
         }
 

@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class NowPlayingSong(
     @PrimaryKey val id: Int = 1,
     val name: String = "",
-    val isUserSong: Boolean = false
+    val ownerId: String = ""
 )

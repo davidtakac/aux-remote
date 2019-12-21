@@ -11,14 +11,10 @@ import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
 import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSongDao
 import com.dtakac.aux_remote.data.queued_song.QueuedSong
 import com.dtakac.aux_remote.data.queued_song.QueuedSongDao
-import com.dtakac.aux_remote.data.song.Song
-import com.dtakac.aux_remote.data.song.SongDao
 import com.dtakac.aux_remote.network.ClientSocket
-import com.dtakac.aux_remote.songs_pager.all_songs.AllSongsUi
-import com.dtakac.aux_remote.songs_pager.all_songs.NO_COLOR
+import com.dtakac.aux_remote.repository.Repository
 import com.dtakac.aux_remote.songs_pager.all_songs.SongWrapper
 import com.dtakac.aux_remote.songs_pager.queue.QueueUi
-import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Default
@@ -31,7 +27,7 @@ import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
 class SongsPagerViewModel(
-    private val songDao: SongDao,
+    private val repo: Repository,
     private val queuedSongDao: QueuedSongDao,
     private val nowPlayingSongDao: NowPlayingSongDao,
     private val prefsRepo: SharedPrefsRepo,
@@ -39,10 +35,8 @@ class SongsPagerViewModel(
     private val resourceRepo: ResourceRepo
 ) : ViewModel(){
 
-    private val _songsLiveData = MutableLiveData<AllSongsUi>().apply {
-        value = AllSongsUi(listOf(), listOf(),false, resourceRepo.getColor(R.color.green400_analogous))
-    }
-    val songsLiveData: LiveData<AllSongsUi> = _songsLiveData
+    val songsLiveData = MutableLiveData<List<SongWrapper>>()
+    val filteredSongsLiveData = MutableLiveData<List<SongWrapper>>()
 
     private val _queueLiveData = MutableLiveData<QueueUi>().apply {
         value = QueueUi(listOf(), NowPlayingSong())
@@ -53,53 +47,39 @@ class SongsPagerViewModel(
     val userQueuedSongLiveData: LiveData<QueuedSong> = _userQueuedSongLiveData
 
     //region songs fragment
-    fun getAllSongs(): Observable<List<Song>> =
-        songDao.getAll().defaultSchedulers()
-            .doOnNext {
-                _songsLiveData.value!!.songs = it
-                _songsLiveData.update()
-            }
+    fun getAllSongs() = repo.getSongs().doOnNext { songsLiveData.value = it }
 
-    fun onSongClicked(songId: Int){
+    fun onSongClicked(songName: String){
         CoroutineScope(IO).launch{
-            val song = songDao.get(songId) ?: return@launch
-            val outputStream = client.outputStream ?: return@launch
-            writeSongToServer(song, outputStream)
+            val outputStream = client.outputStream!!
+            writeSongToServer(songName, outputStream)
         }
-    }
-
-    fun onSearchViewExpanded(){
-        _songsLiveData.value?.isSearching = true
-    }
-
-    fun onSearchViewCollapsed(){
-        _songsLiveData.value?.isSearching = false
-        _songsLiveData.update()
     }
 
     fun onQueryTextChanged(query: String){
         // filter song names which contain query string
         CoroutineScope(Default).launch {
-            val songsUi = _songsLiveData.value ?: return@launch
-            val filtered = songsUi.songs
-                .filter { it.name.contains(query, ignoreCase = true) }
-                .map { SongWrapper(it, query, songsUi.highlightColor) }
-                .toList()
-            songsUi.filteredSongs = filtered
+            val filtered = songsLiveData.value
+                ?.map { it.song }
+                ?.filter { it.name.contains(query, ignoreCase = true) }
+                ?.map { SongWrapper(it, query, resourceRepo.getColor(R.color.green400_analogous)) }
+                ?.toList()
 
             withContext(Main){
-                _songsLiveData.update()
+                filteredSongsLiveData.value = filtered
             }
         }
     }
 
-    private fun writeSongToServer(song: Song, outputStream: OutputStream){
+    fun onSearchCollapsed() = songsLiveData.forceRefresh()
+
+    private fun writeSongToServer(songName: String, outputStream: OutputStream){
         val writer = BufferedWriter(OutputStreamWriter(outputStream, StandardCharsets.UTF_8))
         writer.write(CLIENT_QUEUE)
         writer.newLine()
         writer.write(prefsRepo.get(PREFS_USER_ID, ""))
         writer.newLine()
-        writer.write(song.name)
+        writer.write(songName)
         writer.newLine()
         writer.flush()
     }
@@ -109,7 +89,7 @@ class SongsPagerViewModel(
     fun getQueuedSongs() = queuedSongDao.getQueuedSongs().defaultSchedulers()
         .doOnNext{
             _queueLiveData.value?.queuedSongs = it
-            _queueLiveData.update()
+            _queueLiveData.forceRefresh()
 
             val userSong = it.firstOrNull { song -> song.ownerId == prefsRepo.get(PREFS_USER_ID, "") }
             if(userSong != null && userSong.name != _userQueuedSongLiveData.value?.name){
@@ -120,7 +100,7 @@ class SongsPagerViewModel(
     fun getNowPlayingSong() = nowPlayingSongDao.getNowPlayingSong().defaultSchedulers()
         .doOnNext {
             _queueLiveData.value?.nowPlayingSong = it
-            _queueLiveData.update()
+            _queueLiveData.forceRefresh()
         }
     //endregion
 }

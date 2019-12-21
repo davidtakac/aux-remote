@@ -44,7 +44,7 @@ class QueueController: TypedEpoxyController<QueueUi>(){
                 id(queuedSong.ownerId)
                 position("${idx+1}")
                 name(queuedSong.name)
-                userIconVisibility(queuedSong.userIconVisibility)
+                //userIconVisibility(queuedSong.userIconVisibility)
             }
         }
     }
