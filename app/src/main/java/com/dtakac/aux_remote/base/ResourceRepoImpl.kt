@@ -4,7 +4,7 @@ import android.content.res.Resources
 
 class ResourceRepoImpl(
     private val resources: Resources
-) : ResourceRepo{
+) : ResourceRepository{
     override fun getString(resId: Int): String =
         resources.getString(resId)
 
