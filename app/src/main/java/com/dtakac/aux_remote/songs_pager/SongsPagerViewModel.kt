@@ -60,9 +60,8 @@ class SongsPagerViewModel(
         // filter song names which contain query string
         CoroutineScope(Default).launch {
             val filtered = songsLiveData.value
-                ?.map { it.song }
                 ?.filter { it.name.contains(query, ignoreCase = true) }
-                ?.map { SongWrapper(it, query, resourceRepo.getColor(R.color.green400_analogous)) }
+                ?.map { SongWrapper(it.id, it.name, query, resourceRepo.getColor(R.color.green400_analogous)) }
                 ?.toList()
 
             withContext(Main){

@@ -6,7 +6,8 @@ import android.text.style.ForegroundColorSpan
 import com.dtakac.aux_remote.data.song.Song
 
 class SongWrapper(
-    val song: Song,
+    val id: Int,
+    val name: String,
     highlightText: String,
     highlightColor: Int
 ){
@@ -15,11 +16,11 @@ class SongWrapper(
         const val NO_HIGHLIGHT = ""
     }
 
-    val highlightedName = SpannableString(song.name)
+    val highlightedName = SpannableString(name)
 
     init {
         if(!(highlightText == NO_HIGHLIGHT && highlightColor == NO_COLOR)){
-            val startIndex = song.name.indexOf(highlightText, 0, true)
+            val startIndex = name.indexOf(highlightText, 0, true)
 
             if(startIndex != -1){
                 val endIndex = startIndex + highlightText.length

@@ -55,6 +55,7 @@ class ResponseHandlerService: JobIntentService(){
             val line = reader.readLine()
             if(line == null || line == SERVER_BROADCAST_END) break else lines.add(line)
         }
+        Log.d(TAG, lines.toString())
         return lines
     }
 

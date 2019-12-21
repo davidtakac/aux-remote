@@ -9,7 +9,7 @@ import com.dtakac.aux_remote.data.queued_song.QueuedSongDao
 import com.dtakac.aux_remote.data.song.Song
 import com.dtakac.aux_remote.data.song.SongDao
 
-@Database(entities = [Song::class, QueuedSong::class, NowPlayingSong::class], version = 9)
+@Database(entities = [Song::class, QueuedSong::class, NowPlayingSong::class], version = 11)
 abstract class AppDatabase: RoomDatabase(){
     abstract fun songDao(): SongDao
     abstract fun queuedSongDao(): QueuedSongDao

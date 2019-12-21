@@ -50,9 +50,9 @@ class AllSongsController(private val allSongsInterface: AllSongsInterface): Type
     override fun buildModels(data: List<SongWrapper>) {
         data.forEach {
             song {
-                id(it.song.id)
+                id(it.id)
                 name(it.highlightedName)
-                clickListener { _, _, _, _ -> allSongsInterface.onSongClicked(it.song.name) }
+                clickListener { _, _, _, _ -> allSongsInterface.onSongClicked(it.name) }
             }
         }
     }

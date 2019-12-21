@@ -53,7 +53,7 @@ class AuxRepository(
     override fun getSongs(): Observable<List<SongWrapper>> =
         songDao.getAll().defaultSchedulers().flatMap {
             Observable.fromIterable(it)
-                .map{song -> SongWrapper(song, SongWrapper.NO_HIGHLIGHT, SongWrapper.NO_COLOR)}
+                .map{song -> SongWrapper(song.id!!, song.name, SongWrapper.NO_HIGHLIGHT, SongWrapper.NO_COLOR)}
                 .toList()
                 .toObservable()
         }
