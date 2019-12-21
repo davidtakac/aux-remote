@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedWriter
-import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
@@ -36,12 +35,9 @@ class SongsPagerViewModel(
 
     fun getAllSongs() = repo.getSongs().doOnNext { songsLiveData.value = it }
 
-    fun onSongClicked(songName: String){
-        CoroutineScope(IO).launch{
-            val outputStream = clientSocket.outputStream!!
-            writeSongToServer(songName, outputStream)
+    fun onSongClicked(songName: String) = CoroutineScope(IO).launch{
+            writeSongToServer(songName)
         }
-    }
 
     fun onQueryTextChanged(query: String){
         // filter song names which contain query string
@@ -66,15 +62,14 @@ class SongsPagerViewModel(
 
     fun onSearchCollapsed() = songsLiveData.forceRefresh()
 
-    private fun writeSongToServer(songName: String, outputStream: OutputStream){
-        val writer = BufferedWriter(OutputStreamWriter(outputStream, StandardCharsets.UTF_8))
-        writer.write(CLIENT_QUEUE)
-        writer.newLine()
-        writer.write(prefsRepo.get(PREFS_USER_ID, ""))
-        writer.newLine()
-        writer.write(songName)
-        writer.newLine()
-        writer.flush()
+    private fun writeSongToServer(songName: String){
+        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream!!, StandardCharsets.UTF_8))
+        writer.apply {
+            write(CLIENT_QUEUE); newLine()
+            write(prefsRepo.get(PREFS_USER_ID, "")); newLine()
+            write(songName); newLine()
+            flush()
+        }
     }
     //endregion
 
@@ -96,5 +91,21 @@ class SongsPagerViewModel(
         .doOnNext {
             queueLiveData.value = provideQueueUi(queueLiveData.value?.queuedSongs, it)
         }
+    //endregion
+
+    //region pull from server
+    fun pullFromServer() = CoroutineScope(IO).launch {
+            writeRequests(listOf(CLIENT_REQUEST_SONGS,
+                CLIENT_REQUEST_QUEUE,
+                CLIENT_REQUEST_PLAYING)
+            )
+        }
+
+    private fun writeRequests(requests: List<String>){
+        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream!!, StandardCharsets.UTF_8))
+        writer.apply{
+            requests.forEach { write(it); newLine(); flush() }
+        }
+    }
     //endregion
 }

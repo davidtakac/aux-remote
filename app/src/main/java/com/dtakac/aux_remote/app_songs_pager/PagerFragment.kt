@@ -41,6 +41,8 @@ class PagerFragment: BaseFragment(){
                         .format(StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker), resources.getInteger(R.integer.playing_abbr_len))))
             }
         )
+
+        viewModel.pullFromServer()
     }
 
     private fun initToolbar(){
@@ -57,7 +59,7 @@ class PagerFragment: BaseFragment(){
             showViewQueueSnackbar(getString(R.string.snackbar_queued_template)
                 .format(
                     StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker), resources.getInteger(R.integer.queued_abbr_len)),
-                    it.position + 1
+                    it.position
                 )
             )
         })
