@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.app_songs_pager
+package com.dtakac.aux_remote.app_songs_pager.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.base.BaseFragment
-import com.dtakac.aux_remote.base.newFragmentInstance
+import com.dtakac.aux_remote.base.fragment.BaseFragment
+import com.dtakac.aux_remote.base.fragment.newFragmentInstance
 import com.dtakac.aux_remote.app_songs_pager.all_songs.AllSongsFragment
 import com.dtakac.aux_remote.app_songs_pager.queue.QueueFragment
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
@@ -99,7 +99,10 @@ class PagerFragment: BaseFragment(){
 
     private fun initPager(){
         // attach adapter to pager
-        pager.adapter = PagerAdapter(resources.getStringArray(R.array.labels_fragments), this)
+        pager.adapter = PagerAdapter(
+            resources.getStringArray(R.array.labels_fragments),
+            this
+        )
         // setup tablayout with pager
         tabLayout.setupWithViewPager(pager)
     }

@@ -1,5 +1,9 @@
 package com.dtakac.aux_remote.common
 
+enum class RelayMessage{
+    SOCKET_EXCEPTION
+}
+
 // FRAGMENT KEYS
 const val FRAGMENT_CONNECT = "FRAGMENT_CONNECT"
 const val FRAGMENT_PAGER = "FRAGMENT_PAGER"

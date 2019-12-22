@@ -1,16 +1,16 @@
-package com.dtakac.aux_remote.repository
+package com.dtakac.aux_remote.common.database_repository
 
 import android.view.View
-import com.dtakac.aux_remote.base.SharedPrefsRepository
+import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.PREFS_USER_ID
 import com.dtakac.aux_remote.common.defaultSchedulers
 import com.dtakac.aux_remote.common.moveUp
-import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSong
-import com.dtakac.aux_remote.data.now_playing_song.NowPlayingSongDao
-import com.dtakac.aux_remote.data.queued_song.QueuedSong
-import com.dtakac.aux_remote.data.queued_song.QueuedSongDao
-import com.dtakac.aux_remote.data.song.Song
-import com.dtakac.aux_remote.data.song.SongDao
+import com.dtakac.aux_remote.model.now_playing_song.NowPlayingSong
+import com.dtakac.aux_remote.model.now_playing_song.NowPlayingSongDao
+import com.dtakac.aux_remote.model.queued_song.QueuedSong
+import com.dtakac.aux_remote.model.queued_song.QueuedSongDao
+import com.dtakac.aux_remote.model.song.Song
+import com.dtakac.aux_remote.model.song.SongDao
 import com.dtakac.aux_remote.app_songs_pager.all_songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper

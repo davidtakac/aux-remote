@@ -1,11 +1,13 @@
-package com.dtakac.aux_remote.common
+package com.dtakac.aux_remote.common.prefs
 
 import android.content.SharedPreferences
-import com.dtakac.aux_remote.base.SharedPrefsRepository
-import com.dtakac.aux_remote.base.SharedPrefsUtil
+import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
+import com.dtakac.aux_remote.base.prefs.SharedPrefsUtil
+import com.dtakac.aux_remote.common.PREFS_USER_ID
 
 private const val CLIENT_ID = "123456789"
-class TestSharedPrefsRepository(private val prefs: SharedPreferences): SharedPrefsRepository {
+class TestSharedPrefsRepository(private val prefs: SharedPreferences):
+    SharedPrefsRepository {
     override fun save(key: String, value: String) = SharedPrefsUtil.save(prefs, key, value)
 
     override fun get(key: String, defaultValue: String) =

@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.data.song
+package com.dtakac.aux_remote.model.song
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

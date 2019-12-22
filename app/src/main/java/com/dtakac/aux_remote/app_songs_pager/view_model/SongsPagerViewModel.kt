@@ -3,11 +3,11 @@ package com.dtakac.aux_remote.app_songs_pager.view_model
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.base.ResourceRepository
-import com.dtakac.aux_remote.base.SharedPrefsRepository
+import com.dtakac.aux_remote.base.resource_repo.ResourceRepository
+import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.*
 import com.dtakac.aux_remote.network.ClientSocket
-import com.dtakac.aux_remote.repository.DatabaseRepository
+import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
 import com.dtakac.aux_remote.app_songs_pager.all_songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueueUi
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
@@ -63,7 +63,7 @@ class SongsPagerViewModel(
     fun onSearchCollapsed() = songsLiveData.forceRefresh()
 
     private fun writeSongToServer(songName: String){
-        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream!!, StandardCharsets.UTF_8))
+        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream ?: return, StandardCharsets.UTF_8))
         writer.apply {
             write(CLIENT_QUEUE); newLine()
             write(prefsRepo.get(PREFS_USER_ID, "")); newLine()
@@ -102,7 +102,7 @@ class SongsPagerViewModel(
         }
 
     private fun writeRequests(requests: List<String>){
-        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream!!, StandardCharsets.UTF_8))
+        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream ?: return, StandardCharsets.UTF_8))
         writer.apply{
             requests.forEach { write(it); newLine(); flush() }
         }

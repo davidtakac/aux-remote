@@ -1,12 +1,12 @@
 package com.dtakac.aux_remote.app_connect.presenter
 
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.base.SharedPrefsRepository
+import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.CLIENT_MAC
 import com.dtakac.aux_remote.common.PREFS_IP_INPUT
 import com.dtakac.aux_remote.common.PREFS_PORT_INPUT
 import com.dtakac.aux_remote.common.PREFS_USER_ID
-import com.dtakac.aux_remote.data.AppDatabase
+import com.dtakac.aux_remote.common.database.AppDatabase
 import com.dtakac.aux_remote.network.NetworkUtil
 import com.dtakac.aux_remote.network.ClientSocket
 import kotlinx.coroutines.CoroutineScope
@@ -91,13 +91,12 @@ class ConnectPresenter(
     }
 
     private fun connectToServer(){
-        // socket is definitely initialized when this method is called
-        val w = BufferedWriter(OutputStreamWriter(client.outputStream!!, StandardCharsets.UTF_8))
-        w.write(CLIENT_MAC)
-        w.newLine()
-        w.write(prefsRepo.get(PREFS_USER_ID, ""))
-        w.newLine()
-        w.flush()
+        val writer = BufferedWriter(OutputStreamWriter(client.outputStream ?: return, StandardCharsets.UTF_8))
+        writer.apply{
+            write(CLIENT_MAC); newLine()
+            write(prefsRepo.get(PREFS_USER_ID, "")); newLine()
+            flush()
+        }
     }
 
     private fun saveInputToPrefs(ipAddress: String, port: String){

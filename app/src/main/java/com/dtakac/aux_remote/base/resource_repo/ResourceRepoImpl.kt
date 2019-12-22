@@ -1,10 +1,10 @@
-package com.dtakac.aux_remote.base
+package com.dtakac.aux_remote.base.resource_repo
 
 import android.content.res.Resources
 
 class ResourceRepoImpl(
     private val resources: Resources
-) : ResourceRepository{
+) : ResourceRepository {
     override fun getString(resId: Int): String =
         resources.getString(resId)
 

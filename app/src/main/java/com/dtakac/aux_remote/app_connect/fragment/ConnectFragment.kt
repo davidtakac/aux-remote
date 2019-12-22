@@ -5,20 +5,19 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.base.BaseFragment
-import com.dtakac.aux_remote.base.newFragmentInstance
+import com.dtakac.aux_remote.base.fragment.BaseFragment
+import com.dtakac.aux_remote.base.fragment.newFragmentInstance
 import com.dtakac.aux_remote.common.FRAGMENT_PAGER
 import com.dtakac.aux_remote.common.defaultSchedulers
 import com.dtakac.aux_remote.app_connect.presenter.ConnectContract
 import com.dtakac.aux_remote.service.ResponseHandlerService
-import com.dtakac.aux_remote.app_songs_pager.PagerFragment
+import com.dtakac.aux_remote.app_songs_pager.fragment.PagerFragment
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.widget.textChanges
 import kotlinx.android.synthetic.main.fragment_connect.*
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
-private const val TAG = "connect_tag"
 class ConnectFragment : BaseFragment(), ConnectContract.View {
     override val layoutRes: Int = R.layout.fragment_connect
     private val presenter by inject<ConnectContract.Presenter>{ parametersOf(this) }
@@ -89,7 +88,9 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
 
     private fun displayPagerFragment(){
         fragmentManager!!.beginTransaction()
-            .replace(R.id.frame, newFragmentInstance<PagerFragment>(Bundle.EMPTY))
+            .replace(R.id.frame,
+                newFragmentInstance<PagerFragment>(Bundle.EMPTY)
+            )
             .addToBackStack(FRAGMENT_PAGER)
             .commit()
     }

@@ -1,6 +1,6 @@
 package com.dtakac.aux_remote.app_songs_pager.di
 
-import com.dtakac.aux_remote.data.AppDatabase
+import com.dtakac.aux_remote.common.database.AppDatabase
 import com.dtakac.aux_remote.app_songs_pager.view_model.SongsPagerViewModel
 import com.dtakac.aux_remote.app_songs_pager.all_songs.AllSongsController
 import com.dtakac.aux_remote.app_songs_pager.all_songs.AllSongsInterface

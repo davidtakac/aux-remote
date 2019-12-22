@@ -7,7 +7,7 @@ import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.EpoxyModelWithHolder
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.base.KotlinHolder
+import com.dtakac.aux_remote.base.epoxy.KotlinHolder
 
 @EpoxyModelClass
 abstract class SongModel: EpoxyModelWithHolder<SongHolder>(){

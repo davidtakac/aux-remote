@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.base
+package com.dtakac.aux_remote.base.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.data.now_playing_song
+package com.dtakac.aux_remote.model.now_playing_song
 
 import androidx.room.Dao
 import androidx.room.Insert

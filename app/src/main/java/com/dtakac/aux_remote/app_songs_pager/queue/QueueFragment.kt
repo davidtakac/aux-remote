@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.airbnb.epoxy.TypedEpoxyController
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.base.BaseFragment
+import com.dtakac.aux_remote.base.fragment.BaseFragment
 import com.dtakac.aux_remote.app_songs_pager.view_model.SongsPagerViewModel
 import com.dtakac.aux_remote.app_songs_pager.queue.view_holders.nowPlayingSong
 import com.dtakac.aux_remote.app_songs_pager.queue.view_holders.queuedSong

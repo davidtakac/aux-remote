@@ -59,6 +59,7 @@ dependencies {
     implementation coroutinesCore
     implementation coroutinesAndroid
     implementation epoxy
+    implementation rxRelay
     kapt epoxyApt
     implementation room
     implementation roomRxJava

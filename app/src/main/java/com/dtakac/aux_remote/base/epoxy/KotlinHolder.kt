@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.base
+package com.dtakac.aux_remote.base.epoxy
 
 import android.view.View
 import com.airbnb.epoxy.EpoxyHolder

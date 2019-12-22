@@ -1,9 +1,8 @@
-package com.dtakac.aux_remote.data.song
+package com.dtakac.aux_remote.model.song
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.dtakac.aux_remote.data.song.Song
 import io.reactivex.Observable
 
 @Dao
