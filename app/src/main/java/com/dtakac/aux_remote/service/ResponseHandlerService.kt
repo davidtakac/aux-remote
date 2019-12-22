@@ -7,7 +7,6 @@ import androidx.core.app.JobIntentService
 import com.dtakac.aux_remote.common.*
 import com.dtakac.aux_remote.network.ClientSocket
 import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
-import com.jakewharton.rxrelay2.PublishRelay
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -20,7 +19,6 @@ private const val SERVICE_ACTION = "RESPONSE_HANDLER"
 class ResponseHandlerService: JobIntentService(){
     private val socket by inject<ClientSocket>()
     private val repo by inject<DatabaseRepository>()
-    private val relay by inject<PublishRelay<RelayMessage>>()
 
     companion object{
         fun start(context: Context) =
@@ -41,7 +39,6 @@ class ResponseHandlerService: JobIntentService(){
             } catch (e: Exception){
                 Log.e(TAG, "Socket exception in service loop, stopping service..")
                 e.printStackTrace()
-                relay.accept(RelayMessage.SOCKET_EXCEPTION)
                 break
             }
         }
