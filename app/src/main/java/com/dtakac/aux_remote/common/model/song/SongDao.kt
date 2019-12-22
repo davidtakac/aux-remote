@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.model.song
+package com.dtakac.aux_remote.common.model.song
 
 import androidx.room.Dao
 import androidx.room.Insert

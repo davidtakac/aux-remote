@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.JobIntentService
-import com.dtakac.aux_remote.common.*
-import com.dtakac.aux_remote.network.ClientSocket
+import com.dtakac.aux_remote.common.constants.*
+import com.dtakac.aux_remote.common.network.ClientSocket
 import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader
@@ -27,21 +27,21 @@ class ResponseHandlerService: JobIntentService(){
 
     override fun onHandleWork(intent: Intent) {
         val stream = socket.inputStream
-        if(stream == null){
-            Log.e(TAG, "Service started, but socket input stream is null. Stopping service.")
-            return
-        }
-
-        val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
-        while (true) {
-            try {
-                handleServerResponse(readServerResponse(reader))
-            } catch (e: Exception){
-                Log.e(TAG, "Socket exception in service loop, stopping service..")
-                e.printStackTrace()
-                break
+        if(stream != null) {
+            val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
+            while (true) {
+                try {
+                    handleServerResponse(readServerResponse(reader))
+                } catch (e: Exception) {
+                    Log.e(TAG, "Socket exception in service loop, stopped service.")
+                    e.printStackTrace()
+                    break
+                }
             }
+        } else {
+            Log.e(TAG, "Socket input stream is null, stopped service.")
         }
+        onServiceStopped()
     }
 
     private fun readServerResponse(reader: BufferedReader): List<String>{
@@ -85,5 +85,9 @@ class ResponseHandlerService: JobIntentService(){
 
     private fun onNowPlaying(response: List<String>){
         repo.persistNowPlayingSong(response)
+    }
+
+    private fun onServiceStopped(){
+        repo.persistMessage(SERVICE_STOPPED_MESSAGE)
     }
 }

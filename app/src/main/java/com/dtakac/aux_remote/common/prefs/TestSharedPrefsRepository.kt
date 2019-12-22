@@ -3,7 +3,7 @@ package com.dtakac.aux_remote.common.prefs
 import android.content.SharedPreferences
 import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.base.prefs.SharedPrefsUtil
-import com.dtakac.aux_remote.common.PREFS_USER_ID
+import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 
 private const val CLIENT_ID = "123456789"
 class TestSharedPrefsRepository(private val prefs: SharedPreferences):

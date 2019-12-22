@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.model.queued_song
+package com.dtakac.aux_remote.common.model.queued_song
 
 import androidx.room.*
 import io.reactivex.Observable

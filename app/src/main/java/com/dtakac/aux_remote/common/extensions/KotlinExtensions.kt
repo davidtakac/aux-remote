@@ -1,7 +1,7 @@
-package com.dtakac.aux_remote.common
+package com.dtakac.aux_remote.common.extensions
 
 import androidx.lifecycle.MutableLiveData
-import com.dtakac.aux_remote.model.queued_song.QueuedSongDao
+import com.dtakac.aux_remote.common.model.queued_song.QueuedSongDao
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

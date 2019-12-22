@@ -2,13 +2,13 @@ package com.dtakac.aux_remote.app_connect.presenter
 
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
-import com.dtakac.aux_remote.common.CLIENT_MAC
-import com.dtakac.aux_remote.common.PREFS_IP_INPUT
-import com.dtakac.aux_remote.common.PREFS_PORT_INPUT
-import com.dtakac.aux_remote.common.PREFS_USER_ID
+import com.dtakac.aux_remote.common.constants.CLIENT_MAC
+import com.dtakac.aux_remote.common.constants.PREFS_IP_INPUT
+import com.dtakac.aux_remote.common.constants.PREFS_PORT_INPUT
+import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 import com.dtakac.aux_remote.common.database.AppDatabase
-import com.dtakac.aux_remote.network.NetworkUtil
-import com.dtakac.aux_remote.network.ClientSocket
+import com.dtakac.aux_remote.common.network.NetworkUtil
+import com.dtakac.aux_remote.common.network.ClientSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main

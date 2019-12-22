@@ -13,6 +13,7 @@ val pagerModule = module {
     single{get<AppDatabase>().songDao()}
     single{get<AppDatabase>().queuedSongDao()}
     single{get<AppDatabase>().nowPlayingSongDao()}
+    single{get<AppDatabase>().messageDao()}
     viewModel {
         SongsPagerViewModel(
             get(),

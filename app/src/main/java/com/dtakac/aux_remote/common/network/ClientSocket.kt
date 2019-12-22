@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.network
+package com.dtakac.aux_remote.common.network
 
 import android.util.Log
 import java.io.InputStream

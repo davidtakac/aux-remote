@@ -7,8 +7,8 @@ import android.view.View
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.fragment.BaseFragment
 import com.dtakac.aux_remote.base.fragment.newFragmentInstance
-import com.dtakac.aux_remote.common.FRAGMENT_PAGER
-import com.dtakac.aux_remote.common.defaultSchedulers
+import com.dtakac.aux_remote.common.constants.FRAGMENT_PAGER
+import com.dtakac.aux_remote.common.extensions.defaultSchedulers
 import com.dtakac.aux_remote.app_connect.presenter.ConnectContract
 import com.dtakac.aux_remote.service.ResponseHandlerService
 import com.dtakac.aux_remote.app_songs_pager.fragment.PagerFragment

@@ -1,4 +1,7 @@
-package com.dtakac.aux_remote.common
+package com.dtakac.aux_remote.common.constants
+
+// MESSAGES
+const val SERVICE_STOPPED_MESSAGE = "SERVICE_STOPPED_MESSAGE"
 
 // FRAGMENT KEYS
 const val FRAGMENT_CONNECT = "FRAGMENT_CONNECT"

@@ -5,13 +5,14 @@ import androidx.lifecycle.ViewModel
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.resource_repo.ResourceRepository
 import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
-import com.dtakac.aux_remote.common.*
-import com.dtakac.aux_remote.network.ClientSocket
+import com.dtakac.aux_remote.common.network.ClientSocket
 import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
 import com.dtakac.aux_remote.app_songs_pager.all_songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueueUi
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.provideQueueUi
+import com.dtakac.aux_remote.common.constants.*
+import com.dtakac.aux_remote.common.extensions.forceRefresh
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Default
@@ -95,9 +96,11 @@ class SongsPagerViewModel(
 
     //region pull from server
     fun pullFromServer() = CoroutineScope(IO).launch {
-            writeRequests(listOf(CLIENT_REQUEST_SONGS,
+            writeRequests(listOf(
+                CLIENT_REQUEST_SONGS,
                 CLIENT_REQUEST_QUEUE,
-                CLIENT_REQUEST_PLAYING)
+                CLIENT_REQUEST_PLAYING
+            )
             )
         }
 

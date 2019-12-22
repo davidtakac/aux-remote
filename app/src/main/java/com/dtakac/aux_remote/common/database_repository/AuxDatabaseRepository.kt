@@ -2,24 +2,27 @@ package com.dtakac.aux_remote.common.database_repository
 
 import android.view.View
 import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
-import com.dtakac.aux_remote.common.PREFS_USER_ID
-import com.dtakac.aux_remote.common.defaultSchedulers
-import com.dtakac.aux_remote.common.moveUp
-import com.dtakac.aux_remote.model.now_playing_song.NowPlayingSong
-import com.dtakac.aux_remote.model.now_playing_song.NowPlayingSongDao
-import com.dtakac.aux_remote.model.queued_song.QueuedSong
-import com.dtakac.aux_remote.model.queued_song.QueuedSongDao
-import com.dtakac.aux_remote.model.song.Song
-import com.dtakac.aux_remote.model.song.SongDao
+import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
+import com.dtakac.aux_remote.common.extensions.defaultSchedulers
+import com.dtakac.aux_remote.common.extensions.moveUp
+import com.dtakac.aux_remote.common.model.now_playing_song.NowPlayingSong
+import com.dtakac.aux_remote.common.model.now_playing_song.NowPlayingSongDao
+import com.dtakac.aux_remote.common.model.queued_song.QueuedSong
+import com.dtakac.aux_remote.common.model.queued_song.QueuedSongDao
+import com.dtakac.aux_remote.common.model.song.Song
+import com.dtakac.aux_remote.common.model.song.SongDao
 import com.dtakac.aux_remote.app_songs_pager.all_songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
+import com.dtakac.aux_remote.common.model.message.Message
+import com.dtakac.aux_remote.common.model.message.MessageDao
 import io.reactivex.Observable
 
 class AuxDatabaseRepository(
     private val songDao: SongDao,
     private val queuedDao: QueuedSongDao,
     private val nowPlayingDao: NowPlayingSongDao,
+    private val messageDao: MessageDao,
     private val sharedPrefsRepo: SharedPrefsRepository
 ): DatabaseRepository{
 
@@ -54,6 +57,10 @@ class AuxDatabaseRepository(
 
     override fun moveUp() {
         queuedDao.moveUp()
+    }
+
+    override fun persistMessage(message: String) {
+        messageDao.setMessage(Message(message = message))
     }
 
     override fun getSongs(): Observable<List<SongWrapper>> =
@@ -95,6 +102,9 @@ class AuxDatabaseRepository(
                     sharedPrefsRepo.get(PREFS_USER_ID, "") == it.ownerId
                 )
             }
+
+    override fun getMessage(): Observable<String> =
+        messageDao.getMessage().defaultSchedulers().map { it.message }
 
     private fun getUserIconVisibility(ownerId: String) =
         if(ownerId == sharedPrefsRepo.get(PREFS_USER_ID, "")) View.VISIBLE else View.INVISIBLE
