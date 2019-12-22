@@ -90,6 +90,7 @@ class PagerFragment: BaseFragment(){
 
         search.queryTextChanges()
             .debounce(300, TimeUnit.MILLISECONDS)
+            .skip(1) // because text change fires when view is created -_-
             .filter { it.isEmpty() || !it.isBlank() } // accepts empty input, but not whitespaces
             .subscribeByAndDispose {
                 Log.d(TAG, "search changed: $it")

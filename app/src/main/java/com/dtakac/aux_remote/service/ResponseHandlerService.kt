@@ -10,8 +10,8 @@ import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.lang.Exception
 import java.nio.charset.Charset
+import kotlin.Exception
 
 private const val TAG = "service_tag"
 private const val JOB_ID = 71169
@@ -33,8 +33,7 @@ class ResponseHandlerService: JobIntentService(){
                 try {
                     handleServerResponse(readServerResponse(reader))
                 } catch (e: Exception) {
-                    Log.e(TAG, "Socket exception in service loop, stopped service.")
-                    e.printStackTrace()
+                    Log.e(TAG, "Exception in service loop, stopping service. Message: ${e.message}")
                     break
                 }
             }
@@ -47,23 +46,23 @@ class ResponseHandlerService: JobIntentService(){
     private fun readServerResponse(reader: BufferedReader): List<String>{
         val lines = mutableListOf<String>()
         while(true){
-            val line = reader.readLine()
-            if(line == null || line == SERVER_BROADCAST_END) break else lines.add(line)
+            val line = reader.readLine() ?: throw Exception("Line is null")
+            if(line == SERVER_BROADCAST_END) break else lines.add(line)
         }
         Log.d(TAG, lines.toString())
         return lines
     }
 
     private fun handleServerResponse(lines: List<String>){
-        if(lines.isEmpty()) return
-
-        val body = lines.subList(1, lines.size)
-        when(lines[0]){
-            SERVER_SONG_LIST -> onSongList(body)
-            SERVER_QUEUE_LIST -> onQueueList(body)
-            SERVER_ENQUEUED -> onEnqueued(body)
-            SERVER_MOVE_UP -> onMoveUp()
-            SERVER_NOW_PLAYING -> onNowPlaying(body)
+        if(lines.isNotEmpty()) {
+            val body = lines.subList(1, lines.size)
+            when (lines[0]) {
+                SERVER_SONG_LIST -> onSongList(body)
+                SERVER_QUEUE_LIST -> onQueueList(body)
+                SERVER_ENQUEUED -> onEnqueued(body)
+                SERVER_MOVE_UP -> onMoveUp()
+                SERVER_NOW_PLAYING -> onNowPlaying(body)
+            }
         }
     }
 
