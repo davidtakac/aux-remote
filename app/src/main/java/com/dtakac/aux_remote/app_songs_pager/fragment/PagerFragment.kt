@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.fragment.BaseFragment
 import com.dtakac.aux_remote.base.fragment.newFragmentInstance
-import com.dtakac.aux_remote.app_songs_pager.all_songs.AllSongsFragment
-import com.dtakac.aux_remote.app_songs_pager.queue.QueueFragment
+import com.dtakac.aux_remote.app_songs_pager.all_songs.fragment.AllSongsFragment
+import com.dtakac.aux_remote.app_songs_pager.queue.fragment.QueueFragment
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.app_songs_pager.view_model.SongsPagerViewModel
 import com.google.android.material.snackbar.Snackbar

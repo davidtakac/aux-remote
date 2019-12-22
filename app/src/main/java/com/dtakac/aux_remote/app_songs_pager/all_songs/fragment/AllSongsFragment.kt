@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.app_songs_pager.all_songs
+package com.dtakac.aux_remote.app_songs_pager.all_songs.fragment
 
 import android.os.Bundle
 import androidx.lifecycle.Observer
@@ -13,7 +13,8 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
 
-class AllSongsFragment : BaseFragment(), AllSongsInterface{
+class AllSongsFragment : BaseFragment(),
+    AllSongsInterface {
 
     override val layoutRes = R.layout.fragment_songs
     private val controller by inject<AllSongsController>{ parametersOf(this)}

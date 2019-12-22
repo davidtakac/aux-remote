@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.app_songs_pager.queue
+package com.dtakac.aux_remote.app_songs_pager.queue.fragment
 
 import android.os.Bundle
 import androidx.lifecycle.Observer
