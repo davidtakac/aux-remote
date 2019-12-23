@@ -11,7 +11,7 @@
     <string name="label_menu_search">Pretraga</string>
     <string name="error_internet_needwifi">Potrebna je Wi-Fi veza.</string>
     <string name="notif_server_error">Došlo je do pogreške, probaj se spojiti ponovo.</string>
-    <string name="snackbar_queued_template">Pjesma \"%s\" stavljena u red na %d. mjesto.</string>
+    <string name="snackbar_queued_template">\"%s\" stavljeno u red na %d. mjesto.</string>
     <string name="nowplaying_snackbar">Tvoja pjesma \"%s\" sada svira.</string>
     <string name="snackbar_action_view">Vidi</string>
     <string name="snackbar_action_wifi_settings">Uključi</string>

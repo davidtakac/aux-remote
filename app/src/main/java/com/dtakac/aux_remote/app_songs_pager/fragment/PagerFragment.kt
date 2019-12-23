@@ -7,6 +7,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.base.fragment.BaseFragment
 import com.dtakac.aux_remote.base.fragment.newFragmentInstance
@@ -23,6 +24,8 @@ import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "pager_tag"
+private const val SONGS_VIEW_POSITION = 0
+private const val QUEUE_VIEW_POSITION = 1
 class PagerFragment: BaseFragment(){
 
     override val layoutRes: Int = R.layout.fragment_pager
@@ -66,9 +69,15 @@ class PagerFragment: BaseFragment(){
     }
 
     private fun showViewQueueSnackbar(message: String){
-        Snackbar.make(activity!!.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
-            .setAction(R.string.snackbar_action_view) { pager.currentItem = 1 }
-            .show()
+        val snackbar = Snackbar.make(
+            activity!!.findViewById(android.R.id.content),
+            message,
+            Snackbar.LENGTH_LONG
+        )
+        if(pager.currentItem != QUEUE_VIEW_POSITION){
+            snackbar.setAction(R.string.snackbar_action_view) { pager.currentItem = QUEUE_VIEW_POSITION }
+        }
+        snackbar.show()
     }
 
     private fun initSearchView(item: MenuItem){
@@ -78,7 +87,7 @@ class PagerFragment: BaseFragment(){
         item.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 Log.d(TAG, "search expanded")
-                pager.setCurrentItem(0, true)
+                pager.setCurrentItem(SONGS_VIEW_POSITION, true)
                 return true // needed so the view expands
             }
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
@@ -86,6 +95,17 @@ class PagerFragment: BaseFragment(){
                 viewModel.onSearchCollapsed()
                 return true // needed so the view collapses
             }
+        })
+
+        pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                if(position != SONGS_VIEW_POSITION){
+                    item.collapseActionView()
+                }
+            }
+
         })
 
         search.queryTextChanges()
@@ -113,10 +133,9 @@ class PagerAdapter(private val titles: Array<String>, f: Fragment): FragmentStat
     override fun getCount(): Int = 2
     override fun getItem(position: Int): Fragment =
         when(position){
-            0 -> newFragmentInstance<AllSongsFragment>(Bundle.EMPTY)
-            1 -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
+            SONGS_VIEW_POSITION -> newFragmentInstance<AllSongsFragment>(Bundle.EMPTY)
+            QUEUE_VIEW_POSITION -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
             else -> throw IllegalStateException("No fragment defined for position: $position")
         }
-
     override fun getPageTitle(position: Int): CharSequence? = titles[position]
 }
