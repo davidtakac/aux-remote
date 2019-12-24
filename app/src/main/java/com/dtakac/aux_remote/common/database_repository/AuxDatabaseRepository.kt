@@ -4,18 +4,14 @@ import android.view.View
 import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 import com.dtakac.aux_remote.common.extensions.defaultSchedulers
-import com.dtakac.aux_remote.common.extensions.moveUp
-import com.dtakac.aux_remote.common.model.now_playing_song.NowPlayingSong
-import com.dtakac.aux_remote.common.model.now_playing_song.NowPlayingSongDao
-import com.dtakac.aux_remote.common.model.queued_song.QueuedSong
-import com.dtakac.aux_remote.common.model.queued_song.QueuedSongDao
-import com.dtakac.aux_remote.common.model.song.Song
-import com.dtakac.aux_remote.common.model.song.SongDao
+import com.dtakac.aux_remote.common.model.NowPlayingSong
+import com.dtakac.aux_remote.common.model.QueuedSong
+import com.dtakac.aux_remote.common.model.Song
 import com.dtakac.aux_remote.app_songs_pager.all_songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
-import com.dtakac.aux_remote.common.model.message.Message
-import com.dtakac.aux_remote.common.model.message.MessageDao
+import com.dtakac.aux_remote.common.dao.*
+import com.dtakac.aux_remote.common.model.Message
 import io.reactivex.Observable
 
 class AuxDatabaseRepository(
@@ -35,7 +31,7 @@ class AuxDatabaseRepository(
         for(i in body.indices step 2){
             val name = body[i]
             val ownerId = body[i+1]
-            result.add(QueuedSong(ownerId, name, i/2))
+            result.add(QueuedSong(ownerId, name, i / 2))
         }
         queuedDao.insertAllOrUpdate(result)
     }
@@ -51,12 +47,16 @@ class AuxDatabaseRepository(
     override fun persistNowPlayingSong(body: List<String>) {
         val songName = body[0]
         val ownerId = body[1]
-        val nowPlayingSong = NowPlayingSong(name = songName, ownerId = ownerId)
+        val nowPlayingSong =
+            NowPlayingSong(name = songName, ownerId = ownerId)
         nowPlayingDao.setNowPlayingSong(nowPlayingSong)
     }
 
     override fun moveUp() {
-        queuedDao.moveUp()
+        queuedDao.apply {
+            deleteFirst()
+            decrementPosition()
+        }
     }
 
     override fun persistMessage(message: String) {

@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.common.model.queued_song
+package com.dtakac.aux_remote.common.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

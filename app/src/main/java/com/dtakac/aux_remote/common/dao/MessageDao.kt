@@ -1,9 +1,10 @@
-package com.dtakac.aux_remote.common.model.message
+package com.dtakac.aux_remote.common.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.dtakac.aux_remote.common.model.Message
 import io.reactivex.Observable
 
 @Dao
