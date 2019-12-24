@@ -10,14 +10,15 @@
     <string name="label_menu_search">Search</string>
     <string name="error_internet_needwifi">Wi-Fi connection required.</string>
     <string name="notif_server_error">An error occurred, try reconnecting.</string>
-    <string name="snackbar_queued_template">\"%s\" queued at position \%d\.</string>
-    <string name="nowplaying_snackbar">Your song \"%s\" is now playing.</string>
+    <string name="nowplaying_snackbar">Your queued song is now playing.</string>
     <string name="snackbar_action_view">View</string>
     <string name="snackbar_action_wifi_settings">Turn on</string>
     <string name="label_queuedsong_position">%d.</string>
     <string name="label_connect_fragment">Connect</string>
     <string name="label_pager_fragment">Aux</string>
     <string name="abbreviation_marker" translatable="false">…</string>
+    <string name="snackbar_swapped">Swapped successfully.</string>
+    <string name="snackbar_queued">Queued successfully.</string>
 
     <string-array name="labels_fragments">
         <item>Songs</item>

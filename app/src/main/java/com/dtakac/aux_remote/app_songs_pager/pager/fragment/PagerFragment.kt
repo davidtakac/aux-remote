@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.app_songs_pager.fragment
+package com.dtakac.aux_remote.app_songs_pager.pager.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import com.dtakac.aux_remote.R
+import com.dtakac.aux_remote.app_songs_pager.pager.wrapper.UserQueuedSongUi
 import com.dtakac.aux_remote.base.fragment.BaseFragment
 import com.dtakac.aux_remote.base.fragment.newFragmentInstance
 import com.dtakac.aux_remote.app_songs_pager.all_songs.fragment.AllSongsFragment
 import com.dtakac.aux_remote.app_songs_pager.queue.fragment.QueueFragment
-import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.app_songs_pager.view_model.SongsPagerViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges
@@ -33,16 +33,14 @@ class PagerFragment: BaseFragment(){
         initToolbar()
         initPager()
 
-        viewModel.getAllSongs().subscribeByAndDispose()
-        viewModel.getQueuedSongs().subscribeByAndDispose()
-        viewModel.getNowPlayingSong().subscribeByAndDispose(
-            onNext = {
-                if(it.isUserSong) showViewQueueSnackbar(getString(R.string.nowplaying_snackbar)
-                        .format(StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker), resources.getInteger(R.integer.playing_abbr_len))))
-            }
-        )
-
-        viewModel.pullFromServer()
+        viewModel.apply {
+            getAllSongs().subscribeByAndDispose()
+            getQueuedSongs().subscribeByAndDispose()
+            getNowPlayingSong().subscribeByAndDispose(
+                onNext = { if(it.isUserSong) showViewQueueSnackbar(getString(R.string.nowplaying_snackbar)) }
+            )
+            pullFromServer()
+        }
     }
 
     private fun initToolbar(){
@@ -55,13 +53,8 @@ class PagerFragment: BaseFragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.userQueuedSongLiveData.observe(this, Observer<QueuedSongWrapper>{
-            showViewQueueSnackbar(getString(R.string.snackbar_queued_template)
-                .format(
-                    StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker), resources.getInteger(R.integer.queued_abbr_len)),
-                    it.position
-                )
-            )
+        viewModel.userQueuedSongLiveData.observe(this, Observer<UserQueuedSongUi>{
+            showViewQueueSnackbar(getString(it.snackbarMessageId))
         })
     }
 

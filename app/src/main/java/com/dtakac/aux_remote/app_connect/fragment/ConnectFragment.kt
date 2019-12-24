@@ -11,7 +11,7 @@ import com.dtakac.aux_remote.common.constants.FRAGMENT_PAGER
 import com.dtakac.aux_remote.common.extensions.defaultSchedulers
 import com.dtakac.aux_remote.app_connect.presenter.ConnectContract
 import com.dtakac.aux_remote.service.ResponseHandlerService
-import com.dtakac.aux_remote.app_songs_pager.fragment.PagerFragment
+import com.dtakac.aux_remote.app_songs_pager.pager.fragment.PagerFragment
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.widget.textChanges
 import kotlinx.android.synthetic.main.fragment_connect.*
