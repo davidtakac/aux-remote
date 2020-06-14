@@ -2,9 +2,9 @@ package com.dtakac.aux_remote.common.di
 
 import android.content.Context
 import androidx.room.Room
-import com.dtakac.aux_remote.base.resource_repo.ResourceRepository
-import com.dtakac.aux_remote.base.resource_repo.ResourceRepoImpl
-import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
+import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepository
+import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepoImpl
+import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.database.AppDatabase
 import com.dtakac.aux_remote.common.network.NetworkUtil
 import com.dtakac.aux_remote.common.network.ClientSocket

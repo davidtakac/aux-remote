@@ -1,8 +1,8 @@
 package com.dtakac.aux_remote.common.database_repository
 
-import com.dtakac.aux_remote.app_songs_pager.all_songs.wrapper.SongWrapper
-import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.NowPlayingSongWrapper
-import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
+import com.dtakac.aux_remote.pager.songs.wrapper.SongWrapper
+import com.dtakac.aux_remote.pager.queue.wrapper.NowPlayingSongWrapper
+import com.dtakac.aux_remote.pager.queue.wrapper.QueuedSongWrapper
 import io.reactivex.Observable
 
 interface DatabaseRepository {

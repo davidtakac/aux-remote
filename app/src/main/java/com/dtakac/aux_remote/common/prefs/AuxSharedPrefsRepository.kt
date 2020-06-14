@@ -1,8 +1,8 @@
 package com.dtakac.aux_remote.common.prefs
 
 import android.content.SharedPreferences
-import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
-import com.dtakac.aux_remote.base.prefs.SharedPrefsUtil
+import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
+import com.dtakac.aux_remote.common.base.prefs.SharedPrefsUtil
 
 class AuxSharedPrefsRepository(private val prefs: SharedPreferences):
     SharedPrefsRepository {

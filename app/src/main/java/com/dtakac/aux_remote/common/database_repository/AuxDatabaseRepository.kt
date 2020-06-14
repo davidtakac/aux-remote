@@ -1,15 +1,15 @@
 package com.dtakac.aux_remote.common.database_repository
 
 import android.view.View
-import com.dtakac.aux_remote.base.prefs.SharedPrefsRepository
+import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 import com.dtakac.aux_remote.common.extensions.defaultSchedulers
 import com.dtakac.aux_remote.common.model.NowPlayingSong
 import com.dtakac.aux_remote.common.model.QueuedSong
 import com.dtakac.aux_remote.common.model.Song
-import com.dtakac.aux_remote.app_songs_pager.all_songs.wrapper.SongWrapper
-import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.NowPlayingSongWrapper
-import com.dtakac.aux_remote.app_songs_pager.queue.wrapper.QueuedSongWrapper
+import com.dtakac.aux_remote.pager.songs.wrapper.SongWrapper
+import com.dtakac.aux_remote.pager.queue.wrapper.NowPlayingSongWrapper
+import com.dtakac.aux_remote.pager.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.common.dao.*
 import com.dtakac.aux_remote.common.model.Message
 import io.reactivex.Observable
