@@ -1,10 +1,15 @@
 ext{
-    // Koin
+    //kotlin
+    kotlinVersion = "1.3.72"
+    kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    //ktx
+    ktxVersion= "1.3.0"
+    coreKtx = "androidx.core:core-ktx:$ktxVersion"
+    //koin
     koinVersion = "2.0.1"
     koin = "org.koin:koin-android:$koinVersion"
     koinViewModel = "org.koin:koin-android-viewmodel:$koinVersion"
-
-    // RxJava
+    //rxjava
     rxJavaVersion = "2.2.13"
     rxAndroidVersion = "2.1.1"
     rxKotlinVersion = "2.4.0"
@@ -13,46 +18,43 @@ ext{
     rxAndroid = "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     rxKotlin = "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
     rxRelay = "com.jakewharton.rxrelay2:rxrelay:$rxRelayVersion"
-
-    // Coroutines
+    //coroutines
     coroutinesVersion = "1.3.2"
     coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-
-    // RxBinding
+    //rxbinding
     rxBindingVersion = "3.0.0"
     rxBinding = "com.jakewharton.rxbinding3:rxbinding:$rxBindingVersion"
     rxAppCompat = "com.jakewharton.rxbinding3:rxbinding-appcompat:$rxBindingVersion"
-
-    // Material
+    //material
     materialVersion = "1.1.0-alpha09"
     material = "com.google.android.material:material:$materialVersion"
-
-    // Apache
+    //apache
     apacheIoVersion = "2.6"
     apacheValidatorVersion = "1.6"
     apacheLangVersion = "3.9"
     apacheIo = "commons-validator:commons-validator:$apacheValidatorVersion"
     apacheCommons = "commons-io:commons-io:$apacheIoVersion"
     apacheLang = "org.apache.commons:commons-lang3:$apacheLangVersion"
-
-    // ViewPager2
+    //viewpager2
     vp2Version = "1.0.0-rc01"
     viewPager2 = "androidx.viewpager2:viewpager2:$vp2Version"
-
-    // Epoxy
+    //epoxy
     epoxyVersion =  "3.8.0"
     epoxy = "com.airbnb.android:epoxy:$epoxyVersion"
     epoxyApt = "com.airbnb.android:epoxy-processor:$epoxyVersion"
-
-    // Room
+    //room
     roomVersion = "2.2.1"
     room = "androidx.room:room-runtime:$roomVersion"
     roomApt = "androidx.room:room-compiler:$roomVersion"
     roomRxJava = "androidx.room:room-rxjava2:$roomVersion"
-
-    // ViewModel and LiveData
+    //viewmodel and livedata
     lifecycle_version = "2.1.0"
     lifecycle = "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     lifecycleApt = "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    //android
+    appCompatVersion = "1.1.0"
+    constraintLayoutVersion = "1.1.3"
+    appCompat = "androidx.appcompat:appcompat:$appCompatVersion"
+    constraintLayout = "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
 }
