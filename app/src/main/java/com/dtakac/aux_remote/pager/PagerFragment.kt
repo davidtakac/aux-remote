@@ -11,9 +11,8 @@ import androidx.viewpager.widget.ViewPager
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
 import com.dtakac.aux_remote.common.base.fragment.newFragmentInstance
-import com.dtakac.aux_remote.pager.songs.fragment.AllSongsFragment
+import com.dtakac.aux_remote.pager.songs.fragment.SongsListFragment
 import com.dtakac.aux_remote.pager.queue.fragment.QueueFragment
-import com.dtakac.aux_remote.pager.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.pager.view_model.SongsPagerViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges
@@ -36,7 +35,6 @@ class PagerFragment: BaseFragment(){
         initToolbar()
         initPager()
 
-        viewModel.getAllSongs().subscribeByAndDispose()
         viewModel.nowPlayingSong.observe(this, Observer {
             //todo: refactor! make string in viewmodel!
             if(it?.isUserSong == true){
@@ -132,7 +130,7 @@ class PagerAdapter(private val titles: Array<String>, f: Fragment): FragmentStat
     override fun getCount(): Int = 2
     override fun getItem(position: Int): Fragment =
         when(position){
-            SONGS_VIEW_POSITION -> newFragmentInstance<AllSongsFragment>(Bundle.EMPTY)
+            SONGS_VIEW_POSITION -> newFragmentInstance<SongsListFragment>(Bundle.EMPTY)
             QUEUE_VIEW_POSITION -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
             else -> throw IllegalStateException("No fragment defined for position: $position")
         }

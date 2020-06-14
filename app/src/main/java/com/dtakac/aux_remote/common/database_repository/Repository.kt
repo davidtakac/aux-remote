@@ -14,7 +14,7 @@ interface DatabaseRepository {
     fun moveUp()
     fun persistMessage(message: String)
 
-    fun getSongs(): Observable<List<SongWrapper>>
+    fun getSongs(): LiveData<List<SongWrapper>>
     fun getQueuedSongs(): LiveData<List<QueuedSongWrapper>>
     fun getNowPlayingSong(): LiveData<NowPlayingSongWrapper>
     fun getMessage(): LiveData<String>

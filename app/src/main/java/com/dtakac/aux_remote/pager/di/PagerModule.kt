@@ -2,9 +2,9 @@ package com.dtakac.aux_remote.pager.di
 
 import com.dtakac.aux_remote.common.database.AppDatabase
 import com.dtakac.aux_remote.pager.queue.controller.QueueController
+import com.dtakac.aux_remote.pager.songs.controller.SongsListController
+import com.dtakac.aux_remote.pager.songs.controller.SongsListInterface
 import com.dtakac.aux_remote.pager.view_model.SongsPagerViewModel
-import com.dtakac.aux_remote.pager.songs.fragment.AllSongsController
-import com.dtakac.aux_remote.pager.songs.fragment.AllSongsInterface
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -14,16 +14,6 @@ val pagerModule = module {
     single{get<AppDatabase>().queuedSongDao()}
     single{get<AppDatabase>().nowPlayingSongDao()}
     single{get<AppDatabase>().messageDao()}
-    viewModel {
-        SongsPagerViewModel(
-            get(),
-            get(),
-            get(),
-            get()
-        )
-    }
-    factory {
-            (i: AllSongsInterface) ->
-        AllSongsController(i)
-    }
+    viewModel { SongsPagerViewModel(get(), get(), get(), get()) }
+    factory { (i: SongsListInterface) -> SongsListController(i) }
 }

@@ -55,6 +55,7 @@ class ResponseHandlerService: JobIntentService(){
 
     private fun handleServerResponse(lines: List<String>){
         if(lines.isNotEmpty()) {
+            Log.d("ResponseHandlerService", lines.joinToString())
             val body = lines.subList(1, lines.size)
             when (lines[0]) {
                 SERVER_SONG_LIST -> onSongList(body)

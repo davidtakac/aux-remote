@@ -1,5 +1,6 @@
 package com.dtakac.aux_remote.common.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -15,7 +16,7 @@ interface SongDao {
     fun insertAll(songs: List<Song>)
 
     @Query("SELECT * FROM song_table")
-    fun getAll(): Observable<List<Song>>
+    fun getAll(): LiveData<List<Song>>
 
     @Query("DELETE FROM song_table")
     fun deleteAll()

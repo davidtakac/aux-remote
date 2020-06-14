@@ -1,7 +1,6 @@
 package com.dtakac.aux_remote.pager.view_model
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepository
@@ -9,11 +8,8 @@ import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.network.ClientSocket
 import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
 import com.dtakac.aux_remote.pager.songs.wrapper.SongWrapper
-import com.dtakac.aux_remote.pager.queue.wrapper.QueueUi
-import com.dtakac.aux_remote.pager.queue.wrapper.QueuedSongWrapper
-import com.dtakac.aux_remote.pager.queue.wrapper.provideQueueUi
 import com.dtakac.aux_remote.common.constants.*
-import com.dtakac.aux_remote.common.extensions.forceRefresh
+import com.dtakac.aux_remote.pager.songs.mode.SongsMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Default
@@ -30,24 +26,20 @@ class SongsPagerViewModel(
     private val clientSocket: ClientSocket,
     private val resourceRepo: ResourceRepository
 ) : ViewModel(){
-
+    val songs = repo.getSongs()
     val nowPlayingSong = repo.getNowPlayingSong()
     val queue = repo.getQueuedSongs()
-
-    //region songs view
-    val songsLiveData = MutableLiveData<List<SongWrapper>>()
     val filteredSongsLiveData = MutableLiveData<List<SongWrapper>>()
+    val songsMode = MutableLiveData<SongsMode>()
 
-    fun getAllSongs() = repo.getSongs().doOnNext { songsLiveData.value = it }
+    fun onSongClicked(songName: String){
+        CoroutineScope(IO).launch{ writeSongToServer(songName) }
+    }
 
-    fun onSongClicked(songName: String) = CoroutineScope(IO).launch{
-            writeSongToServer(songName)
-        }
-
-    fun onQueryTextChanged(query: String){
+    fun onQueryTextChanged(query: String) {
         // filter song names which contain query string
         CoroutineScope(Default).launch {
-            val filtered = songsLiveData.value
+            val filtered = songs.value
                 ?.filter { it.name.contains(query, ignoreCase = true) }
                 ?.map {
                     SongWrapper(
@@ -61,11 +53,14 @@ class SongsPagerViewModel(
 
             withContext(Main){
                 filteredSongsLiveData.value = filtered
+                songsMode.value = SongsMode.FILTERED_SONGS
             }
         }
     }
 
-    fun onSearchCollapsed() = songsLiveData.forceRefresh()
+    fun onSearchCollapsed(){
+        songsMode.value = SongsMode.SONGS
+    }
 
     private fun writeSongToServer(songName: String){
         val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream ?: return, StandardCharsets.UTF_8))

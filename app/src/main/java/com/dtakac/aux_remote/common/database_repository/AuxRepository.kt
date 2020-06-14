@@ -67,20 +67,13 @@ class AuxDatabaseRepository(
         messageDao.setMessage(Message(message = message))
     }
 
-    override fun getSongs(): Observable<List<SongWrapper>> =
-        songDao.getAll().defaultSchedulers().flatMap {
-            Observable.fromIterable(it)
-                .map{song ->
-                    SongWrapper(
-                        song.id!!,
-                        song.name,
-                        SongWrapper.NO_HIGHLIGHT,
-                        SongWrapper.NO_COLOR
-                    )
-                }
-                .toList()
-                .toObservable()
+    override fun getSongs(): LiveData<List<SongWrapper>> {
+        return Transformations.map(songDao.getAll()) {
+            it?.map { song ->
+                SongWrapper(song.id!!, song.name, SongWrapper.NO_HIGHLIGHT, SongWrapper.NO_COLOR)
+            }?.toList()
         }
+    }
 
     override fun getQueuedSongs(): LiveData<List<QueuedSongWrapper>> {
         return Transformations.map(queuedDao.getQueuedSongs()) {
