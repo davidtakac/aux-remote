@@ -8,11 +8,11 @@ import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepository
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.network.ClientSocket
-import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
+import com.dtakac.aux_remote.common.repository.Repository
 import com.dtakac.aux_remote.pager.songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.common.constants.*
-import com.dtakac.aux_remote.pager.FeedbackMessage
-import com.dtakac.aux_remote.pager.songs.mode.SongsMode
+import com.dtakac.aux_remote.pager.common.FeedbackMessage
+import com.dtakac.aux_remote.pager.common.SongsMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Default
@@ -24,7 +24,7 @@ import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 
 class SongsPagerViewModel(
-    private val repo: DatabaseRepository,
+    private val repo: Repository,
     private val prefsRepo: SharedPrefsRepository,
     private val clientSocket: ClientSocket,
     private val resourceRepo: ResourceRepository

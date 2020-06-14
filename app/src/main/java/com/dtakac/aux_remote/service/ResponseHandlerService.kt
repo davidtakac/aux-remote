@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.core.app.JobIntentService
 import com.dtakac.aux_remote.common.constants.*
 import com.dtakac.aux_remote.common.network.ClientSocket
-import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
+import com.dtakac.aux_remote.common.repository.Repository
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -18,7 +18,7 @@ private const val JOB_ID = 71169
 private const val SERVICE_ACTION = "RESPONSE_HANDLER"
 class ResponseHandlerService: JobIntentService(){
     private val socket by inject<ClientSocket>()
-    private val repo by inject<DatabaseRepository>()
+    private val repo by inject<Repository>()
 
     companion object{
         fun start(context: Context) =
@@ -55,7 +55,7 @@ class ResponseHandlerService: JobIntentService(){
 
     private fun handleServerResponse(lines: List<String>){
         if(lines.isNotEmpty()) {
-            Log.d("ResponseHandlerService", lines.joinToString())
+            Log.d("ResponseHandlerService", lines[0])
             val body = lines.subList(1, lines.size)
             when (lines[0]) {
                 SERVER_SONG_LIST -> onSongList(body)
@@ -67,16 +67,16 @@ class ResponseHandlerService: JobIntentService(){
         }
     }
 
-    private fun onSongList(response: List<String>){
-        repo.persistSongs(response)
+    private fun onSongList(body: List<String>){
+        repo.insertSongs(body)
     }
 
-    private fun onQueueList(response: List<String>){
-        repo.persistQueuedSongs(response)
+    private fun onQueueList(body: List<String>){
+        repo.insertQueuedSongs(body)
     }
 
-    private fun onEnqueued(response: List<String>){
-        repo.persistQueuedSong(response)
+    private fun onEnqueued(body: List<String>){
+        repo.insertQueuedSong(body)
     }
 
     private fun onMoveUp(){
@@ -84,10 +84,10 @@ class ResponseHandlerService: JobIntentService(){
     }
 
     private fun onNowPlaying(response: List<String>){
-        repo.persistNowPlayingSong(response)
+        repo.updateNowPlayingSong(response)
     }
 
     private fun onServiceStopped(){
-        repo.persistMessage(SERVICE_STOPPED_MESSAGE)
+        repo.updateMessage(SERVICE_STOPPED_MESSAGE)
     }
 }

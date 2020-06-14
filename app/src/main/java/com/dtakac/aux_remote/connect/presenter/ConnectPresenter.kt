@@ -2,6 +2,7 @@ package com.dtakac.aux_remote.connect.presenter
 
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
+import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepository
 import com.dtakac.aux_remote.common.constants.CLIENT_MAC
 import com.dtakac.aux_remote.common.constants.PREFS_IP_INPUT
 import com.dtakac.aux_remote.common.constants.PREFS_PORT_INPUT
@@ -22,6 +23,7 @@ import java.util.*
 class ConnectPresenter(
     private val view: ConnectContract.View,
     private val prefsRepo: SharedPrefsRepository,
+    private val resourceRepo: ResourceRepository,
     private val netUtil: NetworkUtil,
     private val client: ClientSocket,
     private val db: AppDatabase
@@ -45,15 +47,15 @@ class ConnectPresenter(
         // validate input and set errors to corresponding UI elements
         if(!netUtil.isValidLocalIpAddress(ipAddress)){
             inputError = true
-            view.setIpAddressError(true)
+            view.setIpAddressError(resourceRepo.getString(R.string.error_ipaddr_invalid))
         }
         if(!netUtil.isValidPort(port)){
             inputError = true
-            view.setPortError(true)
+            view.setPortError(resourceRepo.getString(R.string.error_portnum_invalid))
         }
         if(!netUtil.isDeviceConnectedToWifi()){
             connectionError = true
-            view.showWifiNeededSnackbar()
+            view.showWifiNeededMessage()
         }
 
         if(inputError || connectionError){
@@ -66,10 +68,8 @@ class ConnectPresenter(
     }
 
     private fun initInputFields(){
-        view.apply {
-            setIpAddress(prefsRepo.get(PREFS_IP_INPUT, ""))
-            setPort(prefsRepo.get(PREFS_PORT_INPUT, ""))
-        }
+        view.setIpAddress(prefsRepo.get(PREFS_IP_INPUT, ""))
+        view.setPort(prefsRepo.get(PREFS_PORT_INPUT, ""))
     }
 
     private fun initializeSocket(ipAddress: String, port: String){
@@ -105,14 +105,10 @@ class ConnectPresenter(
     }
 
     private fun clearDatabase(){
-        CoroutineScope(IO).launch {
-            db.clearAllTables()
-        }
+        CoroutineScope(IO).launch { db.clearAllTables() }
     }
 
     private fun closeClientSocket(){
-        CoroutineScope(IO).launch {
-            client.close()
-        }
+        CoroutineScope(IO).launch { client.close() }
     }
 }

@@ -8,7 +8,6 @@ import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
 import com.dtakac.aux_remote.common.base.fragment.newFragmentInstance
 import com.dtakac.aux_remote.common.constants.FRAGMENT_PAGER
-import com.dtakac.aux_remote.common.extensions.defaultSchedulers
 import com.dtakac.aux_remote.connect.presenter.ConnectContract
 import com.dtakac.aux_remote.service.ResponseHandlerService
 import com.dtakac.aux_remote.pager.PagerFragment
@@ -31,12 +30,11 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
     override fun initViews(){
         super.initViews()
         btnConnect.setOnClickListener { presenter.onConnectClicked() }
-        etIpAddress.textChanges().defaultSchedulers().subscribeByAndDispose(
-            onNext = {setIpAddressError(false)}
+        etIpAddress.textChanges().subscribeByAndDispose(
+            onNext = { setIpAddressError(null) }
         )
-
-        etPort.textChanges().defaultSchedulers().subscribeByAndDispose(
-            onNext = {setPortError(false)}
+        etPort.textChanges().subscribeByAndDispose(
+            onNext = { setPortError(null) }
         )
     }
 
@@ -52,15 +50,15 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
 
     override fun getPort(): String = etPort.text.toString()
 
-    override fun setIpAddressError(isError: Boolean) {
-        tilIpAddress.error = if (isError) getString(R.string.error_ipaddr_invalid) else null
+    override fun setIpAddressError(msg: String?) {
+        tilIpAddress.error = msg
     }
 
-    override fun setPortError(isError: Boolean) {
-        tilPort.error = if (isError) getString(R.string.error_portnum_invalid) else null
+    override fun setPortError(msg: String?) {
+        tilPort.error = msg
     }
 
-    override fun showWifiNeededSnackbar() {
+    override fun showWifiNeededMessage() {
         Snackbar.make(activity!!.findViewById(android.R.id.content), getString(R.string.error_internet_needwifi), Snackbar.LENGTH_LONG)
             .setAction(getString(R.string.snackbar_action_wifi_settings)) {
                 startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))

@@ -25,7 +25,7 @@ class NetworkUtil(private val context: Context) {
         return portNum in 1024..65535
     }
 
-    fun isDeviceOnline(): Boolean {
+    private fun isDeviceOnline(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
 

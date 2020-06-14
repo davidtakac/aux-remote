@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
 import com.dtakac.aux_remote.pager.adapter.PagerAdapter
+import com.dtakac.aux_remote.pager.common.FeedbackMessage
 import com.dtakac.aux_remote.pager.view_model.SongsPagerViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges

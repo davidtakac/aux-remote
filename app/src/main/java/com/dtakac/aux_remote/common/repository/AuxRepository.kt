@@ -1,12 +1,10 @@
-package com.dtakac.aux_remote.common.database_repository
+package com.dtakac.aux_remote.common.repository
 
 import android.view.View
-import androidx.arch.core.util.Function
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
-import com.dtakac.aux_remote.common.extensions.defaultSchedulers
 import com.dtakac.aux_remote.common.model.NowPlayingSong
 import com.dtakac.aux_remote.common.model.QueuedSong
 import com.dtakac.aux_remote.common.model.Song
@@ -15,22 +13,20 @@ import com.dtakac.aux_remote.pager.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.pager.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.common.dao.*
 import com.dtakac.aux_remote.common.model.Message
-import io.reactivex.Observable
-import org.apache.commons.collections.bag.TransformedSortedBag
 
-class AuxDatabaseRepository(
+class AuxRepository(
     private val songDao: SongDao,
     private val queuedDao: QueuedSongDao,
     private val nowPlayingDao: NowPlayingSongDao,
     private val messageDao: MessageDao,
     private val sharedPrefsRepo: SharedPrefsRepository
-): DatabaseRepository{
+): Repository{
 
-    override fun persistSongs(body: List<String>) {
+    override fun insertSongs(body: List<String>) {
         songDao.insertAll(body.map { Song(name = it) }.toList())
     }
 
-    override fun persistQueuedSongs(body: List<String>) {
+    override fun insertQueuedSongs(body: List<String>) {
         val result = mutableListOf<QueuedSong>()
         for(i in body.indices step 2){
             val name = body[i]
@@ -40,7 +36,7 @@ class AuxDatabaseRepository(
         queuedDao.insertAllOrUpdate(result)
     }
 
-    override fun persistQueuedSong(body: List<String>) {
+    override fun insertQueuedSong(body: List<String>) {
         val songName = body[0]
         val ownerId = body[1]
         val position = body[2].toInt()
@@ -48,7 +44,7 @@ class AuxDatabaseRepository(
         queuedDao.insertOrUpdate(queuedSong)
     }
 
-    override fun persistNowPlayingSong(body: List<String>) {
+    override fun updateNowPlayingSong(body: List<String>) {
         val songName = body[0]
         val ownerId = body[1]
         val nowPlayingSong =
@@ -63,7 +59,7 @@ class AuxDatabaseRepository(
         }
     }
 
-    override fun persistMessage(message: String) {
+    override fun updateMessage(message: String) {
         messageDao.setMessage(Message(message = message))
     }
 

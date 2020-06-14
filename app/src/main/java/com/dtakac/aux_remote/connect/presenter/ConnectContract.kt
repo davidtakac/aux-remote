@@ -6,9 +6,9 @@ interface ConnectContract {
         fun setPort(port: String)
         fun getIpAddress(): String
         fun getPort(): String
-        fun setIpAddressError(isError: Boolean)
-        fun setPortError(isError: Boolean)
-        fun showWifiNeededSnackbar()
+        fun setIpAddressError(msg: String?)
+        fun setPortError(msg: String?)
+        fun showWifiNeededMessage()
         fun onSocketInitialized()
         fun showLongSnackbar(stringId: Int)
         fun showLoading(isLoading: Boolean)

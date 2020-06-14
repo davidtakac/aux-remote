@@ -1,7 +1,7 @@
 package com.dtakac.aux_remote.pager.songs.controller
 
 import com.airbnb.epoxy.EpoxyController
-import com.dtakac.aux_remote.pager.songs.mode.SongsMode
+import com.dtakac.aux_remote.pager.common.SongsMode
 import com.dtakac.aux_remote.pager.songs.view_holders.song
 import com.dtakac.aux_remote.pager.songs.wrapper.SongWrapper
 
