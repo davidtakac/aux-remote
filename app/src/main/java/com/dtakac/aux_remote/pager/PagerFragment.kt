@@ -37,7 +37,6 @@ class PagerFragment: BaseFragment(){
         initPager()
 
         viewModel.getAllSongs().subscribeByAndDispose()
-        viewModel.getQueuedSongs().subscribeByAndDispose()
         viewModel.nowPlayingSong.observe(this, Observer {
             //todo: refactor! make string in viewmodel!
             if(it?.isUserSong == true){
@@ -63,14 +62,7 @@ class PagerFragment: BaseFragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.userQueuedSongLiveData.observe(this, Observer<QueuedSongWrapper>{
-            showViewQueueSnackbar(getString(R.string.snackbar_queued_template)
-                .format(
-                    StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker), resources.getInteger(R.integer.queued_abbr_len)),
-                    it.position
-                )
-            )
-        })
+        //todo: notify user song?
     }
 
     private fun showViewQueueSnackbar(message: String){

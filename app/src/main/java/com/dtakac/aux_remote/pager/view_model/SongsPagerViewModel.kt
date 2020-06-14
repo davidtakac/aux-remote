@@ -1,6 +1,7 @@
 package com.dtakac.aux_remote.pager.view_model
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepository
@@ -31,6 +32,7 @@ class SongsPagerViewModel(
 ) : ViewModel(){
 
     val nowPlayingSong = repo.getNowPlayingSong()
+    val queue = repo.getQueuedSongs()
 
     //region songs view
     val songsLiveData = MutableLiveData<List<SongWrapper>>()
@@ -75,21 +77,6 @@ class SongsPagerViewModel(
         }
     }
     //endregion
-
-    //region queue view
-    val queue = MutableLiveData<List<QueuedSongWrapper>>()
-    val userQueuedSongLiveData = MutableLiveData<QueuedSongWrapper>()
-
-    //todo: populate user queued song live data (use transformations)
-    fun getQueuedSongs() = repo.getQueuedSongs()
-        .doOnNext {
-            queue.value = it
-
-            val userSong = it.firstOrNull { song -> song.ownerId == prefsRepo.get(PREFS_USER_ID, "") }
-            if(userSong != null && userSong.name != userQueuedSongLiveData.value?.name){
-                userQueuedSongLiveData.value = userSong
-            }
-        }
 
     //region pull from server
     fun pullFromServer() = CoroutineScope(IO).launch {
