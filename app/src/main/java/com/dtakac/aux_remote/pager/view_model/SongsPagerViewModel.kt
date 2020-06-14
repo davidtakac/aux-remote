@@ -80,6 +80,7 @@ class SongsPagerViewModel(
     val queue = MutableLiveData<List<QueuedSongWrapper>>()
     val userQueuedSongLiveData = MutableLiveData<QueuedSongWrapper>()
 
+    //todo: populate user queued song live data (use transformations)
     fun getQueuedSongs() = repo.getQueuedSongs()
         .doOnNext {
             queue.value = it

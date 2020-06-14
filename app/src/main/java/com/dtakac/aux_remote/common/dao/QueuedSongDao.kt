@@ -1,5 +1,6 @@
 package com.dtakac.aux_remote.common.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.dtakac.aux_remote.common.model.QueuedSong
 import io.reactivex.Observable
@@ -7,7 +8,7 @@ import io.reactivex.Observable
 @Dao
 interface QueuedSongDao {
     @Query("SELECT * FROM queued_song_table ORDER BY position ASC")
-    fun getQueuedSongs(): Observable<List<QueuedSong>>
+    fun getQueuedSongs(): LiveData<List<QueuedSong>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdate(queuedSong: QueuedSong)

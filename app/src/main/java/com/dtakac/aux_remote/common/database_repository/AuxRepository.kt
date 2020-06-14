@@ -16,6 +16,7 @@ import com.dtakac.aux_remote.pager.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.common.dao.*
 import com.dtakac.aux_remote.common.model.Message
 import io.reactivex.Observable
+import org.apache.commons.collections.bag.TransformedSortedBag
 
 class AuxDatabaseRepository(
     private val songDao: SongDao,
@@ -81,20 +82,13 @@ class AuxDatabaseRepository(
                 .toObservable()
         }
 
-    override fun getQueuedSongs(): Observable<List<QueuedSongWrapper>> =
-        queuedDao.getQueuedSongs().defaultSchedulers().flatMap {
-            Observable.fromIterable(it)
-                .map{queued ->
-                    QueuedSongWrapper(
-                        queued.ownerId,
-                        queued.name,
-                        queued.position + 1,
-                        getUserIconVisibility(queued.ownerId)
-                    )
-                }
-                .toList()
-                .toObservable()
+    override fun getQueuedSongs(): LiveData<List<QueuedSongWrapper>> {
+        return Transformations.map(queuedDao.getQueuedSongs()) {
+            it?.map { song ->
+                QueuedSongWrapper(song.ownerId, song.name, song.position + 1, getUserIconVisibility(song.ownerId))
+            }?.toList()
         }
+    }
 
     override fun getNowPlayingSong(): LiveData<NowPlayingSongWrapper> {
         return Transformations.map(nowPlayingDao.getNowPlayingSong()) {
