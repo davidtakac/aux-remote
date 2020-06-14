@@ -42,8 +42,6 @@ dependencies {
     implementation koinViewModel
     implementation material
     implementation apacheIo
-    implementation apacheCommons
-    implementation apacheLang
     implementation rxJava
     implementation rxBinding
     implementation rxAppCompat
@@ -54,8 +52,9 @@ dependencies {
     implementation epoxy
     kapt epoxyApt
     implementation room
-    implementation roomRxJava
     kapt roomApt
     implementation lifecycle
     kapt lifecycleApt
+    implementation navigationFragment
+    implementation navigationUi
 }
