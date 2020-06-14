@@ -17,8 +17,7 @@ class MainActivity : BaseActivity() {
     override fun onCreated() {
         super.onCreated()
         displayConnectFragment()
-        viewModel.getMessage().subscribeByAndDispose()
-        viewModel.messageLiveData.observe(this, Observer {
+        viewModel.getMessage().observe(this, Observer {
             if(it == SERVICE_STOPPED_MESSAGE) supportFragmentManager.popBackStack()
         })
     }

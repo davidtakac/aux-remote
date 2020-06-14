@@ -1,5 +1,6 @@
 package com.dtakac.aux_remote.common.database_repository
 
+import androidx.lifecycle.LiveData
 import com.dtakac.aux_remote.pager.songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.pager.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.pager.queue.wrapper.QueuedSongWrapper
@@ -16,5 +17,5 @@ interface DatabaseRepository {
     fun getSongs(): Observable<List<SongWrapper>>
     fun getQueuedSongs(): Observable<List<QueuedSongWrapper>>
     fun getNowPlayingSong(): Observable<NowPlayingSongWrapper>
-    fun getMessage(): Observable<String>
+    fun getMessage(): LiveData<String>
 }

@@ -1,6 +1,9 @@
 package com.dtakac.aux_remote.common.database_repository
 
 import android.view.View
+import androidx.arch.core.util.Function
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 import com.dtakac.aux_remote.common.extensions.defaultSchedulers
@@ -103,8 +106,9 @@ class AuxDatabaseRepository(
                 )
             }
 
-    override fun getMessage(): Observable<String> =
-        messageDao.getMessage().defaultSchedulers().map { it.message }
+    override fun getMessage(): LiveData<String> {
+        return Transformations.map(messageDao.getMessage()) { it?.message }
+    }
 
     private fun getUserIconVisibility(ownerId: String) =
         if(ownerId == sharedPrefsRepo.get(PREFS_USER_ID, "")) View.VISIBLE else View.INVISIBLE

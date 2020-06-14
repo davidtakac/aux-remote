@@ -1,5 +1,6 @@
 package com.dtakac.aux_remote.common.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,5 +14,5 @@ interface MessageDao{
     fun setMessage(message: Message)
 
     @Query("SELECT * FROM message_table LIMIT 1")
-    fun getMessage(): Observable<Message>
+    fun getMessage(): LiveData<Message>
 }
