@@ -2,6 +2,7 @@ package com.dtakac.aux_remote.pager.view_model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepository
@@ -10,6 +11,7 @@ import com.dtakac.aux_remote.common.network.ClientSocket
 import com.dtakac.aux_remote.common.database_repository.DatabaseRepository
 import com.dtakac.aux_remote.pager.songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.common.constants.*
+import com.dtakac.aux_remote.pager.FeedbackMessage
 import com.dtakac.aux_remote.pager.songs.mode.SongsMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -27,14 +29,24 @@ class SongsPagerViewModel(
     private val clientSocket: ClientSocket,
     private val resourceRepo: ResourceRepository
 ) : ViewModel(){
+    private val _filteredSongs = MutableLiveData<List<SongWrapper>>()
+    private val _songsMode = MutableLiveData<SongsMode>()
+
     val songs = repo.getSongs()
     val nowPlayingSong = repo.getNowPlayingSong()
     val queue = repo.getQueuedSongs()
-
-    private val _filteredSongs = MutableLiveData<List<SongWrapper>>()
-    private val _songsMode = MutableLiveData<SongsMode>()
     val filteredSongs: LiveData<List<SongWrapper>> = _filteredSongs
     val songsMode: LiveData<SongsMode> = _songsMode
+    val feedbackMessage = Transformations.map(nowPlayingSong) {
+        if(it?.isUserSong == true){
+            FeedbackMessage(
+                resourceRepo.getString(R.string.user_song_playing_feedback),
+                resourceRepo.getString(R.string.view_action)
+            )
+        } else {
+            null
+        }
+    }
 
     fun onSongClicked(songName: String){
         CoroutineScope(IO).launch { writeSongToServer(songName) }

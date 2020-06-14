@@ -13,8 +13,6 @@ import com.dtakac.aux_remote.pager.view_model.SongsPagerViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges
 import kotlinx.android.synthetic.main.fragment_pager.*
-import kotlinx.coroutines.flow.flow
-import org.apache.commons.lang3.StringUtils
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.concurrent.TimeUnit
 
@@ -31,45 +29,29 @@ class PagerFragment: BaseFragment(){
         super.initViews()
         initToolbar()
         initPager()
-
-        viewModel.nowPlayingSong.observe(this, Observer {
-            //todo: refactor! make string in viewmodel!
-            if(it?.isUserSong == true){
-                showSnackbarActionQueue(
-                    getString(R.string.nowplaying_snackbar)
-                        .format(
-                            StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker),
-                            resources.getInteger(R.integer.playing_abbr_len)))
-                )
-            }
-        })
-
-        viewModel.pullFromServer()
     }
 
     private fun initToolbar(){
         toolbar.inflateMenu(R.menu.menu)
         initSearchView(toolbar.menu.findItem(R.id.menu_search))
-        toolbar.setNavigationOnClickListener {
-            fragmentManager?.popBackStack()
-        }
+        toolbar.setNavigationOnClickListener { fragmentManager?.popBackStack() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //todo: notify user song?
+        viewModel.feedbackMessage.observe(viewLifecycleOwner, Observer { showFeedbackMessage(it) })
+        viewModel.pullFromServer()
     }
 
-    private fun showSnackbarActionQueue(message: String){
+    private fun showFeedbackMessage(feedbackMessage: FeedbackMessage?){
+        if(feedbackMessage == null) return
         val snackbar = Snackbar.make(
             activity!!.findViewById(android.R.id.content),
-            message,
+            feedbackMessage.message,
             Snackbar.LENGTH_LONG
         )
-        if(pager.currentItem != QUEUE_VIEW_POSITION){
-            snackbar.setAction(R.string.snackbar_action_view) { pager.currentItem =
-                QUEUE_VIEW_POSITION
-            }
+        if(feedbackMessage.action != null && pager.currentItem != QUEUE_VIEW_POSITION) {
+            snackbar.setAction(feedbackMessage.action) { pager.currentItem = QUEUE_VIEW_POSITION }
         }
         snackbar.show()
     }
