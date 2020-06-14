@@ -1,5 +1,6 @@
 package com.dtakac.aux_remote.common.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,5 +14,5 @@ interface NowPlayingSongDao {
     fun setNowPlayingSong(nowPlayingSong: NowPlayingSong)
 
     @Query("SELECT * FROM now_playing_song_table LIMIT 1")
-    fun getNowPlayingSong(): Observable<NowPlayingSong>
+    fun getNowPlayingSong(): LiveData<NowPlayingSong>
 }

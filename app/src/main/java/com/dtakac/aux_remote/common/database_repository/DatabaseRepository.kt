@@ -16,6 +16,6 @@ interface DatabaseRepository {
 
     fun getSongs(): Observable<List<SongWrapper>>
     fun getQueuedSongs(): Observable<List<QueuedSongWrapper>>
-    fun getNowPlayingSong(): Observable<NowPlayingSongWrapper>
+    fun getNowPlayingSong(): LiveData<NowPlayingSongWrapper>
     fun getMessage(): LiveData<String>
 }

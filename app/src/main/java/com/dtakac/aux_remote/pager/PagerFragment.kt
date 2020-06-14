@@ -38,12 +38,17 @@ class PagerFragment: BaseFragment(){
 
         viewModel.getAllSongs().subscribeByAndDispose()
         viewModel.getQueuedSongs().subscribeByAndDispose()
-        viewModel.getNowPlayingSong().subscribeByAndDispose(
-            onNext = {
-                if(it.isUserSong) showViewQueueSnackbar(getString(R.string.nowplaying_snackbar)
-                        .format(StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker), resources.getInteger(R.integer.playing_abbr_len))))
+        viewModel.nowPlayingSong.observe(this, Observer {
+            //todo: refactor! make string in viewmodel!
+            if(it?.isUserSong == true){
+                showViewQueueSnackbar(
+                    getString(R.string.nowplaying_snackbar)
+                        .format(
+                            StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker),
+                            resources.getInteger(R.integer.playing_abbr_len)))
+                )
             }
-        )
+        })
 
         viewModel.pullFromServer()
     }

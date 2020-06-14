@@ -96,15 +96,16 @@ class AuxDatabaseRepository(
                 .toObservable()
         }
 
-    override fun getNowPlayingSong(): Observable<NowPlayingSongWrapper> =
-        nowPlayingDao.getNowPlayingSong().defaultSchedulers()
-            .map {
+    override fun getNowPlayingSong(): LiveData<NowPlayingSongWrapper> {
+        return Transformations.map(nowPlayingDao.getNowPlayingSong()) {
+            it?.let {
                 NowPlayingSongWrapper(
-                    it.name,
-                    it.ownerId,
+                    it.name, it.ownerId,
                     sharedPrefsRepo.get(PREFS_USER_ID, "") == it.ownerId
                 )
             }
+        }
+    }
 
     override fun getMessage(): LiveData<String> {
         return Transformations.map(messageDao.getMessage()) { it?.message }

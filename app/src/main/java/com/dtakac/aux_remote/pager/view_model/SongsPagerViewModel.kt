@@ -30,6 +30,8 @@ class SongsPagerViewModel(
     private val resourceRepo: ResourceRepository
 ) : ViewModel(){
 
+    val nowPlayingSong = repo.getNowPlayingSong()
+
     //region songs view
     val songsLiveData = MutableLiveData<List<SongWrapper>>()
     val filteredSongsLiveData = MutableLiveData<List<SongWrapper>>()
@@ -75,24 +77,18 @@ class SongsPagerViewModel(
     //endregion
 
     //region queue view
-    val queueLiveData = MutableLiveData<QueueUi>()
+    val queue = MutableLiveData<List<QueuedSongWrapper>>()
     val userQueuedSongLiveData = MutableLiveData<QueuedSongWrapper>()
 
     fun getQueuedSongs() = repo.getQueuedSongs()
         .doOnNext {
-            queueLiveData.value = provideQueueUi(it, queueLiveData.value?.nowPlayingSong)
+            queue.value = it
 
             val userSong = it.firstOrNull { song -> song.ownerId == prefsRepo.get(PREFS_USER_ID, "") }
             if(userSong != null && userSong.name != userQueuedSongLiveData.value?.name){
                 userQueuedSongLiveData.value = userSong
             }
         }
-
-    fun getNowPlayingSong() = repo.getNowPlayingSong()
-        .doOnNext {
-            queueLiveData.value = provideQueueUi(queueLiveData.value?.queuedSongs, it)
-        }
-    //endregion
 
     //region pull from server
     fun pullFromServer() = CoroutineScope(IO).launch {
