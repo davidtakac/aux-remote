@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
+import com.dtakac.aux_remote.common.constants.SERVICE_STOPPED_MESSAGE
 import com.dtakac.aux_remote.pager.adapter.PagerAdapter
 import com.dtakac.aux_remote.pager.common.FeedbackMessage
 import com.dtakac.aux_remote.pager.view_model.SongsPagerViewModel
@@ -41,13 +43,14 @@ class PagerFragment: BaseFragment(){
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.feedbackMessage.observe(viewLifecycleOwner, Observer { showFeedbackMessage(it) })
+        viewModel.serverMessage.observe(viewLifecycleOwner, Observer { handleServerMessage(it) })
         viewModel.pullFromServer()
     }
 
     private fun showFeedbackMessage(feedbackMessage: FeedbackMessage?){
         if(feedbackMessage == null) return
         val snackbar = Snackbar.make(
-            activity!!.findViewById(android.R.id.content),
+            requireActivity().findViewById(android.R.id.content),
             feedbackMessage.message,
             Snackbar.LENGTH_LONG
         )
@@ -100,5 +103,15 @@ class PagerFragment: BaseFragment(){
             this
         )
         tabLayout.setupWithViewPager(pager)
+    }
+
+    private fun handleServerMessage(message: String?){
+        when(message){
+            SERVICE_STOPPED_MESSAGE -> openConnectFragment()
+        }
+    }
+
+    private fun openConnectFragment(){
+        findNavController().navigate(R.id.action_pagerFragment_to_connectFragment)
     }
 }

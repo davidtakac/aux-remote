@@ -34,6 +34,7 @@ class ResponseHandlerService: JobIntentService(){
                     handleServerResponse(readServerResponse(reader))
                 } catch (e: Exception) {
                     Log.e(TAG, "Exception in service loop, stopping service. Message: ${e.message}")
+                    e.printStackTrace()
                     break
                 }
             }
@@ -55,7 +56,6 @@ class ResponseHandlerService: JobIntentService(){
 
     private fun handleServerResponse(lines: List<String>){
         if(lines.isNotEmpty()) {
-            Log.d("ResponseHandlerService", lines[0])
             val body = lines.subList(1, lines.size)
             when (lines[0]) {
                 SERVER_SONG_LIST -> onSongList(body)

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/connectFragment">
+    <fragment
+        android:id="@+id/connectFragment"
+        android:name="com.dtakac.aux_remote.connect.fragment.ConnectFragment"
+        android:label="Connect"
+        tools:layout="@layout/fragment_connect">
+        <action
+            android:id="@+id/action_connectFragment_to_pagerFragment"
+            app:destination="@id/pagerFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/pagerFragment"
+        android:name="com.dtakac.aux_remote.pager.PagerFragment"
+        android:label="Pager"
+        tools:layout="@layout/fragment_pager">
+        <action
+            android:id="@+id/action_pagerFragment_to_connectFragment"
+            app:destination="@id/connectFragment"
+            app:popUpTo="@id/connectFragment"/>
+    </fragment>
+</navigation>

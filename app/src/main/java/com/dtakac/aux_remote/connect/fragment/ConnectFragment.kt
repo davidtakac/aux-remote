@@ -4,13 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
-import com.dtakac.aux_remote.common.base.fragment.newFragmentInstance
-import com.dtakac.aux_remote.common.constants.FRAGMENT_PAGER
 import com.dtakac.aux_remote.connect.presenter.ConnectContract
 import com.dtakac.aux_remote.service.ResponseHandlerService
-import com.dtakac.aux_remote.pager.PagerFragment
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.widget.textChanges
 import kotlinx.android.synthetic.main.fragment_connect.*
@@ -59,7 +57,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
     }
 
     override fun showWifiNeededMessage() {
-        Snackbar.make(activity!!.findViewById(android.R.id.content), getString(R.string.error_internet_needwifi), Snackbar.LENGTH_LONG)
+        Snackbar.make(requireActivity().findViewById(android.R.id.content), getString(R.string.error_internet_needwifi), Snackbar.LENGTH_LONG)
             .setAction(getString(R.string.snackbar_action_wifi_settings)) {
                 startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
             }
@@ -67,8 +65,8 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
     }
 
     override fun onSocketInitialized() {
-        ResponseHandlerService.start(activity!!)
-        displayPagerFragment()
+        ResponseHandlerService.start(requireActivity())
+        openPagerFragment()
     }
 
     override fun showLongSnackbar(stringId: Int) {
@@ -84,12 +82,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
         btnConnect.isEnabled = isEnabled
     }
 
-    private fun displayPagerFragment(){
-        fragmentManager!!.beginTransaction()
-            .replace(R.id.frame,
-                newFragmentInstance<PagerFragment>(Bundle.EMPTY)
-            )
-            .addToBackStack(FRAGMENT_PAGER)
-            .commit()
+    private fun openPagerFragment(){
+        findNavController().navigate(R.id.action_connectFragment_to_pagerFragment)
     }
 }

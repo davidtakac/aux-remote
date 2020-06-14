@@ -47,6 +47,7 @@ class SongsPagerViewModel(
             null
         }
     }
+    val serverMessage = repo.getMessage()
 
     fun onSongClicked(songName: String){
         CoroutineScope(IO).launch { writeSongToServer(songName) }
