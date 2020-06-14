@@ -20,7 +20,7 @@ class SongsListFragment : BaseFragment(), SongsListInterface {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.songs.observe(this, Observer { controller.setSongs(it) })
-        viewModel.filteredSongsLiveData.observe(this, Observer { controller.setFilteredSongs(it) })
+        viewModel.filteredSongs.observe(this, Observer { controller.setFilteredSongs(it) })
         viewModel.songsMode.observe(viewLifecycleOwner, Observer { controller.setMode(it) })
     }
 

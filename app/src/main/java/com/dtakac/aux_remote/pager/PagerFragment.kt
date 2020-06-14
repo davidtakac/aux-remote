@@ -4,29 +4,26 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
-import com.dtakac.aux_remote.common.base.fragment.newFragmentInstance
-import com.dtakac.aux_remote.pager.songs.fragment.SongsListFragment
-import com.dtakac.aux_remote.pager.queue.fragment.QueueFragment
+import com.dtakac.aux_remote.pager.adapter.PagerAdapter
 import com.dtakac.aux_remote.pager.view_model.SongsPagerViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges
 import kotlinx.android.synthetic.main.fragment_pager.*
+import kotlinx.coroutines.flow.flow
 import org.apache.commons.lang3.StringUtils
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "pager_tag"
-private const val SONGS_VIEW_POSITION = 0
-private const val QUEUE_VIEW_POSITION = 1
 class PagerFragment: BaseFragment(){
-
+    companion object {
+        const val SONGS_VIEW_POSITION = 0
+        const val QUEUE_VIEW_POSITION = 1
+    }
     override val layoutRes: Int = R.layout.fragment_pager
     private val viewModel by viewModel<SongsPagerViewModel>()
 
@@ -38,7 +35,7 @@ class PagerFragment: BaseFragment(){
         viewModel.nowPlayingSong.observe(this, Observer {
             //todo: refactor! make string in viewmodel!
             if(it?.isUserSong == true){
-                showViewQueueSnackbar(
+                showSnackbarActionQueue(
                     getString(R.string.nowplaying_snackbar)
                         .format(
                             StringUtils.abbreviate(it.name, getString(R.string.abbreviation_marker),
@@ -63,7 +60,7 @@ class PagerFragment: BaseFragment(){
         //todo: notify user song?
     }
 
-    private fun showViewQueueSnackbar(message: String){
+    private fun showSnackbarActionQueue(message: String){
         val snackbar = Snackbar.make(
             activity!!.findViewById(android.R.id.content),
             message,
@@ -102,7 +99,6 @@ class PagerFragment: BaseFragment(){
                     item.collapseActionView()
                 }
             }
-
         })
 
         search.queryTextChanges()
@@ -116,23 +112,10 @@ class PagerFragment: BaseFragment(){
     }
 
     private fun initPager(){
-        // attach adapter to pager
         pager.adapter = PagerAdapter(
             resources.getStringArray(R.array.labels_fragments),
             this
         )
-        // setup tablayout with pager
         tabLayout.setupWithViewPager(pager)
     }
-}
-
-class PagerAdapter(private val titles: Array<String>, f: Fragment): FragmentStatePagerAdapter(f.childFragmentManager){
-    override fun getCount(): Int = 2
-    override fun getItem(position: Int): Fragment =
-        when(position){
-            SONGS_VIEW_POSITION -> newFragmentInstance<SongsListFragment>(Bundle.EMPTY)
-            QUEUE_VIEW_POSITION -> newFragmentInstance<QueueFragment>(Bundle.EMPTY)
-            else -> throw IllegalStateException("No fragment defined for position: $position")
-        }
-    override fun getPageTitle(position: Int): CharSequence? = titles[position]
 }

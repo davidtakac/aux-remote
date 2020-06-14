@@ -1,5 +1,6 @@
 package com.dtakac.aux_remote.pager.view_model
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dtakac.aux_remote.R
@@ -29,37 +30,44 @@ class SongsPagerViewModel(
     val songs = repo.getSongs()
     val nowPlayingSong = repo.getNowPlayingSong()
     val queue = repo.getQueuedSongs()
-    val filteredSongsLiveData = MutableLiveData<List<SongWrapper>>()
-    val songsMode = MutableLiveData<SongsMode>()
+
+    private val _filteredSongs = MutableLiveData<List<SongWrapper>>()
+    private val _songsMode = MutableLiveData<SongsMode>()
+    val filteredSongs: LiveData<List<SongWrapper>> = _filteredSongs
+    val songsMode: LiveData<SongsMode> = _songsMode
 
     fun onSongClicked(songName: String){
-        CoroutineScope(IO).launch{ writeSongToServer(songName) }
+        CoroutineScope(IO).launch { writeSongToServer(songName) }
     }
 
     fun onQueryTextChanged(query: String) {
-        // filter song names which contain query string
         CoroutineScope(Default).launch {
-            val filtered = songs.value
-                ?.filter { it.name.contains(query, ignoreCase = true) }
-                ?.map {
-                    SongWrapper(
-                        it.id,
-                        it.name,
-                        query,
-                        resourceRepo.getColor(R.color.green400_analogous)
-                    )
-                }
-                ?.toList()
-
+            val filtered = filterSongs(query)
             withContext(Main){
-                filteredSongsLiveData.value = filtered
-                songsMode.value = SongsMode.FILTERED_SONGS
+                _filteredSongs.value = filtered
+                _songsMode.value = SongsMode.FILTERED_SONGS
             }
         }
     }
 
     fun onSearchCollapsed(){
-        songsMode.value = SongsMode.SONGS
+        _songsMode.value = SongsMode.SONGS
+    }
+
+    fun pullFromServer() {
+        CoroutineScope(IO).launch {
+            writeLineToServer(CLIENT_REQUEST_SONGS)
+            writeLineToServer(CLIENT_REQUEST_QUEUE)
+            writeLineToServer(CLIENT_REQUEST_PLAYING)
+        }
+    }
+
+    private fun writeLineToServer(line: String){
+        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream ?: return, StandardCharsets.UTF_8))
+        writer.apply {
+            write(line); newLine();
+            flush()
+        }
     }
 
     private fun writeSongToServer(songName: String){
@@ -71,23 +79,18 @@ class SongsPagerViewModel(
             flush()
         }
     }
-    //endregion
 
-    //region pull from server
-    fun pullFromServer() = CoroutineScope(IO).launch {
-            writeRequests(listOf(
-                CLIENT_REQUEST_SONGS,
-                CLIENT_REQUEST_QUEUE,
-                CLIENT_REQUEST_PLAYING
-            )
-            )
-        }
-
-    private fun writeRequests(requests: List<String>){
-        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream ?: return, StandardCharsets.UTF_8))
-        writer.apply{
-            requests.forEach { write(it); newLine(); flush() }
-        }
+    private fun filterSongs(query: String): List<SongWrapper>?{
+        return songs.value
+            ?.filter { it.name.contains(query, ignoreCase = true) }
+            ?.map {
+                SongWrapper(
+                    it.id,
+                    it.name,
+                    query,
+                    resourceRepo.getColor(R.color.green400_analogous)
+                )
+            }
+            ?.toList()
     }
-    //endregion
 }
