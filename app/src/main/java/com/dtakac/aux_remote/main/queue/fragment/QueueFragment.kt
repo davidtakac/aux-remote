@@ -13,7 +13,7 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 class QueueFragment : BaseFragment(){
     override val layoutRes = R.layout.fragment_queue
     private val controller by inject<QueueController>()
-    private val viewModel by sharedViewModel<SongsPagerViewModel>(from = {parentFragment!!})
+    private val viewModel by sharedViewModel<SongsPagerViewModel>(from = { requireParentFragment() })
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

@@ -1,9 +1,6 @@
 package com.dtakac.aux_remote.main.view_model
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepository
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
@@ -13,6 +10,8 @@ import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.common.constants.*
 import com.dtakac.aux_remote.main.common.FeedbackMessage
 import com.dtakac.aux_remote.main.common.SongsMode
+import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
+import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Default
@@ -31,23 +30,23 @@ class SongsPagerViewModel(
 ) : ViewModel(){
     private val _filteredSongs = MutableLiveData<List<SongWrapper>>()
     private val _songsMode = MutableLiveData<SongsMode>()
+    private val _feedbackMessage = MediatorLiveData<FeedbackMessage>()
+    private val _songs = MediatorLiveData<List<SongWrapper>>()
+    private val _nowPlayingSong = MediatorLiveData<NowPlayingSongWrapper>()
+    private val _queue = MediatorLiveData<List<QueuedSongWrapper>>()
+    private val _serverMessage = MediatorLiveData<String>()
 
-    val songs = repo.getSongs()
-    val nowPlayingSong = repo.getNowPlayingSong()
-    val queue = repo.getQueuedSongs()
+    val songs: LiveData<List<SongWrapper>> = _songs
+    val nowPlayingSong: LiveData<NowPlayingSongWrapper> = _nowPlayingSong
+    val queue: LiveData<List<QueuedSongWrapper>> = _queue
+    val serverMessage: LiveData<String> = _serverMessage
     val filteredSongs: LiveData<List<SongWrapper>> = _filteredSongs
     val songsMode: LiveData<SongsMode> = _songsMode
-    val feedbackMessage = Transformations.map(nowPlayingSong) {
-        if(it?.isUserSong == true){
-            FeedbackMessage(
-                resourceRepo.getString(R.string.user_song_playing_feedback),
-                resourceRepo.getString(R.string.view_action)
-            )
-        } else {
-            null
-        }
-    }
-    val serverMessage = repo.getMessage()
+    val feedbackMessage: LiveData<FeedbackMessage> = _feedbackMessage
+
+    private var previouslyQueuedSong: QueuedSongWrapper? = null
+
+    init { initMediators() }
 
     fun onSongClicked(songName: String){
         CoroutineScope(IO).launch { writeSongToServer(songName) }
@@ -93,7 +92,7 @@ class SongsPagerViewModel(
         }
     }
 
-    private fun filterSongs(query: String): List<SongWrapper>?{
+    private fun filterSongs(query: String): List<SongWrapper> {
         return songs.value
             ?.filter { it.name.contains(query, ignoreCase = true) }
             ?.map {
@@ -104,6 +103,35 @@ class SongsPagerViewModel(
                     resourceRepo.getColor(R.color.green400_analogous)
                 )
             }
-            ?.toList()
+            ?.toList() ?: listOf()
+    }
+
+    private fun initMediators(){
+        //feedback message
+        _feedbackMessage.addSource(queue) { result ->
+            val userSong = result?.firstOrNull{ it.ownerId == prefsRepo.get(PREFS_USER_ID, "")} ?: return@addSource
+            val action = resourceRepo.getString(R.string.view_action)
+            val textRes = if(previouslyQueuedSong == null){
+                R.string.queued_feedback
+            } else {
+                R.string.swapped_feedback
+            }
+            _feedbackMessage.value = FeedbackMessage(resourceRepo.getString(textRes), action)
+                .also { previouslyQueuedSong = userSong }
+        }
+        _feedbackMessage.addSource(nowPlayingSong) { result ->
+            if(result?.isUserSong == true){
+                previouslyQueuedSong = null
+                _feedbackMessage.value = FeedbackMessage(
+                    resourceRepo.getString(R.string.user_song_playing_feedback),
+                    resourceRepo.getString(R.string.view_action)
+                )
+            }
+        }
+        //database mediators
+        _songs.addSource(repo.getSongs()) { _songs.value = it ?: return@addSource }
+        _nowPlayingSong.addSource(repo.getNowPlayingSong()) { _nowPlayingSong.value = it ?: return@addSource }
+        _queue.addSource(repo.getQueuedSongs()) { _queue.value = it ?: return@addSource }
+        _serverMessage.addSource(repo.getMessage()) { _serverMessage.value = it ?: return@addSource }
     }
 }

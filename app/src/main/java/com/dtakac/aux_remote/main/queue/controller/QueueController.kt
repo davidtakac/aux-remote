@@ -9,14 +9,14 @@ import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
 
 class QueueController: EpoxyController(){
     private var nowPlayingSong: NowPlayingSongWrapper? = null
-    private var queue: List<QueuedSongWrapper>? = listOf()
+    private var queue: List<QueuedSongWrapper> = listOf()
 
-    fun setQueue(songs: List<QueuedSongWrapper>?) {
+    fun setQueue(songs: List<QueuedSongWrapper>) {
         queue = songs
         requestModelBuild()
     }
 
-    fun setNowPlayingSong(song: NowPlayingSongWrapper?){
+    fun setNowPlayingSong(song: NowPlayingSongWrapper){
         nowPlayingSong = song
         requestModelBuild()
     }
@@ -26,7 +26,7 @@ class QueueController: EpoxyController(){
             id("now-playing")
             name(nowPlayingSong?.name ?: EMPTY_STRING)
         }
-        queue?.forEach { queuedSong ->
+        queue.forEach { queuedSong ->
             queuedSong {
                 id(queuedSong.ownerId)
                 position(queuedSong.position.toString())

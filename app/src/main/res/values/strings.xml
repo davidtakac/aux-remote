@@ -10,7 +10,8 @@
     <string name="label_menu_search">Search</string>
     <string name="error_internet_needwifi">Wi-Fi connection required.</string>
     <string name="notif_server_error">An error occurred, try reconnecting.</string>
-    <string name="snackbar_queued_template">\"%s\" queued at position \%d\.</string>
+    <string name="queued_feedback">Queued successfully.</string>
+    <string name="swapped_feedback">Swapped successfully.</string>
     <string name="user_song_playing_feedback">Your song is now playing.</string>
     <string name="view_action">View</string>
     <string name="snackbar_action_wifi_settings">Turn on</string>

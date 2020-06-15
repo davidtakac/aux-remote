@@ -6,16 +6,16 @@ import com.dtakac.aux_remote.main.songs.view_holders.song
 import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
 
 class SongsListController(private val songsListInterface: SongsListInterface): EpoxyController(){
-    private var songs: List<SongWrapper>? = listOf()
-    private var filteredSongs: List<SongWrapper>? = listOf()
+    private var songs: List<SongWrapper> = listOf()
+    private var filteredSongs: List<SongWrapper> = listOf()
     private var mode = SongsMode.SONGS
 
-    fun setSongs(songs: List<SongWrapper>?){
+    fun setSongs(songs: List<SongWrapper>){
         this.songs = songs
         requestModelBuild()
     }
 
-    fun setFilteredSongs(songs: List<SongWrapper>?){
+    fun setFilteredSongs(songs: List<SongWrapper>){
         this.filteredSongs = songs
         requestModelBuild()
     }
@@ -30,7 +30,7 @@ class SongsListController(private val songsListInterface: SongsListInterface): E
             SongsMode.SONGS -> songs
             SongsMode.FILTERED_SONGS -> filteredSongs
         }
-        data?.forEach {
+        data.forEach {
             song {
                 id(it.id)
                 name(it.highlightedName)
