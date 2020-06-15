@@ -21,8 +21,9 @@ class ResponseHandlerService: JobIntentService(){
     private val repo by inject<Repository>()
 
     companion object{
-        fun start(context: Context) =
+        fun start(context: Context) {
             enqueueWork(context, ResponseHandlerService::class.java, JOB_ID, Intent(SERVICE_ACTION))
+        }
     }
 
     override fun onHandleWork(intent: Intent) {

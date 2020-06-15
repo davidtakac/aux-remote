@@ -16,9 +16,9 @@ import org.koin.dsl.module
 val appModule = module {
     single{ ClientSocket() }
     single{ NetworkUtil(get()) }
-    single{get<Context>().resources}
+    single{ get<Context>().resources }
     single<ResourceRepository>{ ResourceRepoImpl(get()) }
-    single<Repository>{AuxRepository(get(), get(), get(), get(), get())}
+    single<Repository>{ AuxRepository(get(), get()) }
     single{
         Room.databaseBuilder(
             get(),

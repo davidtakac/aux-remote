@@ -8,22 +8,23 @@ import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 import com.dtakac.aux_remote.common.model.NowPlayingSong
 import com.dtakac.aux_remote.common.model.QueuedSong
 import com.dtakac.aux_remote.common.model.Song
-import com.dtakac.aux_remote.pager.songs.wrapper.SongWrapper
-import com.dtakac.aux_remote.pager.queue.wrapper.NowPlayingSongWrapper
-import com.dtakac.aux_remote.pager.queue.wrapper.QueuedSongWrapper
-import com.dtakac.aux_remote.common.dao.*
+import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
+import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
+import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
+import com.dtakac.aux_remote.common.database.AppDatabase
 import com.dtakac.aux_remote.common.model.Message
 
 class AuxRepository(
-    private val songDao: SongDao,
-    private val queuedDao: QueuedSongDao,
-    private val nowPlayingDao: NowPlayingSongDao,
-    private val messageDao: MessageDao,
+    private val db: AppDatabase,
     private val sharedPrefsRepo: SharedPrefsRepository
 ): Repository{
 
+    override fun clearData() {
+        db.clearAllTables()
+    }
+
     override fun insertSongs(body: List<String>) {
-        songDao.insertAll(body.map { Song(name = it) }.toList())
+        db.songDao().insertAll(body.map { Song(name = it) }.toList())
     }
 
     override fun insertQueuedSongs(body: List<String>) {
@@ -33,7 +34,7 @@ class AuxRepository(
             val ownerId = body[i+1]
             result.add(QueuedSong(ownerId, name, i / 2))
         }
-        queuedDao.insertAllOrUpdate(result)
+        db.queuedSongDao().insertAllOrUpdate(result)
     }
 
     override fun insertQueuedSong(body: List<String>) {
@@ -41,7 +42,7 @@ class AuxRepository(
         val ownerId = body[1]
         val position = body[2].toInt()
         val queuedSong = QueuedSong(ownerId, songName, position)
-        queuedDao.insertOrUpdate(queuedSong)
+        db.queuedSongDao().insertOrUpdate(queuedSong)
     }
 
     override fun updateNowPlayingSong(body: List<String>) {
@@ -49,22 +50,22 @@ class AuxRepository(
         val ownerId = body[1]
         val nowPlayingSong =
             NowPlayingSong(name = songName, ownerId = ownerId)
-        nowPlayingDao.setNowPlayingSong(nowPlayingSong)
+        db.nowPlayingSongDao().setNowPlayingSong(nowPlayingSong)
     }
 
     override fun moveUp() {
-        queuedDao.apply {
+        db.queuedSongDao().apply {
             deleteFirst()
             decrementPosition()
         }
     }
 
     override fun updateMessage(message: String) {
-        messageDao.setMessage(Message(message = message))
+        db.messageDao().setMessage(Message(message = message))
     }
 
     override fun getSongs(): LiveData<List<SongWrapper>> {
-        return Transformations.map(songDao.getAll()) {
+        return Transformations.map(db.songDao().getAll()) {
             it?.map { song ->
                 SongWrapper(song.id!!, song.name, SongWrapper.NO_HIGHLIGHT, SongWrapper.NO_COLOR)
             }?.toList()
@@ -72,7 +73,7 @@ class AuxRepository(
     }
 
     override fun getQueuedSongs(): LiveData<List<QueuedSongWrapper>> {
-        return Transformations.map(queuedDao.getQueuedSongs()) {
+        return Transformations.map(db.queuedSongDao().getQueuedSongs()) {
             it?.map { song ->
                 QueuedSongWrapper(song.ownerId, song.name, song.position + 1, getUserIconVisibility(song.ownerId))
             }?.toList()
@@ -80,7 +81,7 @@ class AuxRepository(
     }
 
     override fun getNowPlayingSong(): LiveData<NowPlayingSongWrapper> {
-        return Transformations.map(nowPlayingDao.getNowPlayingSong()) {
+        return Transformations.map(db.nowPlayingSongDao().getNowPlayingSong()) {
             it?.let {
                 NowPlayingSongWrapper(
                     it.name, it.ownerId,
@@ -91,7 +92,7 @@ class AuxRepository(
     }
 
     override fun getMessage(): LiveData<String> {
-        return Transformations.map(messageDao.getMessage()) { it?.message }
+        return Transformations.map(db.messageDao().getMessage()) { it?.message }
     }
 
     private fun getUserIconVisibility(ownerId: String) =

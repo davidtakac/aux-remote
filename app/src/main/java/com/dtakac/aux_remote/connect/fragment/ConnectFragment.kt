@@ -70,7 +70,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
     }
 
     override fun showLongSnackbar(stringId: Int) {
-        Snackbar.make(activity!!.findViewById(android.R.id.content), getString(stringId), Snackbar.LENGTH_LONG)
+        Snackbar.make(requireActivity().findViewById(android.R.id.content), getString(stringId), Snackbar.LENGTH_LONG)
             .show()
     }
 
