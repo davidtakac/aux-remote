@@ -10,6 +10,7 @@ import com.dtakac.aux_remote.common.repository.Repository
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.lang.IllegalStateException
 import java.nio.charset.Charset
 import kotlin.Exception
 
@@ -48,13 +49,14 @@ class ResponseHandlerService: JobIntentService(){
     private fun readServerResponse(reader: BufferedReader): List<String>{
         val lines = mutableListOf<String>()
         while(true){
-            val line = reader.readLine() ?: throw Exception("Line is null")
+            val line = reader.readLine() ?: throw IllegalStateException("Line is null")
             if(line == SERVER_BROADCAST_END) break else lines.add(line)
         }
         Log.d(TAG, lines.toString())
         return lines
     }
 
+    //todo: bug when player doesnt have loaded songs
     private fun handleServerResponse(lines: List<String>){
         if(lines.isNotEmpty()) {
             val body = lines.subList(1, lines.size)

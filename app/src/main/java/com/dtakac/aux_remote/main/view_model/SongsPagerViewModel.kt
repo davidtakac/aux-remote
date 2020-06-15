@@ -2,7 +2,7 @@ package com.dtakac.aux_remote.main.view_model
 
 import androidx.lifecycle.*
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.common.base.resource_repo.ResourceRepository
+import com.dtakac.aux_remote.common.base.resource.ResourceRepository
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.network.ClientSocket
 import com.dtakac.aux_remote.common.repository.Repository

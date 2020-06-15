@@ -3,10 +3,6 @@ package com.dtakac.aux_remote.common.constants
 // MESSAGES
 const val SERVICE_STOPPED_MESSAGE = "SERVICE_STOPPED_MESSAGE"
 
-// FRAGMENT KEYS
-const val FRAGMENT_CONNECT = "FRAGMENT_CONNECT"
-const val FRAGMENT_PAGER = "FRAGMENT_PAGER"
-
 // PREFS KEYS
 const val PREFS_USER_ID = "PREFS_USER_ID"
 const val PREFS_IP_INPUT = "PREFS_IP_INPUT"

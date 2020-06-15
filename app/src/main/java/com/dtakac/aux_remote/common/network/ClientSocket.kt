@@ -25,7 +25,6 @@ class ClientSocket{
             socket = Socket(InetAddress.getByName(ipAddress), port)
         } catch(e: Exception){
             Log.e(TAG, "Server socket initialization failed for IP Address: $ipAddress and port number: $port.")
-            e.printStackTrace()
             return false
         }
         return true

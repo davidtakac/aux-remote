@@ -48,8 +48,7 @@ class AuxRepository(
     override fun updateNowPlayingSong(body: List<String>) {
         val songName = body[0]
         val ownerId = body[1]
-        val nowPlayingSong =
-            NowPlayingSong(name = songName, ownerId = ownerId)
+        val nowPlayingSong = NowPlayingSong(name = songName, ownerId = ownerId)
         db.nowPlayingSongDao().setNowPlayingSong(nowPlayingSong)
     }
 
@@ -95,6 +94,7 @@ class AuxRepository(
         return Transformations.map(db.messageDao().getMessage()) { it?.message }
     }
 
-    private fun getUserIconVisibility(ownerId: String) =
-        if(ownerId == sharedPrefsRepo.get(PREFS_USER_ID, "")) View.VISIBLE else View.INVISIBLE
+    private fun getUserIconVisibility(ownerId: String): Int {
+        return if(ownerId == sharedPrefsRepo.get(PREFS_USER_ID, "")) View.VISIBLE else View.INVISIBLE
+    }
 }

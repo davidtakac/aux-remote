@@ -1,9 +1,8 @@
-package com.dtakac.aux_remote.common.dao
+package com.dtakac.aux_remote.common.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.dtakac.aux_remote.common.model.QueuedSong
-import io.reactivex.Observable
 
 @Dao
 interface QueuedSongDao {

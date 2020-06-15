@@ -37,7 +37,7 @@ ext{
     apacheCommons = "commons-io:commons-io:$apacheIoVersion"
     apacheLang = "org.apache.commons:commons-lang3:$apacheLangVersion"
     //viewpager2
-    vp2Version = "1.0.0-rc01"
+    vp2Version = "1.0.0"
     viewPager2 = "androidx.viewpager2:viewpager2:$vp2Version"
     //epoxy
     epoxyVersion =  "3.8.0"

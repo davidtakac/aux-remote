@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.common.base.resource_repo
+package com.dtakac.aux_remote.common.base.resource
 
 interface ResourceRepository {
     fun getString(resId: Int): String

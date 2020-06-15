@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.common.dao
+package com.dtakac.aux_remote.common.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.dtakac.aux_remote.common.model.NowPlayingSong
-import io.reactivex.Observable
 
 @Dao
 interface NowPlayingSongDao {
