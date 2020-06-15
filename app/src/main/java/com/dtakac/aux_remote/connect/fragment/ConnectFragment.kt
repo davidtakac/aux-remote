@@ -83,6 +83,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
     }
 
     private fun openPagerFragment(){
-        findNavController().navigate(R.id.action_connectFragment_to_pagerFragment)
+        val action = ConnectFragmentDirections.startPagerFragment()
+        findNavController().navigate(action)
     }
 }

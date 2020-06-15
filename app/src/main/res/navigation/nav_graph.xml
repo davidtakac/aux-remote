@@ -10,7 +10,7 @@
         android:label="Connect"
         tools:layout="@layout/fragment_connect">
         <action
-            android:id="@+id/action_connectFragment_to_pagerFragment"
+            android:id="@+id/startPagerFragment"
             app:destination="@id/pagerFragment"/>
     </fragment>
     <fragment
@@ -19,8 +19,14 @@
         android:label="Pager"
         tools:layout="@layout/fragment_pager">
         <action
-            android:id="@+id/action_pagerFragment_to_connectFragment"
+            android:id="@+id/startConnectFragment"
             app:destination="@id/connectFragment"
-            app:popUpTo="@id/connectFragment"/>
+            app:popUpTo="@id/connectFragment">
+            <argument
+                android:name="message"
+                app:argType="string"
+                app:nullable="true"
+                android:defaultValue="@null"/>
+        </action>
     </fragment>
 </navigation>

@@ -6,7 +6,6 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
@@ -116,6 +115,7 @@ class PagerFragment: BaseFragment(){
     }
 
     private fun openConnectFragment(){
-        findNavController().navigate(R.id.action_pagerFragment_to_connectFragment)
+        val action = PagerFragmentDirections.startConnectFragment(null /*todo: custom message*/)
+        findNavController().navigate(action)
     }
 }
