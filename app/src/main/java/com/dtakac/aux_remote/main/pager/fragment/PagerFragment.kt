@@ -44,7 +44,7 @@ class PagerFragment: BaseFragment(){
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.feedbackMessage.observe(viewLifecycleOwner, Observer { showFeedbackMessage(it) })
-        viewModel.serverMessage.observe(viewLifecycleOwner, Observer { handleServerMessage(it) })
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { openConnectFragment(it) })
         viewModel.pullFromServer()
     }
 
@@ -108,14 +108,8 @@ class PagerFragment: BaseFragment(){
         }.attach()
     }
 
-    private fun handleServerMessage(message: String?){
-        when(message){
-            SERVICE_STOPPED_MESSAGE -> openConnectFragment()
-        }
-    }
-
-    private fun openConnectFragment(){
-        val action = PagerFragmentDirections.startConnectFragment(null /*todo: custom message*/)
+    private fun openConnectFragment(message: String){
+        val action = PagerFragmentDirections.startConnectFragment(if(message.isNotEmpty()) message else null)
         findNavController().navigate(action)
     }
 }

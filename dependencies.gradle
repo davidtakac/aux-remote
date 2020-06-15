@@ -61,5 +61,4 @@ ext{
     navVersion = "2.2.2"
     navigationFragment = "androidx.navigation:navigation-fragment-ktx:$navVersion"
     navigationUi = "androidx.navigation:navigation-ui-ktx:$navVersion"
-    safeArgs = "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
 }

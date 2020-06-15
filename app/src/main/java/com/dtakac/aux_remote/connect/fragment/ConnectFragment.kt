@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
 import com.dtakac.aux_remote.connect.presenter.ConnectContract
@@ -69,9 +70,8 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
         openPagerFragment()
     }
 
-    override fun showLongSnackbar(stringId: Int) {
-        Snackbar.make(requireActivity().findViewById(android.R.id.content), getString(stringId), Snackbar.LENGTH_LONG)
-            .show()
+    override fun showLongSnackbar(text: String) {
+        Snackbar.make(requireActivity().findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG).show()
     }
 
     override fun showLoading(isLoading: Boolean) {
@@ -80,6 +80,11 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
 
     override fun connectEnabled(isEnabled: Boolean) {
         btnConnect.isEnabled = isEnabled
+    }
+
+    override fun showMessage() {
+        val args by navArgs<ConnectFragmentArgs>()
+        showLongSnackbar(args.message ?: return)
     }
 
     private fun openPagerFragment(){

@@ -39,7 +39,7 @@ class SongsPagerViewModel(
     val songs: LiveData<List<SongWrapper>> = _songs
     val nowPlayingSong: LiveData<NowPlayingSongWrapper> = _nowPlayingSong
     val queue: LiveData<List<QueuedSongWrapper>> = _queue
-    val serverMessage: LiveData<String> = _serverMessage
+    val errorMessage: LiveData<String> = _serverMessage
     val filteredSongs: LiveData<List<SongWrapper>> = _filteredSongs
     val songsMode: LiveData<SongsMode> = _songsMode
     val feedbackMessage: LiveData<FeedbackMessage> = _feedbackMessage

@@ -29,12 +29,14 @@ class ResponseHandlerService: JobIntentService(){
 
     override fun onHandleWork(intent: Intent) {
         val stream = socket.inputStream
+        var messageText: String? = null
         if(stream != null) {
             val reader = BufferedReader(InputStreamReader(stream, Charset.forName("UTF-8")))
             while (true) {
                 try {
                     handleServerResponse(readServerResponse(reader))
                 } catch (e: Exception) {
+                    messageText = e.message
                     Log.e(TAG, "Exception in service loop, stopping service. Message: ${e.message}")
                     e.printStackTrace()
                     break
@@ -43,7 +45,7 @@ class ResponseHandlerService: JobIntentService(){
         } else {
             Log.e(TAG, "Socket input stream is null, stopped service.")
         }
-        onServiceStopped()
+        onServiceStopped(messageText)
     }
 
     private fun readServerResponse(reader: BufferedReader): List<String>{
@@ -90,7 +92,7 @@ class ResponseHandlerService: JobIntentService(){
         repo.updateNowPlayingSong(response)
     }
 
-    private fun onServiceStopped(){
-        repo.updateMessage(SERVICE_STOPPED_MESSAGE)
+    private fun onServiceStopped(messageText: String?){
+        repo.updateMessage(messageText ?: EMPTY_STRING)
     }
 }

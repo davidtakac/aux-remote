@@ -35,6 +35,7 @@ class ConnectPresenter(
             prefsRepo.save(PREFS_USER_ID, UUID.randomUUID().toString())
         }
         initInputFields()
+        view.showMessage()
     }
 
     override fun onConnectClicked() {
@@ -88,7 +89,7 @@ class ConnectPresenter(
                     view.onSocketInitialized()
                 }
                 else {
-                    view.showLongSnackbar(R.string.error_cantconnect)
+                    view.showLongSnackbar(resourceRepo.getString(R.string.error_cantconnect))
                 }
             }
         }

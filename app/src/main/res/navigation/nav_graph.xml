@@ -12,6 +12,11 @@
         <action
             android:id="@+id/startPagerFragment"
             app:destination="@id/pagerFragment"/>
+        <argument
+            android:name="message"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
     </fragment>
     <fragment
         android:id="@+id/pagerFragment"
@@ -21,12 +26,6 @@
         <action
             android:id="@+id/startConnectFragment"
             app:destination="@id/connectFragment"
-            app:popUpTo="@id/connectFragment">
-            <argument
-                android:name="message"
-                app:argType="string"
-                app:nullable="true"
-                android:defaultValue="@null"/>
-        </action>
+            app:popUpTo="@id/connectFragment"/>
     </fragment>
 </navigation>
