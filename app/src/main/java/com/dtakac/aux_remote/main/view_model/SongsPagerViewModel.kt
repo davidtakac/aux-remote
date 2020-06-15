@@ -44,11 +44,13 @@ class SongsPagerViewModel(
     val songsMode: LiveData<SongsMode> = _songsMode
     val feedbackMessage: LiveData<FeedbackMessage> = _feedbackMessage
 
+    private var userSentSong = false
     private var previouslyQueuedSong: QueuedSongWrapper? = null
 
     init { initMediators() }
 
     fun onSongClicked(songName: String){
+        userSentSong = true
         CoroutineScope(IO).launch { writeSongToServer(songName) }
     }
 
@@ -110,14 +112,21 @@ class SongsPagerViewModel(
         //feedback message
         _feedbackMessage.addSource(queue) { result ->
             val userSong = result?.firstOrNull{ it.ownerId == prefsRepo.get(PREFS_USER_ID, "")} ?: return@addSource
+            if(!userSentSong) return@addSource
+
             val action = resourceRepo.getString(R.string.view_action)
             val textRes = if(previouslyQueuedSong == null){
                 R.string.queued_feedback
-            } else {
+            } else if(userSong.position == previouslyQueuedSong!!.position){
                 R.string.swapped_feedback
+            } else {
+                return@addSource
             }
             _feedbackMessage.value = FeedbackMessage(resourceRepo.getString(textRes), action)
-                .also { previouslyQueuedSong = userSong }
+                .also {
+                    userSentSong = false
+                    previouslyQueuedSong = userSong
+                }
         }
         _feedbackMessage.addSource(nowPlayingSong) { result ->
             if(result?.isUserSong == true){
