@@ -57,4 +57,5 @@ dependencies {
     kapt lifecycleApt
     implementation navigationFragment
     implementation navigationUi
+    implementation viewPager2
 }

@@ -27,7 +27,7 @@ ext{
     rxBinding = "com.jakewharton.rxbinding3:rxbinding:$rxBindingVersion"
     rxAppCompat = "com.jakewharton.rxbinding3:rxbinding-appcompat:$rxBindingVersion"
     //material
-    materialVersion = "1.1.0-alpha09"
+    materialVersion = "1.1.0-rc02"
     material = "com.google.android.material:material:$materialVersion"
     //apache
     apacheIoVersion = "2.6"

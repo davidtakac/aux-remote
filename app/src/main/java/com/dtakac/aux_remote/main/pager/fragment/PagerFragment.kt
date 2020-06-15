@@ -7,6 +7,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
 import com.dtakac.aux_remote.common.constants.SERVICE_STOPPED_MESSAGE
@@ -14,6 +15,7 @@ import com.dtakac.aux_remote.main.pager.adapter.PagerAdapter
 import com.dtakac.aux_remote.main.common.FeedbackMessage
 import com.dtakac.aux_remote.main.view_model.SongsPagerViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 import com.jakewharton.rxbinding3.appcompat.queryTextChanges
 import kotlinx.android.synthetic.main.fragment_pager.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -79,7 +81,7 @@ class PagerFragment: BaseFragment(){
             }
         })
 
-        pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+        pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
@@ -100,11 +102,11 @@ class PagerFragment: BaseFragment(){
     }
 
     private fun initPager(){
-        pager.adapter = PagerAdapter(
-            resources.getStringArray(R.array.labels_fragments),
-            this
-        )
-        tabLayout.setupWithViewPager(pager)
+        pager.adapter = PagerAdapter(this)
+        val titles = resources.getStringArray(R.array.labels_fragments)
+        TabLayoutMediator(tabLayout, pager) { tab, position ->
+            tab.text = titles[position]
+        }.attach()
     }
 
     private fun handleServerMessage(message: String?){
