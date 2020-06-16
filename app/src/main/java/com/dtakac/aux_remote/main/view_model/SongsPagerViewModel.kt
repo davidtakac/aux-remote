@@ -29,6 +29,7 @@ class SongsPagerViewModel(
     private val clientSocket: ClientSocket,
     private val resourceRepo: ResourceRepository
 ) : ViewModel(){
+    //privately mutable
     private val _filteredSongs = MutableLiveData<List<SongWrapper>>()
     private val _songsMode = MutableLiveData<SongsMode>()
     private val _feedbackMessage = MediatorLiveData<FeedbackMessage>()
@@ -38,7 +39,7 @@ class SongsPagerViewModel(
     private val _serverMessage = MediatorLiveData<String>()
     private val _songsLoader = MutableLiveData<Int>(View.VISIBLE)
     private val _queueLoader = MutableLiveData<Int>(View.VISIBLE)
-
+    //publicly immutable
     val songs: LiveData<List<SongWrapper>> = _songs
     val nowPlayingSong: LiveData<NowPlayingSongWrapper> = _nowPlayingSong
     val queue: LiveData<List<QueuedSongWrapper>> = _queue
@@ -48,13 +49,13 @@ class SongsPagerViewModel(
     val feedbackMessage: LiveData<FeedbackMessage> = _feedbackMessage
     val songsLoader: LiveData<Int> = _songsLoader
     val queueLoader: LiveData<Int> = _queueLoader
-
+    //for user action feedback
     private var userSentSong = false
     private var previouslyQueuedSong: QueuedSongWrapper? = null
 
     init {
         initFeedbackMediator()
-        initOtherMediators()
+        initDatabaseMediators()
     }
 
     fun onSongClicked(songName: String){
@@ -153,26 +154,33 @@ class SongsPagerViewModel(
         }
     }
 
-    private fun initOtherMediators(){
+    private fun initDatabaseMediators(){
         _songs.addSource(repo.getSongs()) {
-            _songs.value = it
+            _songs.value = it.map { song ->
+                    SongWrapper(song.id!!, song.name, SongWrapper.NO_HIGHLIGHT, SongWrapper.NO_COLOR)
+                }
             if(it.isNotEmpty()){
                 _songsLoader.value = View.GONE
             }
         }
         _nowPlayingSong.addSource(repo.getNowPlayingSong()) {
-            _nowPlayingSong.value = it ?: return@addSource
+            if(it == null) return@addSource
+            _nowPlayingSong.value = NowPlayingSongWrapper(
+                it.name, it.ownerId, prefsRepo.get(PREFS_USER_ID, "") == it.ownerId
+            )
             _queueLoader.value = View.GONE
         }
         _queue.addSource(repo.getQueuedSongs()) {
-            _queue.value = it
-
+            _queue.value = it.map { song ->
+                QueuedSongWrapper(song.ownerId, song.name, song.position + 1,
+                    if(song.ownerId == prefsRepo.get(PREFS_USER_ID, "")) View.VISIBLE else View.INVISIBLE)
+            }
             if(it.isNotEmpty()){
                 _queueLoader.value = View.GONE
             }
         }
         _serverMessage.addSource(repo.getMessage()) {
-            _serverMessage.value = it ?: return@addSource
+            _serverMessage.value = it?.message ?: return@addSource
         }
     }
 }

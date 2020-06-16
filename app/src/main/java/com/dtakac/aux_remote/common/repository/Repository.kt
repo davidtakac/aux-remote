@@ -1,9 +1,10 @@
 package com.dtakac.aux_remote.common.repository
 
 import androidx.lifecycle.LiveData
-import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
-import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
-import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
+import com.dtakac.aux_remote.common.model.Message
+import com.dtakac.aux_remote.common.model.NowPlayingSong
+import com.dtakac.aux_remote.common.model.QueuedSong
+import com.dtakac.aux_remote.common.model.Song
 
 interface Repository {
     fun clearData()
@@ -15,8 +16,8 @@ interface Repository {
     fun moveUp()
     fun updateMessage(message: String)
 
-    fun getSongs(): LiveData<List<SongWrapper>>
-    fun getQueuedSongs(): LiveData<List<QueuedSongWrapper>>
-    fun getNowPlayingSong(): LiveData<NowPlayingSongWrapper>
-    fun getMessage(): LiveData<String>
+    fun getSongs(): LiveData<List<Song>>
+    fun getQueuedSongs(): LiveData<List<QueuedSong>>
+    fun getNowPlayingSong(): LiveData<NowPlayingSong>
+    fun getMessage(): LiveData<Message>
 }

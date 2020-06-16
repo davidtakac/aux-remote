@@ -1,16 +1,10 @@
 package com.dtakac.aux_remote.common.repository
 
-import android.view.View
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
-import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 import com.dtakac.aux_remote.common.model.NowPlayingSong
 import com.dtakac.aux_remote.common.model.QueuedSong
 import com.dtakac.aux_remote.common.model.Song
-import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
-import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
-import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.common.database.AppDatabase
 import com.dtakac.aux_remote.common.model.Message
 
@@ -63,38 +57,19 @@ class AuxRepository(
         db.messageDao().setMessage(Message(message = message))
     }
 
-    override fun getSongs(): LiveData<List<SongWrapper>> {
-        return Transformations.map(db.songDao().getAll()) {
-            it?.map { song ->
-                SongWrapper(song.id!!, song.name, SongWrapper.NO_HIGHLIGHT, SongWrapper.NO_COLOR)
-            }?.toList()
-        }
+    override fun getSongs(): LiveData<List<Song>> {
+        return db.songDao().getAll()
     }
 
-    override fun getQueuedSongs(): LiveData<List<QueuedSongWrapper>> {
-        return Transformations.map(db.queuedSongDao().getQueuedSongs()) {
-            it?.map { song ->
-                QueuedSongWrapper(song.ownerId, song.name, song.position + 1, getUserIconVisibility(song.ownerId))
-            }?.toList()
-        }
+    override fun getQueuedSongs(): LiveData<List<QueuedSong>> {
+        return db.queuedSongDao().getQueuedSongs()
     }
 
-    override fun getNowPlayingSong(): LiveData<NowPlayingSongWrapper> {
-        return Transformations.map(db.nowPlayingSongDao().getNowPlayingSong()) {
-            it?.let {
-                NowPlayingSongWrapper(
-                    it.name, it.ownerId,
-                    sharedPrefsRepo.get(PREFS_USER_ID, "") == it.ownerId
-                )
-            }
-        }
+    override fun getNowPlayingSong(): LiveData<NowPlayingSong> {
+        return db.nowPlayingSongDao().getNowPlayingSong()
     }
 
-    override fun getMessage(): LiveData<String> {
-        return Transformations.map(db.messageDao().getMessage()) { it?.message }
-    }
-
-    private fun getUserIconVisibility(ownerId: String): Int {
-        return if(ownerId == sharedPrefsRepo.get(PREFS_USER_ID, "")) View.VISIBLE else View.INVISIBLE
+    override fun getMessage(): LiveData<Message> {
+        return db.messageDao().getMessage()
     }
 }
