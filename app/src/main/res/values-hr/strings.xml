@@ -22,6 +22,7 @@
     <string name="server_disconnected_message">Veza prekinuta: %s</string>
     <string name="progress_getting_songs">Dohvaćanje pjesama…</string>
     <string name="progress_getting_queue">Dohvaćanje reda puštanja…</string>
+    <string name="label_owner_id">Vlasnik:</string>
 
     <string-array name="labels_fragments">
         <item>Pjesme</item>

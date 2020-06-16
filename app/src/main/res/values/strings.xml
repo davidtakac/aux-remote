@@ -21,6 +21,7 @@
     <string name="server_disconnected_message">Disconnected: %s</string>
     <string name="progress_getting_songs">Getting songs…</string>
     <string name="progress_getting_queue">Getting queue…</string>
+    <string name="label_owner_id">Owner:</string>
 
     <string-array name="labels_fragments">
         <item>Songs</item>
