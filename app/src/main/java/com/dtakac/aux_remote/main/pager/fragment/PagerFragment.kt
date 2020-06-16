@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
-import com.dtakac.aux_remote.common.constants.SERVICE_STOPPED_MESSAGE
 import com.dtakac.aux_remote.main.pager.adapter.PagerAdapter
 import com.dtakac.aux_remote.main.common.FeedbackMessage
 import com.dtakac.aux_remote.main.view_model.SongsPagerViewModel
@@ -28,6 +27,7 @@ class PagerFragment: BaseFragment(){
     }
     override val layoutRes: Int = R.layout.fragment_pager
     private val viewModel by viewModel<SongsPagerViewModel>()
+    private lateinit var menuItemSearch: MenuItem
 
     override fun initViews() {
         super.initViews()
@@ -37,8 +37,8 @@ class PagerFragment: BaseFragment(){
 
     private fun initToolbar(){
         toolbar.inflateMenu(R.menu.menu)
-        initSearchView(toolbar.menu.findItem(R.id.menu_search))
         toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+        initSearchView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -56,18 +56,17 @@ class PagerFragment: BaseFragment(){
             Snackbar.LENGTH_LONG
         )
         if(feedbackMessage.action != null && pager.currentItem != QUEUE_VIEW_POSITION) {
-            snackbar.setAction(feedbackMessage.action) { pager.currentItem =
-                QUEUE_VIEW_POSITION
-            }
+            snackbar.setAction(feedbackMessage.action) { pager.currentItem = QUEUE_VIEW_POSITION }
         }
         snackbar.show()
     }
 
-    private fun initSearchView(item: MenuItem){
-        val search = item.actionView as SearchView
+    private fun initSearchView(){
+        menuItemSearch = toolbar.menu.findItem(R.id.menu_search)
+        val search = menuItemSearch.actionView as SearchView
         search.queryHint = getString(R.string.hint_search_songs)
 
-        item.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
+        menuItemSearch.setOnActionExpandListener(object: MenuItem.OnActionExpandListener{
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 Log.d(TAG, "search expanded")
                 pager.setCurrentItem(SONGS_VIEW_POSITION, true)
@@ -77,16 +76,6 @@ class PagerFragment: BaseFragment(){
                 Log.d(TAG, "search collapsed")
                 viewModel.onSearchCollapsed()
                 return true // needed so the view collapses
-            }
-        })
-
-        pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-            override fun onPageSelected(position: Int) {
-                if(position != SONGS_VIEW_POSITION){
-                    item.collapseActionView()
-                }
             }
         })
 
@@ -101,11 +90,23 @@ class PagerFragment: BaseFragment(){
     }
 
     private fun initPager(){
+        //set adapter
         pager.adapter = PagerAdapter(this)
+        //initialize with tab layout
         val titles = resources.getStringArray(R.array.labels_fragments)
         TabLayoutMediator(tabLayout, pager) { tab, position ->
             tab.text = titles[position]
         }.attach()
+        //callbacks to control the search bar
+        pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                if(position != SONGS_VIEW_POSITION){
+                    menuItemSearch.collapseActionView()
+                }
+            }
+        })
     }
 
     private fun openConnectFragment(message: String){
