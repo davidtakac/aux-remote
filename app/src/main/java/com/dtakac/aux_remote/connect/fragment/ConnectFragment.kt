@@ -84,7 +84,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
 
     override fun showMessage() {
         val args by navArgs<ConnectFragmentArgs>()
-        showLongSnackbar(args.message ?: return)
+        showLongSnackbar(getString(R.string.server_disconnected_message, args.message ?: return))
     }
 
     private fun openPagerFragment(){

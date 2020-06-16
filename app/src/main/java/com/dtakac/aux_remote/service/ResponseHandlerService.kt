@@ -51,7 +51,7 @@ class ResponseHandlerService: JobIntentService(){
     private fun readServerResponse(reader: BufferedReader): List<String>{
         val lines = mutableListOf<String>()
         while(true){
-            val line = reader.readLine() ?: throw IllegalStateException("Line is null")
+            val line = reader.readLine() ?: throw IllegalStateException("Line is null.")
             if(line == SERVER_BROADCAST_END) break else lines.add(line)
         }
         Log.d(TAG, lines.toString())
