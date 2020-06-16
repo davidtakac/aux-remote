@@ -19,6 +19,7 @@ class QueueFragment : BaseFragment(){
         super.onActivityCreated(savedInstanceState)
         viewModel.queue.observe(viewLifecycleOwner, Observer{ controller.setQueue(it) })
         viewModel.nowPlayingSong.observe(viewLifecycleOwner, Observer { controller.setNowPlayingSong(it) })
+        viewModel.queueLoader.observe(viewLifecycleOwner, Observer { progressIndicator.visibility = it })
     }
 
     override fun initViews() {

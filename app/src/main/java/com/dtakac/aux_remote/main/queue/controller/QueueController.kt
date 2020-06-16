@@ -22,9 +22,11 @@ class QueueController: EpoxyController(){
     }
 
     override fun buildModels() {
-        nowPlayingSong {
-            id("now-playing")
-            name(nowPlayingSong?.name ?: EMPTY_STRING)
+        if(nowPlayingSong != null){
+            nowPlayingSong {
+                id("now-playing")
+                name(nowPlayingSong!!.name)
+            }
         }
         queue.forEach { queuedSong ->
             queuedSong {

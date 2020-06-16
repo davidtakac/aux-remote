@@ -22,6 +22,7 @@ class SongsListFragment : BaseFragment(), SongsListInterface {
         viewModel.songs.observe(viewLifecycleOwner, Observer { controller.setSongs(it) })
         viewModel.filteredSongs.observe(viewLifecycleOwner, Observer { controller.setFilteredSongs(it) })
         viewModel.songsMode.observe(viewLifecycleOwner, Observer { controller.setMode(it) })
+        viewModel.songsLoader.observe(viewLifecycleOwner, Observer { progressIndicator.visibility = it })
     }
 
     override fun onSongClicked(name: String) {

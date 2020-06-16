@@ -20,6 +20,8 @@
     <string name="label_connect_fragment">Spoji se</string>
     <string name="label_pager_fragment">Aux</string>
     <string name="server_disconnected_message">Veza prekinuta: %s</string>
+    <string name="progress_getting_songs">Dohvaćanje pjesama…</string>
+    <string name="progress_getting_queue">Dohvaćanje reda puštanja…</string>
 
     <string-array name="labels_fragments">
         <item>Pjesme</item>
