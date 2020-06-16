@@ -116,14 +116,20 @@ class SongsPagerViewModel(
     private fun initFeedbackMediator(){
         _feedbackMessage.addSource(queue) { result ->
             val userSong = result?.firstOrNull{ it.ownerId == prefsRepo.get(PREFS_USER_ID, "")}
-            if(previouslyQueuedSong == null && userSong != null && !userSentSong){
-                //when user queued a song, disconnected and then reconnected
-                previouslyQueuedSong = userSong
-            } else if(userSong == null && !userSentSong){
-                //when queue changed and user doesnt have a queued song anymore
-                previouslyQueuedSong = null
+            if(!userSentSong){
+                if(userSong?.position ?: -1 == (previouslyQueuedSong?.position ?: -1) - 1){
+                    //when move up happens, manually update previously queued song position
+                    previouslyQueuedSong!!.position -= 1
+                }
+                if(previouslyQueuedSong == null && userSong != null){
+                    //when user queued a song, disconnected and then reconnected
+                    previouslyQueuedSong = userSong
+                } else if(userSong == null){
+                    //when queue changed and user doesnt have a queued song anymore
+                    previouslyQueuedSong = null
+                }
+                return@addSource
             }
-            if(!userSentSong) return@addSource
 
             val action = resourceRepo.getString(R.string.view_action)
             val textRes = when {
@@ -160,6 +166,7 @@ class SongsPagerViewModel(
         }
         _queue.addSource(repo.getQueuedSongs()) {
             _queue.value = it
+
             if(it.isNotEmpty()){
                 _queueLoader.value = View.GONE
             }
