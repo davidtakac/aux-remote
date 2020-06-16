@@ -10,11 +10,10 @@ import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
 
 class QueueController: EpoxyController(){
     private var nowPlayingSong: NowPlayingSongWrapper? = null
-    private var queue = mutableListOf<QueuedSongWrapper>()
+    private var queue: List<QueuedSongWrapper> = listOf()
 
     fun setQueue(songs: List<QueuedSongWrapper>) {
-        queue.clear()
-        queue.addAll(songs)
+        queue = songs
         requestModelBuild()
     }
 
@@ -23,11 +22,10 @@ class QueueController: EpoxyController(){
         requestModelBuild()
     }
 
-    private fun onQueuedSongClicked(wrapper: QueuedSongWrapper){
+    private fun onQueuedSongClicked(clickedOwnerId: String){
         //toggle expansion
-        val idx = queue.indexOfFirst { it.ownerId == wrapper.ownerId }
+        val wrapper = queue.firstOrNull { it.ownerId == clickedOwnerId } ?: return
         wrapper.expanded = !wrapper.expanded
-        queue[idx] = wrapper
         requestModelBuild()
     }
 
@@ -46,7 +44,7 @@ class QueueController: EpoxyController(){
                 userIconVisibility(wrapper.userIconVisibility)
                 expanded(wrapper.expanded)
                 onClick { _, _, _, _ ->
-                    onQueuedSongClicked(wrapper)
+                    onQueuedSongClicked(wrapper.ownerId)
                 }
             }
             if(wrapper.expanded){
