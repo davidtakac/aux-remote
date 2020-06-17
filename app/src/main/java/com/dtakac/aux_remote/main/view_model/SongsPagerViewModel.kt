@@ -116,7 +116,7 @@ class SongsPagerViewModel(
 
     private fun initFeedbackMediator(){
         _feedbackMessage.addSource(queue) { result ->
-            val userSong = result?.firstOrNull{ it.ownerId == prefsRepo.get(PREFS_USER_ID, "")}
+            val userSong = result?.firstOrNull{ it.ownerId.isUserId() }
             if(!userSentSong){
                 if(userSong?.position ?: -1 == (previouslyQueuedSong?.position ?: -1) - 1){
                     //when move up happens, manually update previously queued song position
@@ -166,14 +166,14 @@ class SongsPagerViewModel(
         _nowPlayingSong.addSource(repo.getNowPlayingSong()) {
             if(it == null) return@addSource
             _nowPlayingSong.value = NowPlayingSongWrapper(
-                it.name, it.ownerId, prefsRepo.get(PREFS_USER_ID, "") == it.ownerId
+                it.name, it.ownerId, it.ownerId.isUserId()
             )
             _queueLoader.value = View.GONE
         }
         _queue.addSource(repo.getQueuedSongs()) {
             _queue.value = it.map { song ->
                 QueuedSongWrapper(song.ownerId, song.name, song.position + 1,
-                    if(song.ownerId == prefsRepo.get(PREFS_USER_ID, "")) View.VISIBLE else View.INVISIBLE)
+                    if(song.ownerId.isUserId()) View.VISIBLE else View.INVISIBLE)
             }
             if(it.isNotEmpty()){
                 _queueLoader.value = View.GONE
@@ -182,5 +182,9 @@ class SongsPagerViewModel(
         _serverMessage.addSource(repo.getMessage()) {
             _serverMessage.value = it?.message ?: return@addSource
         }
+    }
+
+    private fun String.isUserId(): Boolean {
+        return this == prefsRepo.get(PREFS_USER_ID, "")
     }
 }
