@@ -8,7 +8,7 @@ import java.net.InetAddress
 import java.net.Socket
 
 private const val TAG = "server_socket"
-class ClientSocket{
+class ServerSocket{
     private var socket: Socket? = null
 
     var outputStream: OutputStream? = null

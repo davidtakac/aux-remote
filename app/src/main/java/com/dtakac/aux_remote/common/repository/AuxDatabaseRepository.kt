@@ -1,17 +1,15 @@
 package com.dtakac.aux_remote.common.repository
 
 import androidx.lifecycle.LiveData
-import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.model.NowPlayingSong
 import com.dtakac.aux_remote.common.model.QueuedSong
 import com.dtakac.aux_remote.common.model.Song
 import com.dtakac.aux_remote.common.database.AppDatabase
 import com.dtakac.aux_remote.common.model.Message
 
-class AuxRepository(
-    private val db: AppDatabase,
-    private val sharedPrefsRepo: SharedPrefsRepository
-): Repository{
+class AuxDatabaseRepository(
+    private val db: AppDatabase
+): DatabaseRepository{
 
     override fun clearData() {
         db.clearAllTables()

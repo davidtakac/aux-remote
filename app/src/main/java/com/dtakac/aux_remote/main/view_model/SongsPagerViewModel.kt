@@ -1,32 +1,30 @@
 package com.dtakac.aux_remote.main.view_model
 
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
 import com.dtakac.aux_remote.R
+import com.dtakac.aux_remote.server.AuxServerInteractor
 import com.dtakac.aux_remote.common.base.resource.ResourceRepository
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
-import com.dtakac.aux_remote.common.network.ClientSocket
-import com.dtakac.aux_remote.common.repository.Repository
+import com.dtakac.aux_remote.common.repository.DatabaseRepository
 import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.common.constants.*
 import com.dtakac.aux_remote.main.common.FeedbackMessage
 import com.dtakac.aux_remote.main.common.SongsMode
 import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
-import kotlinx.coroutines.CoroutineScope
+import com.dtakac.aux_remote.server.ServerInteractor
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.BufferedWriter
-import java.io.OutputStreamWriter
-import java.nio.charset.StandardCharsets
 
+private const val TAG = "meteor_server"
 class SongsPagerViewModel(
-    private val repo: Repository,
+    private val repo: DatabaseRepository,
     private val prefsRepo: SharedPrefsRepository,
-    private val clientSocket: ClientSocket,
+    private val serverInteractor: ServerInteractor,
     private val resourceRepo: ResourceRepository
 ) : ViewModel(){
     //privately mutable
@@ -55,21 +53,25 @@ class SongsPagerViewModel(
 
     init {
         initFeedbackMediator()
-        initDatabaseMediators()
+        initRepositoryMediators()
+        if(serverInteractor.initReaderAndWriter()){
+            listenToServer()
+        } else {
+            onListenStopped("Couldn't initialize reader or writer.")
+        }
     }
 
     fun onSongClicked(songName: String){
         userSentSong = true
-        CoroutineScope(IO).launch { writeSongToServer(songName) }
+        viewModelScope.launch {
+            serverInteractor.writeSongToServer(prefsRepo.get(PREFS_USER_ID, ""), songName)
+        }
     }
 
     fun onQueryTextChanged(query: String) {
-        CoroutineScope(Default).launch {
-            val filtered = filterSongs(query)
-            withContext(Main){
-                _filteredSongs.value = filtered
-                _songsMode.value = SongsMode.FILTERED_SONGS
-            }
+        viewModelScope.launch {
+            _filteredSongs.value = filterSongs(query)
+            _songsMode.value = SongsMode.FILTERED_SONGS
         }
     }
 
@@ -78,40 +80,27 @@ class SongsPagerViewModel(
     }
 
     fun pullFromServer() {
-        CoroutineScope(IO).launch {
-            writeLineToServer(CLIENT_REQUEST_SONGS)
-            writeLineToServer(CLIENT_REQUEST_QUEUE)
-            writeLineToServer(CLIENT_REQUEST_PLAYING)
+        viewModelScope.launch {
+            serverInteractor.writeLineToServer(CLIENT_REQUEST_SONGS)
+            serverInteractor.writeLineToServer(CLIENT_REQUEST_QUEUE)
+            serverInteractor.writeLineToServer(CLIENT_REQUEST_PLAYING)
         }
     }
 
-    private fun writeLineToServer(line: String){
-        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream ?: return, StandardCharsets.UTF_8))
-        writer.apply {
-            write(line); newLine();
-            flush()
+    private suspend fun filterSongs(query: String): List<SongWrapper> {
+        var filtered = listOf<SongWrapper>()
+        withContext(Default) {
+            filtered = songs.value
+                ?.filter { it.name.contains(query, ignoreCase = true) }
+                ?.map {
+                    SongWrapper(
+                        it.id, it.name, query,
+                        resourceRepo.getColor(R.color.green400_analogous)
+                    )
+                }
+                ?.toList() ?: listOf()
         }
-    }
-
-    private fun writeSongToServer(songName: String){
-        val writer = BufferedWriter(OutputStreamWriter(clientSocket.outputStream ?: return, StandardCharsets.UTF_8))
-        writer.apply {
-            write(CLIENT_QUEUE); newLine()
-            write(prefsRepo.get(PREFS_USER_ID, "")); newLine()
-            write(songName); newLine()
-            flush()
-        }
-    }
-
-    private fun filterSongs(query: String): List<SongWrapper> {
-        return songs.value
-            ?.filter { it.name.contains(query, ignoreCase = true) }
-            ?.map {
-                SongWrapper(it.id, it.name, query,
-                    resourceRepo.getColor(R.color.green400_analogous)
-                )
-            }
-            ?.toList() ?: listOf()
+        return filtered
     }
 
     private fun initFeedbackMediator(){
@@ -139,10 +128,8 @@ class SongsPagerViewModel(
                 else -> return@addSource
             }
             _feedbackMessage.value = FeedbackMessage(resourceRepo.getString(textRes), action)
-                .also {
-                    userSentSong = false
-                    previouslyQueuedSong = userSong
-                }
+            userSentSong = false
+            previouslyQueuedSong = userSong
         }
         _feedbackMessage.addSource(nowPlayingSong) { result ->
             if(result?.isUserSong == true){
@@ -154,7 +141,7 @@ class SongsPagerViewModel(
         }
     }
 
-    private fun initDatabaseMediators(){
+    private fun initRepositoryMediators(){
         _songs.addSource(repo.getSongs()) {
             _songs.value = it.map { song ->
                     SongWrapper(song.id!!, song.name, SongWrapper.NO_HIGHLIGHT, SongWrapper.NO_COLOR)
@@ -186,5 +173,40 @@ class SongsPagerViewModel(
 
     private fun String.isUserId(): Boolean {
         return this == prefsRepo.get(PREFS_USER_ID, "")
+    }
+
+    private fun listenToServer() {
+        viewModelScope.launch {
+            var stopMessage: String? = null
+            withContext(IO){
+                while (true) {
+                    try {
+                        handleServerData(serverInteractor.getNextData())
+                    } catch (e: Exception) {
+                        stopMessage = e.message
+                        Log.e(TAG, "Exception when listening to server, stopping. Message: ${e.message}")
+                        break
+                    }
+                }
+            }
+            onListenStopped(stopMessage)
+        }
+    }
+
+    private fun handleServerData(lines: List<String>){
+        if(lines.isNotEmpty()) {
+            val body = lines.subList(1, lines.size)
+            when (lines[0]) {
+                SERVER_SONG_LIST -> repo.insertSongs(body)
+                SERVER_QUEUE_LIST -> repo.insertQueuedSongs(body)
+                SERVER_ENQUEUED -> repo.insertQueuedSong(body)
+                SERVER_MOVE_UP -> repo.moveUp()
+                SERVER_NOW_PLAYING -> repo.updateNowPlayingSong(body)
+            }
+        }
+    }
+
+    private fun onListenStopped(messageText: String?){
+        repo.updateMessage(messageText ?: EMPTY_STRING)
     }
 }

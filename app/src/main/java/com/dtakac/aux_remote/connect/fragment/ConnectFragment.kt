@@ -66,7 +66,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
     }
 
     override fun onSocketInitialized() {
-        ResponseHandlerService.start(requireActivity())
+        //ResponseHandlerService.start(requireActivity())
         openPagerFragment()
     }
 

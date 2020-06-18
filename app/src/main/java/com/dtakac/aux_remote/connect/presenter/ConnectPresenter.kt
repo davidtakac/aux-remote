@@ -8,8 +8,8 @@ import com.dtakac.aux_remote.common.constants.PREFS_IP_INPUT
 import com.dtakac.aux_remote.common.constants.PREFS_PORT_INPUT
 import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 import com.dtakac.aux_remote.common.network.NetworkUtil
-import com.dtakac.aux_remote.common.network.ClientSocket
-import com.dtakac.aux_remote.common.repository.Repository
+import com.dtakac.aux_remote.common.network.ServerSocket
+import com.dtakac.aux_remote.common.repository.DatabaseRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -25,9 +25,11 @@ class ConnectPresenter(
     private val prefsRepo: SharedPrefsRepository,
     private val resourceRepo: ResourceRepository,
     private val netUtil: NetworkUtil,
-    private val client: ClientSocket,
-    private val repo: Repository
+    private val server: ServerSocket,
+    private val repo: DatabaseRepository
 ) : ConnectContract.Presenter {
+
+    private val ioScope = CoroutineScope(IO)
 
     override fun onViewCreated() {
         closeSocket()
@@ -73,8 +75,8 @@ class ConnectPresenter(
     }
 
     private fun initializeSocket(ipAddress: String, port: String){
-        CoroutineScope(IO).launch {
-            val success = client.initialize(ipAddress, Integer.parseInt(port))
+        ioScope.launch {
+            val success = server.initialize(ipAddress, Integer.parseInt(port))
             // operations to be performed while still on background thread
             if(success) {
                 clearDatabase()
@@ -96,7 +98,7 @@ class ConnectPresenter(
     }
 
     private fun connectToServer(){
-        val writer = BufferedWriter(OutputStreamWriter(client.outputStream ?: return, StandardCharsets.UTF_8))
+        val writer = BufferedWriter(OutputStreamWriter(server.outputStream ?: return, StandardCharsets.UTF_8))
         writer.apply{
             write(CLIENT_MAC); newLine()
             write(prefsRepo.get(PREFS_USER_ID, "")); newLine()
@@ -110,13 +112,13 @@ class ConnectPresenter(
     }
 
     private fun closeSocket(){
-        CoroutineScope(IO).launch {
-            client.close()
+        ioScope.launch {
+            server.close()
         }
     }
 
     private fun clearDatabase(){
-        CoroutineScope(IO).launch {
+        ioScope.launch {
             repo.clearData()
         }
     }
