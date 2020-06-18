@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.server.AuxServerInteractor
 import com.dtakac.aux_remote.common.base.resource.ResourceRepository
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.repository.DatabaseRepository
@@ -54,10 +53,10 @@ class SongsPagerViewModel(
     init {
         initFeedbackMediator()
         initRepositoryMediators()
-        if(serverInteractor.initReaderAndWriter()){
-            listenToServer()
+        if(serverInteractor.initializeReaderAndWriter()){
+            viewModelScope.launch { listenToServer() }
         } else {
-            onListenStopped("Couldn't initialize reader or writer.")
+            viewModelScope.launch { onListenStopped("Couldn't initialize reader or writer.") }
         }
     }
 
@@ -175,25 +174,23 @@ class SongsPagerViewModel(
         return this == prefsRepo.get(PREFS_USER_ID, "")
     }
 
-    private fun listenToServer() {
-        viewModelScope.launch {
-            var stopMessage: String? = null
-            withContext(IO){
-                while (true) {
-                    try {
-                        handleServerData(serverInteractor.getNextData())
-                    } catch (e: Exception) {
-                        stopMessage = e.message
-                        Log.e(TAG, "Exception when listening to server, stopping. Message: ${e.message}")
-                        break
-                    }
+    private suspend fun listenToServer() {
+        var stopMessage: String? = null
+        withContext(IO){
+            while (true) {
+                try {
+                    handleServerData(serverInteractor.getNextData())
+                } catch (e: Exception) {
+                    stopMessage = e.message
+                    Log.e(TAG, "Exception when listening to server, stopping. Message: ${e.message}")
+                    break
                 }
             }
-            onListenStopped(stopMessage)
         }
+        onListenStopped(stopMessage)
     }
 
-    private fun handleServerData(lines: List<String>){
+    private suspend fun handleServerData(lines: List<String>){
         if(lines.isNotEmpty()) {
             val body = lines.subList(1, lines.size)
             when (lines[0]) {
@@ -206,7 +203,7 @@ class SongsPagerViewModel(
         }
     }
 
-    private fun onListenStopped(messageText: String?){
+    private suspend fun onListenStopped(messageText: String?){
         repo.updateMessage(messageText ?: EMPTY_STRING)
     }
 }

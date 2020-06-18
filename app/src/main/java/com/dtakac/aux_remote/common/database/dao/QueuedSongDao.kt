@@ -10,17 +10,14 @@ interface QueuedSongDao {
     fun getQueuedSongs(): LiveData<List<QueuedSong>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdate(queuedSong: QueuedSong)
+    suspend fun insertOrUpdate(queuedSong: QueuedSong)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllOrUpdate(queuedSongs: List<QueuedSong>)
+    suspend fun insertAllOrUpdate(queuedSongs: List<QueuedSong>)
 
     @Query("DELETE FROM queued_song_table WHERE position = (SELECT MIN(position) FROM queued_song_table)")
-    fun deleteFirst()
-
-    @Query("DELETE FROM queued_song_table")
-    fun deleteAll()
+    suspend fun deleteFirst()
 
     @Query("UPDATE queued_song_table SET position = position - 1")
-    fun decrementPosition()
+    suspend fun decrementPosition()
 }

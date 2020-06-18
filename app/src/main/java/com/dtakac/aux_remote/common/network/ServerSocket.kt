@@ -7,7 +7,7 @@ import java.lang.Exception
 import java.net.InetAddress
 import java.net.Socket
 
-private const val TAG = "server_socket"
+const val TAG = "server_socket"
 class ServerSocket{
     private var socket: Socket? = null
 
@@ -30,17 +30,17 @@ class ServerSocket{
         return true
     }
 
-    fun close(){
-        if(socket == null) return
+    fun close(): Boolean{
+        if(socket == null) return false
 
         try {
             socket?.close()
         } catch (e: Exception){
-            Log.e(TAG, "Server socket couldn't be closed.")
-            e.printStackTrace()
-            return
+            Log.e(TAG, "Server socket couldn't close due to: ${e.message}")
+            return false
         }
 
         socket = null
+        return true
     }
 }

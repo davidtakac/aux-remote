@@ -10,7 +10,7 @@ import com.dtakac.aux_remote.common.model.Message
 @Dao
 interface MessageDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun setMessage(message: Message)
+    suspend fun setMessage(message: Message)
 
     @Query("SELECT * FROM message_table LIMIT 1")
     fun getMessage(): LiveData<Message>

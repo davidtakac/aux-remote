@@ -8,16 +8,12 @@ import com.dtakac.aux_remote.common.constants.PREFS_IP_INPUT
 import com.dtakac.aux_remote.common.constants.PREFS_PORT_INPUT
 import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
 import com.dtakac.aux_remote.common.network.NetworkUtil
-import com.dtakac.aux_remote.common.network.ServerSocket
 import com.dtakac.aux_remote.common.repository.DatabaseRepository
+import com.dtakac.aux_remote.server.ServerInteractor
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.BufferedWriter
-import java.io.OutputStreamWriter
-import java.nio.charset.StandardCharsets
 import java.util.*
 
 class ConnectPresenter(
@@ -25,11 +21,11 @@ class ConnectPresenter(
     private val prefsRepo: SharedPrefsRepository,
     private val resourceRepo: ResourceRepository,
     private val netUtil: NetworkUtil,
-    private val server: ServerSocket,
+    private val serverInteractor: ServerInteractor,
     private val repo: DatabaseRepository
 ) : ConnectContract.Presenter {
 
-    private val ioScope = CoroutineScope(IO)
+    private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     override fun onViewCreated() {
         closeSocket()
@@ -75,16 +71,15 @@ class ConnectPresenter(
     }
 
     private fun initializeSocket(ipAddress: String, port: String){
-        ioScope.launch {
-            val success = server.initialize(ipAddress, Integer.parseInt(port))
-            // operations to be performed while still on background thread
+        scope.launch {
+            val success = serverInteractor.initializeSocket(ipAddress, port)
             if(success) {
                 clearDatabase()
                 saveInputToPrefs(ipAddress, port)
                 connectToServer()
             }
             // UI related behavior that needs to be performed on main thread
-            withContext(Main){
+            withContext(Dispatchers.Main){
                 view.showLoading(false)
                 view.connectEnabled(true)
                 if(success) {
@@ -97,13 +92,9 @@ class ConnectPresenter(
         }
     }
 
-    private fun connectToServer(){
-        val writer = BufferedWriter(OutputStreamWriter(server.outputStream ?: return, StandardCharsets.UTF_8))
-        writer.apply{
-            write(CLIENT_MAC); newLine()
-            write(prefsRepo.get(PREFS_USER_ID, "")); newLine()
-            flush()
-        }
+    private suspend fun connectToServer(){
+        serverInteractor.initializeReaderAndWriter()
+        serverInteractor.connectToServer(prefsRepo.get(PREFS_USER_ID, ""))
     }
 
     private fun saveInputToPrefs(ipAddress: String, port: String){
@@ -112,14 +103,10 @@ class ConnectPresenter(
     }
 
     private fun closeSocket(){
-        ioScope.launch {
-            server.close()
-        }
+        scope.launch { serverInteractor.closeSocket() }
     }
 
     private fun clearDatabase(){
-        ioScope.launch {
-            repo.clearData()
-        }
+        scope.launch { repo.clearData() }
     }
 }

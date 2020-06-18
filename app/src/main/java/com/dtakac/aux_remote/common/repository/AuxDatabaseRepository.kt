@@ -6,53 +6,58 @@ import com.dtakac.aux_remote.common.model.QueuedSong
 import com.dtakac.aux_remote.common.model.Song
 import com.dtakac.aux_remote.common.database.AppDatabase
 import com.dtakac.aux_remote.common.model.Message
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class AuxDatabaseRepository(
     private val db: AppDatabase
 ): DatabaseRepository{
 
-    override fun clearData() {
-        db.clearAllTables()
+    override suspend fun clearData() {
+        withContext(IO){ db.clearAllTables() }
     }
 
-    override fun insertSongs(body: List<String>) {
-        db.songDao().insertAll(body.map { Song(name = it) }.toList())
+    override suspend fun insertSongs(body: List<String>) {
+        withContext(IO){ db.songDao().insertAll(body.map { Song(name = it) }.toList()) }
     }
 
-    override fun insertQueuedSongs(body: List<String>) {
+    override suspend fun insertQueuedSongs(body: List<String>) {
         val result = mutableListOf<QueuedSong>()
-        for(i in body.indices step 2){
-            val name = body[i]
-            val ownerId = body[i+1]
-            result.add(QueuedSong(ownerId, name, i / 2))
+        withContext(Default){
+            for(i in body.indices step 2){
+                val name = body[i]
+                val ownerId = body[i+1]
+                result.add(QueuedSong(ownerId, name, i / 2))
+            }
         }
-        db.queuedSongDao().insertAllOrUpdate(result)
+        withContext(IO){ db.queuedSongDao().insertAllOrUpdate(result) }
     }
 
-    override fun insertQueuedSong(body: List<String>) {
+    override suspend fun insertQueuedSong(body: List<String>) {
         val songName = body[0]
         val ownerId = body[1]
         val position = body[2].toInt()
         val queuedSong = QueuedSong(ownerId, songName, position)
-        db.queuedSongDao().insertOrUpdate(queuedSong)
+        withContext(IO){ db.queuedSongDao().insertOrUpdate(queuedSong) }
     }
 
-    override fun updateNowPlayingSong(body: List<String>) {
+    override suspend fun updateNowPlayingSong(body: List<String>) {
         val songName = body[0]
         val ownerId = body[1]
         val nowPlayingSong = NowPlayingSong(name = songName, ownerId = ownerId)
-        db.nowPlayingSongDao().setNowPlayingSong(nowPlayingSong)
+        withContext(IO){ db.nowPlayingSongDao().setNowPlayingSong(nowPlayingSong) }
     }
 
-    override fun moveUp() {
-        db.queuedSongDao().apply {
-            deleteFirst()
-            decrementPosition()
+    override suspend fun moveUp() {
+        withContext(IO){
+            db.queuedSongDao().deleteFirst()
+            db.queuedSongDao().decrementPosition()
         }
     }
 
-    override fun updateMessage(message: String) {
-        db.messageDao().setMessage(Message(message = message))
+    override suspend fun updateMessage(message: String) {
+        withContext(IO){ db.messageDao().setMessage(Message(message = message)) }
     }
 
     override fun getSongs(): LiveData<List<Song>> {

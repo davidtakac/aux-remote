@@ -73,26 +73,26 @@ class ResponseHandlerService: JobIntentService(){
     }
 
     private fun onSongList(body: List<String>){
-        repo.insertSongs(body)
+        //repo.insertSongs(body)
     }
 
     private fun onQueueList(body: List<String>){
-        repo.insertQueuedSongs(body)
+        //repo.insertQueuedSongs(body)
     }
 
     private fun onEnqueued(body: List<String>){
-        repo.insertQueuedSong(body)
+        //repo.insertQueuedSong(body)
     }
 
     private fun onMoveUp(){
-        repo.moveUp()
+        //repo.moveUp()
     }
 
     private fun onNowPlaying(response: List<String>){
-        repo.updateNowPlayingSong(response)
+        //repo.updateNowPlayingSong(response)
     }
 
     private fun onServiceStopped(messageText: String?){
-        repo.updateMessage(messageText ?: EMPTY_STRING)
+        //repo.updateMessage(messageText ?: EMPTY_STRING)
     }
 }

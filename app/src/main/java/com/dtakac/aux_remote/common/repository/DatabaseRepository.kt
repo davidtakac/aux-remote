@@ -7,14 +7,14 @@ import com.dtakac.aux_remote.common.model.QueuedSong
 import com.dtakac.aux_remote.common.model.Song
 
 interface DatabaseRepository {
-    fun clearData()
+    suspend fun clearData()
 
-    fun insertSongs(body: List<String>)
-    fun insertQueuedSongs(body: List<String>)
-    fun insertQueuedSong(body: List<String>)
-    fun updateNowPlayingSong(body: List<String>)
-    fun moveUp()
-    fun updateMessage(message: String)
+    suspend fun insertSongs(body: List<String>)
+    suspend fun insertQueuedSongs(body: List<String>)
+    suspend fun insertQueuedSong(body: List<String>)
+    suspend fun updateNowPlayingSong(body: List<String>)
+    suspend fun moveUp()
+    suspend fun updateMessage(message: String)
 
     fun getSongs(): LiveData<List<Song>>
     fun getQueuedSongs(): LiveData<List<QueuedSong>>
