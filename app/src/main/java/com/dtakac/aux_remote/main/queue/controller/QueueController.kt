@@ -1,7 +1,6 @@
 package com.dtakac.aux_remote.main.queue.controller
 
 import com.airbnb.epoxy.EpoxyController
-import com.dtakac.aux_remote.common.constants.EMPTY_STRING
 import com.dtakac.aux_remote.main.queue.view_holders.nowPlayingSong
 import com.dtakac.aux_remote.main.queue.view_holders.queuedSong
 import com.dtakac.aux_remote.main.queue.view_holders.queuedSongInfo

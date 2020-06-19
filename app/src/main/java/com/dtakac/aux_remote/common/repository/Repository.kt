@@ -6,7 +6,7 @@ import com.dtakac.aux_remote.common.model.NowPlayingSong
 import com.dtakac.aux_remote.common.model.QueuedSong
 import com.dtakac.aux_remote.common.model.Song
 
-interface DatabaseRepository {
+interface Repository {
     suspend fun clearData()
 
     suspend fun insertSongs(body: List<String>)

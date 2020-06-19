@@ -5,10 +5,9 @@ import android.view.View
 import androidx.lifecycle.*
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.resource.ResourceRepository
-import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
-import com.dtakac.aux_remote.common.repository.DatabaseRepository
+import com.dtakac.aux_remote.common.repository.Repository
 import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
-import com.dtakac.aux_remote.common.constants.*
+import com.dtakac.aux_remote.common.prefs.AuxSharedPrefsRepository
 import com.dtakac.aux_remote.main.common.FeedbackMessage
 import com.dtakac.aux_remote.main.common.SongsMode
 import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
@@ -19,8 +18,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SongsPagerViewModel(
-    private val repo: DatabaseRepository,
-    private val prefsRepo: SharedPrefsRepository,
+    private val repo: Repository,
+    private val prefsRepo: AuxSharedPrefsRepository,
     private val serverInteractor: ServerInteractor,
     private val resourceRepo: ResourceRepository
 ) : ViewModel(){
@@ -61,7 +60,7 @@ class SongsPagerViewModel(
     fun onSongClicked(songName: String){
         userSentSong = true
         viewModelScope.launch {
-            serverInteractor.writeSongToServer(prefsRepo.get(PREFS_USER_ID, ""), songName)
+            serverInteractor.writeSongToServer(prefsRepo.getUserId(), songName)
         }
     }
 
@@ -165,7 +164,7 @@ class SongsPagerViewModel(
     }
 
     private fun String.isUserId(): Boolean {
-        return this == prefsRepo.get(PREFS_USER_ID, "")
+        return this == prefsRepo.getUserId()
     }
 
     private suspend fun listenToServer() {
@@ -183,6 +182,6 @@ class SongsPagerViewModel(
     }
 
     private suspend fun onListenStopped(messageText: String?){
-        repo.updateMessage(messageText ?: EMPTY_STRING)
+        repo.updateMessage(messageText ?: "")
     }
 }

@@ -10,9 +10,9 @@ import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
-class AuxDatabaseRepository(
+class AuxRepository(
     private val db: AppDatabase
-): DatabaseRepository{
+): Repository{
 
     override suspend fun clearData() {
         withContext(IO){ db.clearAllTables() }

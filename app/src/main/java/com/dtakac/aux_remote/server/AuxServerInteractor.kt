@@ -1,7 +1,6 @@
 package com.dtakac.aux_remote.server
 
-import com.dtakac.aux_remote.common.constants.*
-import com.dtakac.aux_remote.common.repository.DatabaseRepository
+import com.dtakac.aux_remote.common.repository.Repository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -9,12 +8,28 @@ import java.io.BufferedWriter
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.lang.Exception
-import java.lang.IllegalStateException
 import java.nio.charset.StandardCharsets
+import android.util.Log
+import kotlin.IllegalStateException
+
+// CLIENT KEYS
+private const val CLIENT_MAC = "CLIENT_MAC_ADDRESS"
+private const val CLIENT_QUEUE = "CLIENT_QUEUE"
+private const val CLIENT_REQUEST_SONGS = "CLIENT_SONGS_REQUEST"
+private const val CLIENT_REQUEST_QUEUE = "CLIENT_QUEUE_REQUEST"
+private const val CLIENT_REQUEST_PLAYING = "CLIENT_NOW_PLAYING_REQUEST"
+
+// SERVER KEYS
+private const val SERVER_BROADCAST_END = "SERVER_BROADCAST_ENDED"
+private const val SERVER_SONG_LIST = "SERVER_SONG_LIST"
+private const val SERVER_QUEUE_LIST = "SERVER_QUEUE_LIST"
+private const val SERVER_ENQUEUED = "SERVER_ENQUEUED"
+private const val SERVER_MOVE_UP = "SERVER_MOVE_UP"
+private const val SERVER_NOW_PLAYING = "SERVER_NOW_PLAYING"
 
 class AuxServerInteractor(
     private val serverSocket: ServerSocket,
-    private val repository: DatabaseRepository
+    private val repository: Repository
 ): ServerInteractor {
     private var reader: BufferedReader? = null
     private var writer: BufferedWriter? = null
@@ -62,6 +77,7 @@ class AuxServerInteractor(
                 val line = reader?.readLine() ?: throw IllegalStateException("Line is null.")
                 if(line == SERVER_BROADCAST_END) break else response.add(line)
             }
+            Log.d("server_response", response.toString())
             //puts it into repository
             if(response.isNotEmpty()) {
                 val body = response.subList(1, response.size)
@@ -71,6 +87,7 @@ class AuxServerInteractor(
                     SERVER_ENQUEUED -> repository.insertQueuedSong(body)
                     SERVER_MOVE_UP -> repository.moveUp()
                     SERVER_NOW_PLAYING -> repository.updateNowPlayingSong(body)
+                    else -> throw IllegalStateException("${response[0]} is unknown server code.")
                 }
             }
         }

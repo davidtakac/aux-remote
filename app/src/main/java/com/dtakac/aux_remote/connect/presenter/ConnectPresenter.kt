@@ -1,13 +1,10 @@
 package com.dtakac.aux_remote.connect.presenter
 
 import com.dtakac.aux_remote.R
-import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.base.resource.ResourceRepository
-import com.dtakac.aux_remote.common.constants.PREFS_IP_INPUT
-import com.dtakac.aux_remote.common.constants.PREFS_PORT_INPUT
-import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
+import com.dtakac.aux_remote.common.prefs.AuxSharedPrefsRepository
 import com.dtakac.aux_remote.common.util.NetworkUtil
-import com.dtakac.aux_remote.common.repository.DatabaseRepository
+import com.dtakac.aux_remote.common.repository.Repository
 import com.dtakac.aux_remote.server.ServerInteractor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,19 +14,19 @@ import java.util.*
 
 class ConnectPresenter(
     private val view: ConnectContract.View,
-    private val prefsRepo: SharedPrefsRepository,
+    private val prefsRepo: AuxSharedPrefsRepository,
     private val resourceRepo: ResourceRepository,
     private val netUtil: NetworkUtil,
     private val serverInteractor: ServerInteractor,
-    private val repo: DatabaseRepository
+    private val repo: Repository
 ) : ConnectContract.Presenter {
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     override fun onViewCreated() {
         closeSocket()
-        if(prefsRepo.get(PREFS_USER_ID, "").isBlank()){
-            prefsRepo.save(PREFS_USER_ID, UUID.randomUUID().toString())
+        if(prefsRepo.getUserId().isBlank()){
+            prefsRepo.saveUserId(UUID.randomUUID().toString())
         }
         initInputFields()
         view.showMessage()
@@ -65,8 +62,8 @@ class ConnectPresenter(
     }
 
     private fun initInputFields(){
-        view.setIpAddress(prefsRepo.get(PREFS_IP_INPUT, ""))
-        view.setPort(prefsRepo.get(PREFS_PORT_INPUT, ""))
+        view.setIpAddress(prefsRepo.getIpAddress())
+        view.setPort(prefsRepo.getPortNumber())
     }
 
     private fun initializeSocket(ipAddress: String, port: String){
@@ -93,12 +90,12 @@ class ConnectPresenter(
 
     private suspend fun connectToServer(){
         serverInteractor.initializeReaderAndWriter()
-        serverInteractor.connectToServer(prefsRepo.get(PREFS_USER_ID, ""))
+        serverInteractor.connectToServer(prefsRepo.getUserId())
     }
 
     private fun saveInputToPrefs(ipAddress: String, port: String){
-        prefsRepo.save(PREFS_IP_INPUT, ipAddress)
-        prefsRepo.save(PREFS_PORT_INPUT, port)
+        prefsRepo.saveIpAddress(ipAddress)
+        prefsRepo.savePortNumber(port)
     }
 
     private fun closeSocket(){
