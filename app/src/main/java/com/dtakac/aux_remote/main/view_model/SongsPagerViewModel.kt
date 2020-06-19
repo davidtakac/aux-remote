@@ -14,12 +14,10 @@ import com.dtakac.aux_remote.main.common.SongsMode
 import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.server.ServerInteractor
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-private const val TAG = "meteor_server"
 class SongsPagerViewModel(
     private val repo: DatabaseRepository,
     private val prefsRepo: SharedPrefsRepository,
@@ -79,11 +77,7 @@ class SongsPagerViewModel(
     }
 
     fun pullFromServer() {
-        viewModelScope.launch {
-            serverInteractor.writeLineToServer(CLIENT_REQUEST_SONGS)
-            serverInteractor.writeLineToServer(CLIENT_REQUEST_QUEUE)
-            serverInteractor.writeLineToServer(CLIENT_REQUEST_PLAYING)
-        }
+        viewModelScope.launch { serverInteractor.requestPlayerState() }
     }
 
     private suspend fun filterSongs(query: String): List<SongWrapper> {
@@ -175,32 +169,17 @@ class SongsPagerViewModel(
     }
 
     private suspend fun listenToServer() {
-        var stopMessage: String? = null
-        withContext(IO){
-            while (true) {
-                try {
-                    handleServerData(serverInteractor.getNextData())
-                } catch (e: Exception) {
-                    stopMessage = e.message
-                    Log.e(TAG, "Exception when listening to server, stopping. Message: ${e.message}")
-                    break
-                }
+        val stopMessage: String?
+        while (true) {
+            try {
+                serverInteractor.processNextServerResponse()
+            } catch (e: Exception) {
+                stopMessage = e.message
+                Log.e("server_listen", "Exception when listening to server, stopping. Message: ${e.message}")
+                break
             }
         }
         onListenStopped(stopMessage)
-    }
-
-    private suspend fun handleServerData(lines: List<String>){
-        if(lines.isNotEmpty()) {
-            val body = lines.subList(1, lines.size)
-            when (lines[0]) {
-                SERVER_SONG_LIST -> repo.insertSongs(body)
-                SERVER_QUEUE_LIST -> repo.insertQueuedSongs(body)
-                SERVER_ENQUEUED -> repo.insertQueuedSong(body)
-                SERVER_MOVE_UP -> repo.moveUp()
-                SERVER_NOW_PLAYING -> repo.updateNowPlayingSong(body)
-            }
-        }
     }
 
     private suspend fun onListenStopped(messageText: String?){

@@ -1,8 +1,7 @@
 package com.dtakac.aux_remote.common.base.prefs
 
 import android.content.SharedPreferences
-import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
-import com.dtakac.aux_remote.common.base.prefs.SharedPrefsUtil
+import com.dtakac.aux_remote.common.util.SharedPrefsUtil
 
 class AndroidSharedPrefsRepository(private val prefs: SharedPreferences): SharedPrefsRepository {
     override fun save(key: String, value: String) = SharedPrefsUtil.save(prefs, key, value)

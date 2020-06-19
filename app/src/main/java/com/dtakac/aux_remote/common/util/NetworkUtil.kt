@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.common.network
+package com.dtakac.aux_remote.common.util
 
 import android.content.Context
 import android.net.ConnectivityManager

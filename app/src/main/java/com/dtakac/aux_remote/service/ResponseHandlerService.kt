@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.app.JobIntentService
 import com.dtakac.aux_remote.common.constants.*
-import com.dtakac.aux_remote.common.network.ServerSocket
+import com.dtakac.aux_remote.server.ServerSocket
 import com.dtakac.aux_remote.common.repository.DatabaseRepository
 import org.koin.android.ext.android.inject
 import java.io.BufferedReader

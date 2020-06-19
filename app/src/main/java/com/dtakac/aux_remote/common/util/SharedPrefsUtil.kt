@@ -1,4 +1,4 @@
-package com.dtakac.aux_remote.common.base.prefs
+package com.dtakac.aux_remote.common.util
 
 import android.content.SharedPreferences
 

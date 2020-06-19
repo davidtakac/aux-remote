@@ -9,7 +9,6 @@ import androidx.navigation.fragment.navArgs
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.fragment.BaseFragment
 import com.dtakac.aux_remote.connect.presenter.ConnectContract
-import com.dtakac.aux_remote.service.ResponseHandlerService
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding3.widget.textChanges
 import kotlinx.android.synthetic.main.fragment_connect.*

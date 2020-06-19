@@ -3,11 +3,10 @@ package com.dtakac.aux_remote.connect.presenter
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.prefs.SharedPrefsRepository
 import com.dtakac.aux_remote.common.base.resource.ResourceRepository
-import com.dtakac.aux_remote.common.constants.CLIENT_MAC
 import com.dtakac.aux_remote.common.constants.PREFS_IP_INPUT
 import com.dtakac.aux_remote.common.constants.PREFS_PORT_INPUT
 import com.dtakac.aux_remote.common.constants.PREFS_USER_ID
-import com.dtakac.aux_remote.common.network.NetworkUtil
+import com.dtakac.aux_remote.common.util.NetworkUtil
 import com.dtakac.aux_remote.common.repository.DatabaseRepository
 import com.dtakac.aux_remote.server.ServerInteractor
 import kotlinx.coroutines.CoroutineScope
