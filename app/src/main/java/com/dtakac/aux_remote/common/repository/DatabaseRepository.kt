@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
-class AuxRepository(
+class DatabaseRepository(
     private val db: AppDatabase
 ): Repository{
 

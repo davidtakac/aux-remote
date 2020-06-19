@@ -9,7 +9,6 @@ import com.dtakac.aux_remote.server.ServerInteractor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class ConnectPresenter(
@@ -24,7 +23,7 @@ class ConnectPresenter(
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     override fun onViewCreated() {
-        closeSocket()
+        scope.launch { serverInteractor.closeSocket() }
         if(prefsRepo.getUserId().isBlank()){
             prefsRepo.saveUserId(UUID.randomUUID().toString())
         }
@@ -70,39 +69,27 @@ class ConnectPresenter(
         scope.launch {
             val success = serverInteractor.initializeSocket(ipAddress, port)
             if(success) {
-                clearDatabase()
+                //prepare for communication
+                repo.clearData()
+                serverInteractor.initializeReaderAndWriter()
+                serverInteractor.connectToServer(prefsRepo.getUserId())
+                //save correct input to prefs for future connections
                 saveInputToPrefs(ipAddress, port)
-                connectToServer()
             }
-            // UI related behavior that needs to be performed on main thread
-            withContext(Dispatchers.Main){
-                view.showLoading(false)
-                view.connectEnabled(true)
-                if(success) {
-                    view.onSocketInitialized()
-                }
-                else {
-                    view.showLongSnackbar(resourceRepo.getString(R.string.error_cantconnect))
-                }
+            //show results of operation
+            view.showLoading(false)
+            view.connectEnabled(true)
+            if(success) {
+                view.onSocketInitialized()
+            }
+            else {
+                view.showLongSnackbar(resourceRepo.getString(R.string.error_cantconnect))
             }
         }
-    }
-
-    private suspend fun connectToServer(){
-        serverInteractor.initializeReaderAndWriter()
-        serverInteractor.connectToServer(prefsRepo.getUserId())
     }
 
     private fun saveInputToPrefs(ipAddress: String, port: String){
         prefsRepo.saveIpAddress(ipAddress)
         prefsRepo.savePortNumber(port)
-    }
-
-    private fun closeSocket(){
-        scope.launch { serverInteractor.closeSocket() }
-    }
-
-    private fun clearDatabase(){
-        scope.launch { repo.clearData() }
     }
 }

@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <dimen name="songs_horizontal_margin">8dp</dimen>
-    <dimen name="songs_top_margin">12dp</dimen>
     <dimen name="song_card_radius">8dp</dimen>
-
 </resources>
