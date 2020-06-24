@@ -21,12 +21,15 @@
     <string name="server_disconnected_message">Disconnected: %s</string>
     <string name="progress_getting_songs">Getting songs…</string>
     <string name="progress_getting_queue">Getting queue…</string>
-    <string name="label_owner_id">Owner:</string>
+    <string name="label_owner_id">User:</string>
     <string name="title_edit_nick">Edit nickname</string>
     <string name="action_reset">Reset</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_apply">Apply</string>
-    <string name="nickname_info">Only you will see this owner by their nickname.</string>
+    <string name="nickname_info">Set a nickname for this user. Only you will be able to see it.</string>
+    <string name="channel_name">Player status</string>
+    <string name="channel_description">What song is currently playing, what song is next…</string>
+    <string name="now_playing">Now playing</string>
 
     <string-array name="labels_fragments">
         <item>Songs</item>

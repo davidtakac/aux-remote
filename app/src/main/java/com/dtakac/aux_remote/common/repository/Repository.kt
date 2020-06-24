@@ -12,7 +12,7 @@ interface Repository {
     suspend fun insertSongs(body: List<String>)
     suspend fun insertQueuedSongs(body: List<String>)
     suspend fun insertQueuedSong(body: List<String>)
-    suspend fun updateNowPlayingSong(body: List<String>)
+    suspend fun updateNowPlayingSong(body: List<String>): NowPlayingSong
     suspend fun moveUp()
     suspend fun updateMessage(message: String)
     suspend fun updateNickname(ownerId: String, nickname: String?)

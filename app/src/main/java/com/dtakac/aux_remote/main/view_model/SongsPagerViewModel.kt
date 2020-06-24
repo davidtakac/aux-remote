@@ -5,14 +5,16 @@ import android.view.View
 import androidx.lifecycle.*
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.resource.ResourceRepository
+import com.dtakac.aux_remote.common.model.NowPlayingSong
+import com.dtakac.aux_remote.common.notification.NotificationHelper
 import com.dtakac.aux_remote.common.repository.Repository
 import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.common.prefs.AuxSharedPrefsRepository
 import com.dtakac.aux_remote.main.common.FeedbackMessage
 import com.dtakac.aux_remote.main.common.SongsMode
-import com.dtakac.aux_remote.main.queue.controller.QueueInterface
 import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
+import com.dtakac.aux_remote.server.ServerEventListener
 import com.dtakac.aux_remote.server.ServerInteractor
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.launch
@@ -22,8 +24,9 @@ class SongsPagerViewModel(
     private val repo: Repository,
     private val prefsRepo: AuxSharedPrefsRepository,
     private val serverInteractor: ServerInteractor,
-    private val resourceRepo: ResourceRepository
-) : ViewModel(){
+    private val resourceRepo: ResourceRepository,
+    private val notifs: NotificationHelper
+) : ViewModel(), ServerEventListener{
     //privately mutable
     private val _filteredSongs = MutableLiveData<List<SongWrapper>>()
     private val _songsMode = MutableLiveData<SongsMode>()
@@ -52,6 +55,7 @@ class SongsPagerViewModel(
         initFeedbackMediator()
         initRepositoryMediators()
         if(serverInteractor.initializeReaderAndWriter()){
+            serverInteractor.addServerEventListener(this)
             viewModelScope.launch { listenToServer() }
         } else {
             viewModelScope.launch { onListenStopped("Couldn't initialize reader or writer.") }
@@ -184,9 +188,14 @@ class SongsPagerViewModel(
 
     private suspend fun onListenStopped(messageText: String?){
         repo.updateMessage(messageText ?: "")
+        notifs.dismissNowPlayingSongNotification()
     }
 
     fun onNicknameSubmitted(ownerId: String, nickname: String?){
         viewModelScope.launch { repo.updateNickname(ownerId, nickname) }
+    }
+
+    override fun onNowPlayingSongChanged(song: NowPlayingSong) {
+        notifs.showNowPlayingSongNotification(song)
     }
 }

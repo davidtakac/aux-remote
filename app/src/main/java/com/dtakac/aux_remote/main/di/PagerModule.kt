@@ -10,6 +10,6 @@ import org.koin.dsl.module
 
 val pagerModule = module {
     factory { (i: QueueInterface) -> QueueController(i) }
-    viewModel { SongsPagerViewModel(get(), get(), get(), get()) }
+    viewModel { SongsPagerViewModel(get(), get(), get(), get(), get()) }
     factory { (i: SongsListInterface) -> SongsListController(i) }
 }

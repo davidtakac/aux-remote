@@ -33,6 +33,7 @@ class AuxServerInteractor(
 ): ServerInteractor {
     private var reader: BufferedReader? = null
     private var writer: BufferedWriter? = null
+    private var listeners = mutableListOf<ServerEventListener>()
 
     override fun initializeReaderAndWriter(): Boolean {
         reader = BufferedReader(InputStreamReader(
@@ -86,7 +87,7 @@ class AuxServerInteractor(
                     SERVER_QUEUE_LIST -> repository.insertQueuedSongs(body)
                     SERVER_ENQUEUED -> repository.insertQueuedSong(body)
                     SERVER_MOVE_UP -> repository.moveUp()
-                    SERVER_NOW_PLAYING -> repository.updateNowPlayingSong(body)
+                    SERVER_NOW_PLAYING -> handleNowPlayingSong(body)
                     else -> throw IllegalStateException("${response[0]} is unknown server code.")
                 }
             }
@@ -119,5 +120,18 @@ class AuxServerInteractor(
             writer = null
             reader = null
         }
+    }
+
+    override fun addServerEventListener(listener: ServerEventListener) {
+        listeners.add(listener)
+    }
+
+    override fun removeServerEventListener(listener: ServerEventListener) {
+        listeners.remove(listener)
+    }
+
+    private suspend fun handleNowPlayingSong(body: List<String>){
+        val newNowPlayingSong = withContext(IO) { repository.updateNowPlayingSong(body) }
+        listeners.forEach { it.onNowPlayingSongChanged(newNowPlayingSong) }
     }
 }

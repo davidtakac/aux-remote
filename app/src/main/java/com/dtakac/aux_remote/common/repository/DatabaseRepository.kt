@@ -49,11 +49,12 @@ class DatabaseRepository(
         }
     }
 
-    override suspend fun updateNowPlayingSong(body: List<String>) {
+    override suspend fun updateNowPlayingSong(body: List<String>): NowPlayingSong {
         val songName = body[0]
         val ownerId = body[1]
         val nowPlayingSong = NowPlayingSong(name = songName, ownerId = ownerId)
         withContext(IO){ db.nowPlayingSongDao().setNowPlayingSong(nowPlayingSong) }
+        return nowPlayingSong
     }
 
     override suspend fun updateNickname(ownerId: String, nickname: String?) {

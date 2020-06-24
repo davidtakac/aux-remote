@@ -32,6 +32,10 @@ class QueueFragment : BaseFragment(), QueueInterface{
     }
 
     override fun onChangeNicknameClicked(ownerId: String, currentNickname: String?) {
-        findNavController().navigate(PagerFragmentDirections.showNicknameDialog(ownerId, currentNickname))
+        if(findNavController().currentDestination?.id == R.id.pagerFragment) {
+            //when double-clicking, illegal argument exception occurs, and this is the only way to fix it.
+            //https://stackoverflow.com/a/53737537 android development, ladies and gentlemen..
+            findNavController().navigate(PagerFragmentDirections.showNicknameDialog(ownerId, currentNickname))
+        }
     }
 }

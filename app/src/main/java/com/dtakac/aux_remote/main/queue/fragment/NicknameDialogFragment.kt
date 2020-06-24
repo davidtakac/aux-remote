@@ -15,11 +15,6 @@ class NicknameDialogFragment: DialogFragment() {
     private val viewModel by sharedViewModel<SongsPagerViewModel>(from = { requireParentFragment() })
     private val args by navArgs<NicknameDialogFragmentArgs>()
 
-    override fun onStart() {
-        super.onStart()
-        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

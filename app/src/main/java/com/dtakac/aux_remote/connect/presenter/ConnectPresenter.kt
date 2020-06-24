@@ -2,6 +2,7 @@ package com.dtakac.aux_remote.connect.presenter
 
 import com.dtakac.aux_remote.R
 import com.dtakac.aux_remote.common.base.resource.ResourceRepository
+import com.dtakac.aux_remote.common.notification.NotificationHelper
 import com.dtakac.aux_remote.common.prefs.AuxSharedPrefsRepository
 import com.dtakac.aux_remote.common.util.NetworkUtil
 import com.dtakac.aux_remote.common.repository.Repository
@@ -17,13 +18,15 @@ class ConnectPresenter(
     private val resourceRepo: ResourceRepository,
     private val netUtil: NetworkUtil,
     private val serverInteractor: ServerInteractor,
-    private val repo: Repository
+    private val repo: Repository,
+    private val notifs: NotificationHelper
 ) : ConnectContract.Presenter {
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     override fun onViewCreated() {
         scope.launch { serverInteractor.closeSocket() }
+        notifs.dismissNowPlayingSongNotification()
         if(prefsRepo.getUserId().isBlank()){
             prefsRepo.saveUserId(UUID.randomUUID().toString())
         }

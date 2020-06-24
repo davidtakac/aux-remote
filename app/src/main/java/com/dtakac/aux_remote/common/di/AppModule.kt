@@ -11,6 +11,8 @@ import com.dtakac.aux_remote.server.ServerSocket
 import com.dtakac.aux_remote.common.repository.DatabaseRepository
 import com.dtakac.aux_remote.common.repository.Repository
 import com.dtakac.aux_remote.common.base.prefs.SharedPreferencesManagerImpl
+import com.dtakac.aux_remote.common.notification.NotificationHelper
+import com.dtakac.aux_remote.common.notification.NotificationHelperImpl
 import com.dtakac.aux_remote.common.prefs.AuxSharedPrefsRepository
 import com.dtakac.aux_remote.common.prefs.AuxSharedPrefsRepositoryImpl
 import com.dtakac.aux_remote.server.AuxServerInteractor
@@ -19,6 +21,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     single{ ServerSocket() }
+    single<NotificationHelper>{ NotificationHelperImpl(get(), get()) }
     single<ServerInteractor> { AuxServerInteractor(get(), get()) }
     single{ NetworkUtil(get()) }
     single{ get<Context>().resources }

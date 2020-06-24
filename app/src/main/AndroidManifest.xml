@@ -15,7 +15,8 @@
         android:theme="@style/AppTheme" >
         <activity android:name=".container.activity.ContainerActivity"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden">
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

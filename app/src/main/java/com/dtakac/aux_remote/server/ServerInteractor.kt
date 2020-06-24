@@ -8,4 +8,6 @@ interface ServerInteractor {
     suspend fun initializeSocket(ipAddress: String, port: String): Boolean
     suspend fun connectToServer(userId: String)
     suspend fun closeSocket()
+    fun addServerEventListener(listener: ServerEventListener)
+    fun removeServerEventListener(listener: ServerEventListener)
 }

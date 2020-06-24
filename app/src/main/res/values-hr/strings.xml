@@ -4,16 +4,16 @@
     <string name="hint_ipaddr">IP adresa poslužitelja</string>
     <string name="hint_portnum">Broj porta poslužitelja</string>
     <string name="label_connect_button">Spoji se</string>
-    <string name="error_ipaddr_invalid">Nepravilna IP adresa</string>
-    <string name="error_portnum_invalid">Nepravilan broj porta</string>
+    <string name="error_ipaddr_invalid">Neispravna IP adresa</string>
+    <string name="error_portnum_invalid">Neispravan broj porta</string>
     <string name="error_cantconnect">Neuspješno spajanje na unesenu IP adresu i broj porta.</string>
     <string name="hint_search_songs">Traži pjesme…</string>
     <string name="label_menu_search">Pretraga</string>
     <string name="error_internet_needwifi">Potrebna je Wi-Fi veza.</string>
     <string name="notif_server_error">Došlo je do pogreške, probaj se spojiti ponovo.</string>
-    <string name="queued_feedback">Stavljeno u red puštanja.</string>
+    <string name="queued_feedback">Stavljeno u red izvođenja.</string>
     <string name="swapped_feedback">Uspješno zamijenjeno.</string>
-    <string name="user_song_playing_feedback">Tvoja pjesma sada svira.</string>
+    <string name="user_song_playing_feedback">Tvoja pjesma se sada izvodi.</string>
     <string name="view_action">Pogledaj</string>
     <string name="snackbar_action_wifi_settings">Uključi</string>
     <string name="label_queuedsong_position">%d.</string>
@@ -21,11 +21,19 @@
     <string name="label_pager_fragment">Aux</string>
     <string name="server_disconnected_message">Veza prekinuta: %s</string>
     <string name="progress_getting_songs">Dohvaćanje pjesama…</string>
-    <string name="progress_getting_queue">Dohvaćanje reda puštanja…</string>
-    <string name="label_owner_id">Vlasnik:</string>
+    <string name="progress_getting_queue">Dohvaćanje reda izvođenja…</string>
+    <string name="label_owner_id">Korisnik:</string>
+    <string name="title_edit_nick">Uredi nadimak</string>
+    <string name="action_reset">Resetiraj</string>
+    <string name="action_cancel">Otkaži</string>
+    <string name="action_apply">Primijeni</string>
+    <string name="nickname_info">Dodijeli nadimak ovom korisniku. Samo ćeš ga ti moći vidjeti.</string>
+    <string name="channel_name">Stanje izvođača glazbe</string>
+    <string name="channel_description">Koja pjesma se sada izvodi, koja je sljedeća…</string>
+    <string name="now_playing">Sada se izvodi</string>
 
     <string-array name="labels_fragments">
         <item>Pjesme</item>
-        <item>Red</item>
+        <item>Red izvođenja</item>
     </string-array>
 </resources>
