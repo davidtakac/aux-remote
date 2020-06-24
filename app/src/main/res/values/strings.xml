@@ -22,6 +22,11 @@
     <string name="progress_getting_songs">Getting songs…</string>
     <string name="progress_getting_queue">Getting queue…</string>
     <string name="label_owner_id">Owner:</string>
+    <string name="title_edit_nick">Edit nickname</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_apply">Apply</string>
+    <string name="nickname_info">Only you will see this owner by their nickname.</string>
 
     <string-array name="labels_fragments">
         <item>Songs</item>

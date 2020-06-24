@@ -70,7 +70,7 @@ class ConnectPresenter(
             val success = serverInteractor.initializeSocket(ipAddress, port)
             if(success) {
                 //prepare for communication
-                repo.clearData()
+                repo.clearPlayerSession()
                 serverInteractor.initializeReaderAndWriter()
                 serverInteractor.connectToServer(prefsRepo.getUserId())
                 //save correct input to prefs for future connections

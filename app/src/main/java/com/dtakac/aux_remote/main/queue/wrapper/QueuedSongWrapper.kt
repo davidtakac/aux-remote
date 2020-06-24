@@ -5,5 +5,6 @@ data class QueuedSongWrapper(
     val name: String,
     var position: Int,
     val userIconVisibility: Int,
-    var expanded: Boolean = false
+    var expanded: Boolean = false,
+    val ownerNickname: String? = null
 )

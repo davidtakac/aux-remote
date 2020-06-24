@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class QueuedSong(
     @PrimaryKey var ownerId: String,
     var name: String,
-    val position: Int
+    val position: Int,
+    val ownerNickname: String? = null
 )

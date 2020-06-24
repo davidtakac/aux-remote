@@ -20,4 +20,10 @@ interface QueuedSongDao {
 
     @Query("UPDATE queued_song_table SET position = position - 1")
     suspend fun decrementPosition()
+
+    @Query("UPDATE queued_song_table SET ownerNickname = :nickname WHERE ownerId = :ownerId")
+    suspend fun updateNickname(ownerId: String, nickname: String?)
+
+    @Query("DELETE FROM queued_song_table")
+    suspend fun deleteAll();
 }

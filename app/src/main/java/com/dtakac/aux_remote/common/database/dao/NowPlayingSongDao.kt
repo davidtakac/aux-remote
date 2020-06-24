@@ -14,4 +14,7 @@ interface NowPlayingSongDao {
 
     @Query("SELECT * FROM now_playing_song_table LIMIT 1")
     fun getNowPlayingSong(): LiveData<NowPlayingSong>
+
+    @Query("DELETE FROM now_playing_song_table")
+    suspend fun deleteSong()
 }

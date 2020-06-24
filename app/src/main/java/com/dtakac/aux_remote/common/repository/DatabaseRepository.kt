@@ -1,11 +1,8 @@
 package com.dtakac.aux_remote.common.repository
 
 import androidx.lifecycle.LiveData
-import com.dtakac.aux_remote.common.model.NowPlayingSong
-import com.dtakac.aux_remote.common.model.QueuedSong
-import com.dtakac.aux_remote.common.model.Song
 import com.dtakac.aux_remote.common.database.AppDatabase
-import com.dtakac.aux_remote.common.model.Message
+import com.dtakac.aux_remote.common.model.*
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
@@ -14,8 +11,13 @@ class DatabaseRepository(
     private val db: AppDatabase
 ): Repository{
 
-    override suspend fun clearData() {
-        withContext(IO){ db.clearAllTables() }
+    override suspend fun clearPlayerSession() {
+        withContext(IO){
+            db.messageDao().deleteMessage()
+            db.nowPlayingSongDao().deleteSong()
+            db.songDao().deleteAll()
+            db.queuedSongDao().deleteAll()
+        }
     }
 
     override suspend fun insertSongs(body: List<String>) {
@@ -28,7 +30,9 @@ class DatabaseRepository(
             for(i in body.indices step 2){
                 val name = body[i]
                 val ownerId = body[i+1]
-                result.add(QueuedSong(ownerId, name, i / 2))
+                var ownerNickname: Nickname? = null
+                withContext(IO) { ownerNickname = db.nicknameDao().getNickname(ownerId) }
+                result.add(QueuedSong(ownerId, name, i / 2, ownerNickname?.nickname))
             }
         }
         withContext(IO){ db.queuedSongDao().insertAllOrUpdate(result) }
@@ -38,8 +42,11 @@ class DatabaseRepository(
         val songName = body[0]
         val ownerId = body[1]
         val position = body[2].toInt()
-        val queuedSong = QueuedSong(ownerId, songName, position)
-        withContext(IO){ db.queuedSongDao().insertOrUpdate(queuedSong) }
+        withContext(IO){
+            val ownerNickname = db.nicknameDao().getNickname(ownerId)
+            val queuedSong = QueuedSong(ownerId, songName, position, ownerNickname?.nickname)
+            db.queuedSongDao().insertOrUpdate(queuedSong)
+        }
     }
 
     override suspend fun updateNowPlayingSong(body: List<String>) {
@@ -47,6 +54,13 @@ class DatabaseRepository(
         val ownerId = body[1]
         val nowPlayingSong = NowPlayingSong(name = songName, ownerId = ownerId)
         withContext(IO){ db.nowPlayingSongDao().setNowPlayingSong(nowPlayingSong) }
+    }
+
+    override suspend fun updateNickname(ownerId: String, nickname: String?) {
+        withContext(IO){
+            db.nicknameDao().insertOrUpdate(Nickname(ownerId, nickname))
+            db.queuedSongDao().updateNickname(ownerId, nickname)
+        }
     }
 
     override suspend fun moveUp() {

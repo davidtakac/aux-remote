@@ -10,6 +10,7 @@ import com.dtakac.aux_remote.main.songs.wrapper.SongWrapper
 import com.dtakac.aux_remote.common.prefs.AuxSharedPrefsRepository
 import com.dtakac.aux_remote.main.common.FeedbackMessage
 import com.dtakac.aux_remote.main.common.SongsMode
+import com.dtakac.aux_remote.main.queue.controller.QueueInterface
 import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
 import com.dtakac.aux_remote.server.ServerInteractor
@@ -152,7 +153,7 @@ class SongsPagerViewModel(
         _queue.addSource(repo.getQueuedSongs()) {
             _queue.value = it.map { song ->
                 QueuedSongWrapper(song.ownerId, song.name, song.position + 1,
-                    if(song.ownerId.isUserId()) View.VISIBLE else View.INVISIBLE)
+                    if(song.ownerId.isUserId()) View.VISIBLE else View.INVISIBLE, ownerNickname = song.ownerNickname)
             }
             if(it.isNotEmpty()){
                 _queueLoader.value = View.GONE
@@ -183,5 +184,9 @@ class SongsPagerViewModel(
 
     private suspend fun onListenStopped(messageText: String?){
         repo.updateMessage(messageText ?: "")
+    }
+
+    fun onNicknameSubmitted(ownerId: String, nickname: String?){
+        viewModelScope.launch { repo.updateNickname(ownerId, nickname) }
     }
 }

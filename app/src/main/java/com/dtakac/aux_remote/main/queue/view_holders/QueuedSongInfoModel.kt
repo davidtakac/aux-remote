@@ -1,5 +1,7 @@
 package com.dtakac.aux_remote.main.queue.view_holders
 
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
@@ -11,13 +13,16 @@ import com.dtakac.aux_remote.common.base.epoxy.KotlinHolder
 abstract class QueuedSongInfoModel: EpoxyModelWithHolder<QueuedSongInfoHolder>(){
     @EpoxyAttribute
     lateinit var owner: String
+    @EpoxyAttribute(hash = false) lateinit var onEditClicked: View.OnClickListener
 
     override fun getDefaultLayout(): Int = R.layout.cell_queued_song_info
     override fun bind(holder: QueuedSongInfoHolder) {
         holder.tvOwner.text = owner
+        holder.btnEditNickname.setOnClickListener(onEditClicked)
     }
 }
 
 class QueuedSongInfoHolder: KotlinHolder(){
     val tvOwner by bind<TextView>(R.id.tvOwnerId)
+    val btnEditNickname by bind<ImageView>(R.id.btnEditNickname)
 }

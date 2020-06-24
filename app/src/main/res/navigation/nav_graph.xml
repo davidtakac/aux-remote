@@ -27,5 +27,26 @@
             android:id="@+id/startConnectFragment"
             app:destination="@id/connectFragment"
             app:popUpTo="@id/connectFragment"/>
+        <action
+            android:id="@+id/showNicknameDialog"
+            app:destination="@id/nicknameDialogFragment"/>
     </fragment>
+    <dialog
+        android:id="@+id/nicknameDialogFragment"
+        android:name="com.dtakac.aux_remote.main.queue.fragment.NicknameDialogFragment"
+        android:label="Nickname"
+        tools:layout="@layout/fragment_dialog_nickname">
+        <argument
+            android:name="ownerId"
+            app:argType="string" />
+        <argument
+            android:name="currentNickname"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+        <action
+            android:id="@+id/dismissNicknameDialog"
+            app:destination="@id/pagerFragment"
+            app:popUpTo="@id/pagerFragment"/>
+    </dialog>
 </navigation>

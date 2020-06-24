@@ -14,4 +14,7 @@ interface MessageDao{
 
     @Query("SELECT * FROM message_table LIMIT 1")
     fun getMessage(): LiveData<Message>
+
+    @Query("DELETE FROM message_table")
+    suspend fun deleteMessage();
 }

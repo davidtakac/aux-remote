@@ -13,4 +13,7 @@ interface SongDao {
 
     @Query("SELECT * FROM song_table")
     fun getAll(): LiveData<List<Song>>
+
+    @Query("DELETE FROM song_table")
+    suspend fun deleteAll()
 }

@@ -7,7 +7,7 @@ import com.dtakac.aux_remote.main.queue.view_holders.queuedSongInfo
 import com.dtakac.aux_remote.main.queue.wrapper.NowPlayingSongWrapper
 import com.dtakac.aux_remote.main.queue.wrapper.QueuedSongWrapper
 
-class QueueController: EpoxyController(){
+class QueueController(private val queueInterface: QueueInterface): EpoxyController(){
     private var nowPlayingSong: NowPlayingSongWrapper? = null
     private var queue: List<QueuedSongWrapper> = listOf()
 
@@ -49,7 +49,8 @@ class QueueController: EpoxyController(){
             if(wrapper.expanded){
                 queuedSongInfo {
                     id("info: ${wrapper.ownerId}")
-                    owner(wrapper.ownerId)
+                    owner(if(!wrapper.ownerNickname.isNullOrEmpty()) wrapper.ownerNickname else wrapper.ownerId)
+                    onEditClicked { _, _, _, _ -> queueInterface.onChangeNicknameClicked(wrapper.ownerId, wrapper.ownerNickname) }
                 }
             }
         }
