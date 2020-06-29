@@ -64,7 +64,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
             .show()
     }
 
-    override fun onSocketInitialized() {
+    override fun startMainScreen() {
         //ResponseHandlerService.start(requireActivity())
         openPagerFragment()
     }
@@ -77,7 +77,7 @@ class ConnectFragment : BaseFragment(), ConnectContract.View {
         progressBar.visibility = if(isLoading) View.VISIBLE else View.GONE
     }
 
-    override fun connectEnabled(isEnabled: Boolean) {
+    override fun setConnectEnabled(isEnabled: Boolean) {
         btnConnect.isEnabled = isEnabled
     }
 

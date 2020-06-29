@@ -7,9 +7,7 @@ import com.dtakac.aux_remote.common.prefs.AuxSharedPrefsRepository
 import com.dtakac.aux_remote.common.util.NetworkUtil
 import com.dtakac.aux_remote.common.repository.Repository
 import com.dtakac.aux_remote.server.ServerInteractor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 class ConnectPresenter(
@@ -25,7 +23,7 @@ class ConnectPresenter(
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     override fun onViewCreated() {
-        scope.launch { serverInteractor.closeSocket() }
+        scope.launch { serverInteractor.closeConnection() }
         notifs.dismissNowPlayingSongNotification()
         if(prefsRepo.getUserId().isBlank()){
             prefsRepo.saveUserId(UUID.randomUUID().toString())
@@ -58,7 +56,7 @@ class ConnectPresenter(
             return
         } else {
             view.showLoading(true)
-            view.connectEnabled(false)
+            view.setConnectEnabled(false)
             initializeSocket(ipAddress, port)
         }
     }
@@ -70,20 +68,20 @@ class ConnectPresenter(
 
     private fun initializeSocket(ipAddress: String, port: String){
         scope.launch {
-            val success = serverInteractor.initializeSocket(ipAddress, port)
+            val success = serverInteractor.initializeConnection(ipAddress, port)
             if(success) {
                 //prepare for communication
                 repo.clearPlayerSession()
                 serverInteractor.initializeReaderAndWriter()
-                serverInteractor.connectToServer(prefsRepo.getUserId())
+                serverInteractor.connect(prefsRepo.getUserId())
                 //save correct input to prefs for future connections
                 saveInputToPrefs(ipAddress, port)
             }
             //show results of operation
             view.showLoading(false)
-            view.connectEnabled(true)
+            view.setConnectEnabled(true)
             if(success) {
-                view.onSocketInitialized()
+                view.startMainScreen()
             }
             else {
                 view.showLongSnackbar(resourceRepo.getString(R.string.error_cantconnect))

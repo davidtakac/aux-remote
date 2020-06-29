@@ -9,10 +9,10 @@ interface ConnectContract {
         fun setIpAddressError(msg: String?)
         fun setPortError(msg: String?)
         fun showWifiNeededMessage()
-        fun onSocketInitialized()
+        fun startMainScreen()
         fun showLongSnackbar(text: String)
         fun showLoading(isLoading: Boolean)
-        fun connectEnabled(isEnabled: Boolean)
+        fun setConnectEnabled(isEnabled: Boolean)
         fun showMessage()
     }
 

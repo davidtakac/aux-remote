@@ -65,7 +65,7 @@ class SongsPagerViewModel(
     fun onSongClicked(songName: String){
         userSentSong = true
         viewModelScope.launch {
-            serverInteractor.writeSongToServer(prefsRepo.getUserId(), songName)
+            serverInteractor.sendSong(prefsRepo.getUserId(), songName)
         }
     }
 
@@ -176,7 +176,7 @@ class SongsPagerViewModel(
         val stopMessage: String?
         while (true) {
             try {
-                serverInteractor.processNextServerResponse()
+                serverInteractor.processNextResponse()
             } catch (e: Exception) {
                 stopMessage = e.message
                 Log.e("server_listen", "Exception when listening to server, stopping. Message: ${e.message}")

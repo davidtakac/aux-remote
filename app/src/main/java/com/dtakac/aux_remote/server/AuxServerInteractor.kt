@@ -59,7 +59,7 @@ class AuxServerInteractor(
         writeLineToServer(CLIENT_REQUEST_PLAYING)
     }
 
-    override suspend fun writeSongToServer(userId: String, songName: String) {
+    override suspend fun sendSong(userId: String, songName: String) {
         withContext(IO) {
             writer?.apply {
                 write(CLIENT_QUEUE); newLine()
@@ -70,7 +70,7 @@ class AuxServerInteractor(
         }
     }
 
-    override suspend fun processNextServerResponse() {
+    override suspend fun processNextResponse() {
         val response = mutableListOf<String>()
         withContext(IO) {
             //reads server response
@@ -94,14 +94,14 @@ class AuxServerInteractor(
         }
     }
 
-    override suspend fun initializeSocket(ipAddress: String, port: String): Boolean {
+    override suspend fun initializeConnection(ipAddress: String, port: String): Boolean {
         val portNum = try { Integer.parseInt(port) } catch (e: Exception) { return false }
         var success = false
         withContext(IO){ success = serverSocket.initialize(ipAddress, portNum) }
         return success
     }
 
-    override suspend fun connectToServer(userId: String) {
+    override suspend fun connect(userId: String) {
         withContext(IO){
             writer?.apply{
                 write(CLIENT_MAC); newLine()
@@ -111,7 +111,7 @@ class AuxServerInteractor(
         }
     }
 
-    override suspend fun closeSocket() {
+    override suspend fun closeConnection() {
         var success = false
         withContext(IO){
             success = serverSocket.close()
