@@ -65,3 +65,9 @@ dependencies {
     implementation navigationUi
     implementation viewPager2
 }
+
+configurations {
+    all {
+        exclude module: 'commons-logging'
+    }
+}
