@@ -30,10 +30,13 @@ class NotificationHelperImpl(
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_music_note_black_24dp)
+            .setColor(resourceRepo.getColor(R.color.green400_analogous))
+            .setNotificationSilent()
             .setContentTitle(song.name)
             .setContentText(resourceRepo.getString(R.string.now_playing))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
+            .setOngoing(true)
         NotificationManagerCompat.from(context).notify(nowPlayingSongNotificationId, builder.build())
     }
 
